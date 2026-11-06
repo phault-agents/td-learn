@@ -74,7 +74,7 @@ export function resolveParam(op: OpInfo, rawKey: string): ResolvedParam | null {
     key = bm[1];
     block = Number(bm[2]);
   }
-  const r = resolveParamInner(op, key);
+  const r = resolveParamInner(op, key, block !== undefined);
   if (r && block !== undefined) r.block = block;
   return r;
 }
@@ -92,7 +92,9 @@ export function seqName(r: ResolvedParam): string | null {
   return m ? m[1] : null;
 }
 
-function resolveParamInner(op: OpInfo, key: string): ResolvedParam | null {
+const SEQ_PARAM = /^[a-z]+?0[a-z]/i;
+
+function resolveParamInner(op: OpInfo, key: string, inBlock = false): ResolvedParam | null {
   let pageWanted: string | null = null;
   let label = key;
   const colon = key.indexOf(':');
@@ -115,6 +117,12 @@ function resolveParamInner(op: OpInfo, key: string): ResolvedParam | null {
       }
     }
     if (hits.length) break;
+  }
+  if (inBlock && hits.length > 1) {
+    // 'Label[n]' means a field inside sequential block n — prefer block params over the
+    // sequence header that may share the same label
+    const blockHits = hits.filter((h) => h.param.type !== 'Sequence' && SEQ_PARAM.test(h.param.name));
+    if (blockHits.length) hits.splice(0, hits.length, ...blockHits);
   }
   if (!hits.length) {
     // Fall back to python-name matching (e.g. 'amp')
