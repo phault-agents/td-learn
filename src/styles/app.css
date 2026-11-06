@@ -778,6 +778,26 @@ kbd {
   color: var(--good);
 }
 
+.home-demo {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 72px 24px 0;
+}
+.demo-text {
+  max-width: 1180px;
+  margin: 0 auto 22px;
+}
+.demo-text h2 {
+  font-size: clamp(26px, 3vw, 34px);
+  letter-spacing: -0.03em;
+  margin: 0 0 10px;
+}
+.demo-text code {
+  font-size: 0.86em;
+  background: var(--surface-3);
+  border-radius: 5px;
+  padding: 0.05em 0.4em;
+}
 .home-how,
 .home-why,
 .home-map,

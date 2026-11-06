@@ -5,6 +5,11 @@ import { href } from '../lib/router';
 import { useProgress } from '../lib/progress';
 import { totalMinutes } from '../lib/courseIndex';
 import { LEVEL_LABEL } from './Learn';
+import { NetworkView } from '../components/graph/NetworkView';
+import firstLesson from '../content/lessons/m1-first-pop-network';
+
+const demoBlock = firstLesson.blocks.find((b) => b.kind === 'graph');
+const demoGraph = demoBlock && demoBlock.kind === 'graph' ? { ...demoBlock.graph, id: 'home-demo', caption: undefined, height: 460 } : null;
 
 export function Home() {
   const prog = useProgress();
@@ -71,6 +76,17 @@ export function Home() {
           <h3>Build it, then bend it</h3>
           <p>Recreate it in TouchDesigner, tick off nodes as you go, then push further with challenges and quizzes.</p>
         </div>
+      </section>
+
+      <section className="home-demo">
+        <div className="demo-text">
+          <h2>Every network, explorable</h2>
+          <p className="section-lede">
+            This is the real graph from lesson 1.1. Click nodes to see the exact parameters to set, double-click <code>geo1</code> to dive inside, or press{' '}
+            <b>Build along</b> to rebuild it step by step.
+          </p>
+        </div>
+        {demoGraph && <NetworkView graph={demoGraph} lessonTitle={firstLesson.title} />}
       </section>
 
       <section className="home-why">
