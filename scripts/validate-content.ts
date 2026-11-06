@@ -84,6 +84,7 @@ function checkValue(where: string, node: GraphNode, key: string, v: ParamValue, 
     warn(where, `${node.id}: '${key}' exists on pages ${[r.page, ...r.alsoOn].join(', ')} — prefix the page, e.g. '${r.page}:${r.param.label}'`);
   }
   const p = r.param;
+  if (r.samePage) warn(where, `${node.id}: label '${key}' is used by several parameters on page ${r.page} (${[p.name, ...r.samePage].join(', ')}) — use the Python name as the key`);
   if (r.block !== undefined && !/^[a-z]+?0[a-z]/i.test(p.name)) err(where, `${node.id}: '${key}' uses a [block] index but '${p.label}' is not a sequential-block parameter`);
   if (isExpr(v)) {
     for (const name of opsInExpr(v.expr)) {

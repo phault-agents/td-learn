@@ -61,6 +61,8 @@ export interface ResolvedParam {
   loose?: boolean;
   /** other pages that also contain this label (ambiguity) */
   alsoOn?: string[];
+  /** python names of other params with the same label on the same page */
+  samePage?: string[];
 }
 
 /** Resolve a lesson param key ('Label' or 'Page:Label') against an operator. */
@@ -118,13 +120,15 @@ function resolveParamInner(op: OpInfo, key: string): ResolvedParam | null {
     // Fall back to python-name matching (e.g. 'amp')
     for (const pg of op.pages) {
       if (pageWanted && pg.page.toLowerCase() !== pageWanted.toLowerCase()) continue;
-      for (const p of pg.params) if (p.name === label) return { page: pg.page, param: p, loose: true };
+      for (const p of pg.params) if (p.name === label) return { page: pg.page, param: p };
     }
     return null;
   }
   const first = hits[0];
   const others = [...new Set(hits.slice(1).map((h) => h.page))].filter((pg) => pg !== first.page);
   if (others.length) first.alsoOn = others;
+  const same = hits.slice(1).filter((h) => h.page === first.page && h.param.name !== first.param.name).map((h) => h.param.name);
+  if (same.length) first.samePage = same;
   return first;
 }
 
