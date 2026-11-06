@@ -657,14 +657,14 @@ Every minute the feed is re-requested, the tables update, and the spikes follow.
     {
       kind: 'challenge',
       title: 'Fade by age',
-      md: 'Make recent earthquakes bright and older ones (up to a day) dim, so the globe reads as a living record.',
+      md: 'Make the most recent earthquakes bright and older ones dim, so the globe reads as a living record of the past day.',
       hints: [
-        '`properties.time` is milliseconds since 1 January 1970 (UTC).',
-        'Python\'s `time.time()` gives seconds since the same moment, so it can feed a Math Mix uniform.',
-        'Age in hours = (now − time) / 3 600 000 ms.',
+        '`properties.time` is each event\'s time in milliseconds since 1 January 1970 (UTC).',
+        'You don\'t need the wall clock: "recent" can mean "close to the newest event in the feed".',
+        'This is a case where a data-driven scale is exactly right — which POP rescales an attribute to 0–1 from the data\'s own range?',
       ],
       solution:
-        'Add `json_time` (`$.features[*].properties.time`) as a fourth column named `time`. In a Math Mix after `lookuptex1`, add a *Vector* uniform (python name `vec0name` = `now`) whose value is the expression `time.time() * 1000` (import isn\'t needed for `time` in most TouchDesigner expression contexts; if it is, use `absTime` against a stored start time). Blocks: **B - A** (`time`, `now`) → `age`; **A * B** (`age`, `1 / 86400000`) → `agef` (0 = now, 1 = a day ago); **mix(A, B, C)** (`Color`, `Color * 0.25`… — or simpler, **A * B** on `Color.rgb` with `1 - agef`). Clamp `agef` to 0–1 first so old events don\'t go negative.',
+        'Add `json_time` with *Filter* `$.features[*].properties.time` as a fourth merged column and extend the header to `lon lat mag time`. After `lookuptex1`, append a [[Normalize POP]] with *Input Attribute Scope* `time` and *Output Attribute Scope* `recency` (0 = oldest event in the feed, 1 = newest). Then a Math Mix: **A * B + C** (`recency`, `0.75`, `0.25`) → `fade`; **A * B** (`Color.rgb`, `fade`) → `Color.rgb`. Old events keep a quarter of their brightness instead of vanishing. The times are huge numbers stored as 32-bit floats, so they are only precise to a few minutes — plenty for a day-long fade.',
     },
     {
       kind: 'quiz',
