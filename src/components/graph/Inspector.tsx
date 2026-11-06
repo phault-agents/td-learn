@@ -41,29 +41,7 @@ export function Inspector({ entry, graph, db, built, fresh, onToggleBuilt, onSel
   const flat = useMemo(() => allNodes(graph.nodes), [graph]);
   const ids = useMemo(() => new Set(flat.map((n) => n.id)), [flat]);
 
-  if (!entry) {
-    const fams = new Map<string, number>();
-    flat.forEach((n) => fams.set(familyOf(n.type), (fams.get(familyOf(n.type)) || 0) + 1));
-    return (
-      <aside className="nv-inspector is-empty">
-        <div className="insp-empty">
-          <Icon name="pointer" size={22} />
-          <p>
-            <b>Select a node</b> to see what it does and exactly which parameters to change.
-          </p>
-          <div className="insp-famcount">
-            {[...fams].map(([f, n]) => (
-              <span key={f} className={`famtag fam-${f}`}>
-                {n} {f}
-                {n > 1 ? 's' : ''}
-              </span>
-            ))}
-          </div>
-          <p className="insp-small">Everything not listed in a node's parameters stays at its default value.</p>
-        </div>
-      </aside>
-    );
-  }
+  if (!entry) return null;
 
   const { node } = entry;
   const fam = familyOf(node.type);

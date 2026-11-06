@@ -1839,14 +1839,48 @@ kbd {
 }
 
 .nv-body {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 340px;
+  position: relative;
+}
+.nv-body > .nv-inspector {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 350px;
+  z-index: 3;
+  box-shadow: -24px 0 40px -24px rgba(0, 0, 0, 0.8);
+  animation: drawer-in 0.18s ease-out;
+}
+@keyframes drawer-in {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+}
+.nv-tip {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: rgba(12, 14, 18, 0.85);
+  border: 1px solid var(--nv-line);
+  color: var(--nv-text-3);
+  font-size: 12px;
+  pointer-events: none;
+}
+.nv-tip .icon {
+  color: var(--f-POP);
 }
 @container (max-width: 860px) {
-  .nv-body {
-    grid-template-columns: 1fr;
-  }
-  .nv-inspector {
+  .nv-body > .nv-inspector {
+    position: static;
+    width: auto;
+    box-shadow: none;
+    animation: none;
     border-left: 0 !important;
     border-top: 1px solid var(--nv-line);
     max-height: none !important;
@@ -2278,9 +2312,7 @@ kbd {
   background: var(--nv-panel);
   font-size: 13.5px;
 }
-.nv:not(.nv-full) .nv-inspector {
-  max-height: 520px;
-}
+
 .nv-inspector.is-empty {
   justify-content: center;
 }

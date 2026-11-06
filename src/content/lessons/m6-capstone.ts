@@ -22,9 +22,9 @@ const lesson: Lesson = {
     {
       kind: 'md',
       md: `
-This is the project the whole course has been building towards: a piece you could install in a room tomorrow. A microphone listens. A cloud of particles breathes with the music — **bass** kicks it outward, **mids** stir it into curls, **highs** set a thin ring of light shivering around it. Trails and bloom turn the motion into something luminous, an operator can steer it from a single panel of sliders, and the whole thing starts by itself, fills the projector and keeps running.
+This is the piece the course has been building towards — one you could install tomorrow. A microphone listens; a particle cloud breathes with the music — **bass** kicks it outward, **mids** stir it into curls, **highs** set a thin ring of light shivering. Trails and bloom make it luminous, an operator steers it from one panel of sliders, and it starts by itself and keeps running.
 
-You've met every operator here before. What's new is **architecture**: splitting a show into components with clear jobs, connecting them through a few stable names, and making it robust enough to leave alone.
+You've met every operator before. What's new is **architecture**: components with clear jobs, connected through a few stable names, robust enough to leave alone.
 `,
     },
     {
@@ -57,7 +57,7 @@ Each piece can be rebuilt, profiled or replaced without touching the others, as 
             x: 0,
             y: 0,
             params: { 'Global OP Shortcut': 'CTRL' },
-            note: 'An empty Base COMP whose only job is its custom parameters (**Show** page: Gain, Bass, Mids, Highs, Trails, Glow, Master, Blackout). *Global OP Shortcut* `CTRL` makes them reachable from anywhere as `op.CTRL.par.Gain`.',
+            note: 'An empty Base COMP holding the **Show** custom parameters. *Global OP Shortcut* `CTRL` makes them reachable anywhere as `op.CTRL.par.Gain`.',
           },
           {
             id: 'audio',
@@ -72,7 +72,7 @@ Each piece can be rebuilt, profiled or replaced without touching the others, as 
                 x: 0,
                 y: 1,
                 params: { 'Play Mode': 'Sequential', Repeat: 'On', Mono: true },
-                note: 'A music file for building and rehearsing. On site, replace it with an [[Audio Device In CHOP]] set to the venue microphone — nothing downstream changes. *Mono* gives one channel to analyse.',
+                note: 'A music file for rehearsing; on site an [[Audio Device In CHOP]] takes its place. *Mono* gives one channel to analyse.',
               },
               {
                 id: 'low',
@@ -108,7 +108,7 @@ Each piece can be rebuilt, profiled or replaced without touching the others, as 
                 y: 1,
                 inputs: ['low', 'mid', 'high'],
                 params: { 'Duplicate Names': 'Make Unique' },
-                note: 'Three filtered copies of the same signal share a channel name, so *Make Unique* renumbers them. Their order — low, mid, high — is what matters: we read them by index.',
+                note: 'The three copies share a channel name, so *Make Unique* renumbers them. Order matters — low, mid, high — because we read by index.',
               },
               {
                 id: 'analyze1',
@@ -126,7 +126,7 @@ Each piece can be rebuilt, profiled or replaced without touching the others, as 
                 y: 1,
                 inputs: ['analyze1'],
                 params: { Multiply: { expr: 'op.CTRL.par.Gain' } },
-                note: 'Input sensitivity — the first slider you touch in a new room. Aim for bands that peak somewhere near 1 on loud passages.',
+                note: 'Input sensitivity — the first slider you touch in a new room. Aim for peaks near 1.',
               },
               {
                 id: 'lag1',
@@ -153,7 +153,7 @@ Each piece can be rebuilt, profiled or replaced without touching the others, as 
             x: 2,
             y: 1.5,
             params: { Material: { ref: '/project1/look/linemat1' } },
-            note: 'A Geometry COMP holding two rendered layers: the particle loop and the ring. Its material lives in `look`, so all visual decisions stay in one component.',
+            note: 'Two rendered layers: particles and ring. Its material lives in `look`, with the other visual decisions.',
             children: [
               {
                 id: 'emitter',
@@ -179,7 +179,7 @@ Each piece can be rebuilt, profiled or replaced without touching the others, as 
                   'Jitter Birth Position': 0.03,
                   'Velocity Damping': 0.03,
                 },
-                note: 'About 8000 births per second living around 4 s keeps the population near 30 000, safely under the 60 000 reserved. Lesson 6.1: *Maximum Particles* is memory you pay for whether it is used or not.',
+                note: '8000 births/s × ~4 s ≈ 30 000 alive, under the 60 000 reserved — memory you pay for either way (lesson 6.1).',
               },
               {
                 id: 'swirl',
@@ -196,7 +196,7 @@ Each piece can be rebuilt, profiled or replaced without touching the others, as 
                   'Combine Attribute Scope': 'PartForce',
                   'Output Attribute Scope': 'PartForce',
                 },
-                note: '**Mids → swirl.** Curl noise added to `PartForce`; its strength rises with the mid band, so busy passages churn the cloud while quiet ones let it drift.',
+                note: '**Mids → swirl.** Curl noise into `PartForce`, stronger as the mids rise.',
               },
               {
                 id: 'kick',
@@ -209,7 +209,7 @@ Each piece can be rebuilt, profiled or replaced without touching the others, as 
                   'Radial Strength': { expr: `${BANDS}[0] * op.CTRL.par.Bass` },
                   Falloff: 'None',
                 },
-                note: '**Bass → kick.** A radial force from the origin, added to the curl already in `PartForce`. Silent bass means no push; a kick drum throws the whole cloud outward. If a kick pulls particles *in* on your system, flip the sign.',
+                note: '**Bass → kick.** A radial force from the origin added to `PartForce`. If kicks pull particles *in* rather than out, flip the sign.',
               },
               {
                 id: 'loop',
@@ -241,7 +241,7 @@ Each piece can be rebuilt, profiled or replaced without touching the others, as 
                   'Translate 4D': { expr: 'absTime.seconds * 0.6' },
                 },
                 flags: { display: true, render: true },
-                note: '**Highs → shiver.** A fine-grained noise on the ring, scaled by the high band. Short period = small ripples. (Normally you\'d end in a Null; this layer has nothing downstream, so the flags sit here.)',
+                note: '**Highs → shiver.** Fine noise on the ring scaled by the highs. (Flags sit here to keep the graph compact; a Null is the tidier habit.)',
               },
             ],
             childComments: [{ x: 0, y: 1.2, w: 1.8, text: 'Two render flags: one Geometry COMP, two layers.' }],
@@ -273,7 +273,7 @@ Each piece can be rebuilt, profiled or replaced without touching the others, as 
                   'Point Near Color': [1, 0.72, 0.45],
                   'Line Near Color': [0.55, 0.75, 1],
                 },
-                note: 'One unlit material for both layers: points drawn as warm dots, the ring\'s line strip as a cool stroke. Adjust widths and point size on the *Setup* and *Point* pages.',
+                note: 'One unlit material for both layers: warm dots, a cool ring. Tune sizes on the *Setup* and *Point* pages.',
               },
               {
                 id: 'render1',
@@ -313,7 +313,7 @@ Each piece can be rebuilt, profiled or replaced without touching the others, as 
               'Cursor Visible': 'Never',
               'Prevent Display Sleep': true,
             },
-            note: 'The projector window: borderless, filling the chosen display, cursor hidden, display sleep blocked. Also set *Justify and Offset to…* to **Specify Display** so *Display* is used. Find the right index in a [[Monitors DAT]].',
+            note: 'Borderless, filling the chosen display, no cursor, no display sleep. Set *Justify and Offset to…* **Specify Display** so *Display* applies; a [[Monitors DAT]] lists the indices.',
           },
         ],
         boxes: [{ title: 'Signal flow: controls → audio → sim → look → output', nodes: ['controls', 'audio', 'sim', 'look', 'output'], tone: 'gray' }],
@@ -410,21 +410,15 @@ These are starting ranges — set each slider so its whole travel is useful in *
 | \`Master\` | Float | 0 – 1 | 1 | Overall brightness |
 | \`Blackout\` | Toggle | — | off | Instantly black, without stopping anything |
 
-Why a separate component with a **Global OP Shortcut**? Because the values are needed in four different networks at different depths. \`op.CTRL.par.Bass\` reads the same everywhere and survives any reorganization, whereas \`parent(2).par.Bass\` breaks the moment a node moves. During a show you can give the operator these sliders without the network: a [[Parameter COMP]] pointed at \`controls\` turns its parameter page into a panel you can open in a second, small Window COMP on the laptop screen.
+Why a separate component with a **Global OP Shortcut**? The values are needed in four networks at different depths; \`op.CTRL.par.Bass\` reads the same everywhere, while \`parent(2).par.Bass\` breaks when a node moves. For the show, a [[Parameter COMP]] pointed at \`controls\` turns its page into a panel you can open in a small second Window COMP on the laptop screen.
 
-## Why three bands instead of one loudness
+## Three bands, three forces
 
-A single loudness value makes everything swell together — the classic "it's just pumping" look. Splitting the spectrum lets different parts of the image respond to different parts of the music, so the piece seems to *listen*: kicks land as bursts, a vocal line stirs the cloud without blowing it apart, and cymbals live in the fine detail of the ring. The crossover frequencies are a musical choice; 150 Hz and 4 kHz are sensible starting points, but tune them to the material — a string quartet and a techno set need very different splits.
+One loudness value makes everything swell together — the "it's just pumping" look. Separate bands let the image *listen*: kicks land as bursts, a vocal line stirs the cloud, cymbals live in the ring. The 150 Hz / 4 kHz crossovers are starting points; a string quartet and a techno set need different splits. The **Lag CHOP's asymmetry** carries much of the feel: instant rise for tight hits, slower fall for a tail.
 
-The **Lag CHOP's asymmetry** carries much of the feel. A near-instant rise keeps hits tight; a slower fall gives each one a tail. Lengthen the fall for ambient material, shorten it for fast, percussive music.
-
-## Choosing the forces
-
-Each band drives the force best suited to its character:
-
-* **Bass is impulsive** → a radial force, strongest as a short push. The Particle POP integrates it into velocity, and *Velocity Damping* bleeds that velocity away again, so each kick reads as a breath out and a slow settling.
-* **Mids are continuous** → curl noise, because it is divergence-free: it swirls particles around without clumping them or flinging them away. More mids means more turbulence, not more speed outward.
-* **Highs are fine-grained** → a separate thin layer with a short noise period. Putting them on the particles would just add jitter to a cloud that's already moving.
+* **Bass is impulsive** → a radial push. The Particle POP integrates it into velocity and *Velocity Damping* bleeds it away: a breath out, a slow settle.
+* **Mids are continuous** → curl noise, which is divergence-free: it swirls without clumping or flinging, so more mids means more turbulence, not more outward speed.
+* **Highs are fine-grained** → a separate thin layer with a short noise period, instead of jitter on an already-moving cloud.
 `,
     },
     {
@@ -460,7 +454,7 @@ Each band drives the force best suited to its character:
             y: 1,
             inputs: ['feedback1'],
             params: { 'Brightness 1': { expr: 'op.CTRL.par.Trails' } },
-            note: 'Dims the previous frame a little each time round. At 0.85, an image is down to a few percent after about twenty frames.',
+            note: 'Dims the previous frame each pass; at 0.85 it fades to a few percent in about twenty frames.',
           },
           {
             id: 'comp1',
@@ -490,7 +484,7 @@ Each band drives the force best suited to its character:
               'Brightness 1': { expr: '0 if op.CTRL.par.Blackout.eval() else op.CTRL.par.Master' },
               'Pixel Format': '8-bit fixed (RGBA)',
             },
-            note: 'The last word on the image: master brightness, and **Blackout** forces it to 0 while the simulation keeps running underneath. Back to 8-bit for the output.',
+            note: 'Master brightness; **Blackout** forces 0 while everything keeps running. Back to 8-bit.',
           },
           {
             id: 'final',
@@ -537,37 +531,37 @@ Each band drives the force best suited to its character:
       md: `
 ## Performance pass
 
-Before calling it finished, run the profiling rig from lesson 6.1 against this project in **Perform Mode**, with every viewer closed, for at least half an hour. The budget at 60 fps is 16.7 ms; aim for real headroom (12 ms or less) because the venue machine, the projector's refresh rate and a warm GPU will all eat into it.
+Run the lesson 6.1 rig in **Perform Mode**, viewers closed, for at least half an hour. Aim well under the 16.7 ms budget (12 ms or less): the venue machine and a warm GPU will eat into it.
 
-* **Render size and anti-aliasing.** 1920 × 1080 at 4x is a good default. If the GPU is the limit, try 2x before reducing resolution.
-* **Feedback precision only where it matters.** Only the loop runs at 16-bit float; everything after the grade is 8-bit.
-* **Particles.** Population ≈ birth rate × life. Keep *Maximum Particles* a little above it, not ten times above.
-* **Bloom.** Usually the most expensive post step. Watch its GPU time; a smaller *Max Bloom Radius* or a slightly lower render resolution behind it can halve the cost.
-* **No downloads.** Nothing in the per-frame path should read POP data back to the CPU. If you display the particle count somewhere, read it with \`delayed=True\`.
-* **Idle components off.** Anything not used in the show — test networks, the profiling rig, the second audio source — sits in a component with its Cooking flag off.
-* **Watch the trail, not the counter.** Steady frame time with no spikes is the goal; a once-a-minute 50 ms hitch is what audiences notice.
+* **Render size and AA.** 1920 × 1080 at 4x; if GPU-bound, try 2x before lowering resolution.
+* **Precision only where needed.** 16-bit float in the loop, 8-bit after the grade.
+* **Particles.** Population ≈ birth rate × life; keep *Maximum Particles* a little above it.
+* **Bloom** is usually the priciest post step — watch its GPU time.
+* **No downloads** in the per-frame path; any displayed count uses \`delayed=True\`.
+* **Idle components off** — test networks, the rig, the unused audio source.
+* **Watch the trail, not the counter.** A 50 ms hitch once a minute is what audiences notice.
 
 ## Show-day checklist
 
 **Startup**
 
-* In *Edit → Window Placement*, make \`output\` the Perform Window and turn on **Start in Perform Mode**, then save. The project now opens straight into the projector window.
-* Have the operating system launch the \`.toe\` when the machine logs in (a shortcut in the startup items, or the venue's scheduling tool), and test a full cold boot — power off, power on, walk away.
-* Disable sleep, screen savers, update restarts and notifications on the machine. *Prevent Display Sleep* on the Window COMP handles the display; the OS handles the rest.
-* Set the projector's display to its native resolution and refresh rate *before* the doors open, and confirm the Window COMP lands on it.
+* In *Edit → Window Placement*, make \`output\` the Perform Window, turn on **Start in Perform Mode** and save.
+* Have the OS launch the \`.toe\` at login, then test a cold boot: power off, power on, walk away.
+* Disable sleep, screen savers, update restarts and notifications; *Prevent Display Sleep* only covers the display.
+* Set the projector to its native resolution and refresh rate before doors open, and confirm the window lands on it.
 
 **Fail-safes**
 
-* **Blackout** on \`controls\` — map it to a key or a MIDI button too, so it's reachable in a second.
-* Turn off *Close on Escape Key* on the Window COMP so a stray key press doesn't drop out of the show (<kbd>Shift</kbd>+<kbd>Esc</kbd> still closes it).
-* On the Audio Device In CHOP, decide what a missing microphone should do. Its *Error if Missing* toggle makes the failure visible while you set up; for the run, a fallback to a quiet file or an idle animation is kinder than a frozen image (see the challenge below).
-* Keep the numbered backups TouchDesigner writes when you save, and copy the final \`.toe\` plus every \`.tox\` and media file to a USB stick. Note the TouchDesigner build number you tested with and install exactly that one on the show machine.
+* **Blackout** on \`controls\`, also mapped to a key or MIDI button.
+* *Close on Escape Key* off on the Window COMP (<kbd>Shift</kbd>+<kbd>Esc</kbd> still closes it).
+* Decide what a missing microphone does: the Audio Device In's *Error if Missing* helps during setup; during the run, a fallback beats a frozen image (see the challenge).
+* Copy the final \`.toe\`, every \`.tox\` and all media to a USB stick, and install exactly the TouchDesigner build you tested with.
 
 **Before you leave**
 
-* Run the full song list once in Perform Mode while watching the frame-time trail (on a monitor, not the projector).
-* Walk the room: is the microphone hearing the music, the audience, or the air conditioning? Retune **Gain** and the crossovers on the real sound.
-* Write the operator a one-page note: what each slider does, where Blackout is, how to restart the machine.
+* Run the whole song list in Perform Mode, watching the frame-time trail on a monitor.
+* Walk the room: does the microphone hear the music or the air conditioning? Retune **Gain** and crossovers on the real sound.
+* Leave the operator a one-page note: sliders, Blackout, how to restart.
 `,
     },
     {
@@ -597,14 +591,6 @@ Before calling it finished, run the profiling rig from lesson 6.1 against this p
       ],
       solution:
         'From `bands`, a Math CHOP (*Combine Channels* **Maximum**) → a Logic-style threshold with a Math CHOP range (map 0–0.05 to 0–1 and clamp with a [[Limit CHOP]]) → a Lag CHOP with a quick rise and a ~5 s fall: call it `present`. Make an LFO CHOP with three slow channels (0.1–0.2 Hz, small amplitude). Then `bands_out = present * bands + (1 - present) * lfo` — two Math CHOPs (Multiply, then Add) — and point the expressions at `bands_out` instead of `bands`. In silence the cloud keeps breathing; when the music returns, it takes over within a fraction of a second.',
-    },
-    {
-      kind: 'challenge',
-      title: 'Package it',
-      md: 'Turn `audio` into a reusable `.tox` with custom parameters for the three crossover frequencies, the lag times and an *Input* menu (File / Device). Its output should be an Out CHOP instead of a Null that others reach by absolute path.',
-      hints: ['Everything inside reads `parent().par...`; an [[Out CHOP]] after `bands` gives the component an output connector.'],
-      solution:
-        'Add custom parameters `Lowcut`, `Highcut`, `Midfreq`, `Rise`, `Fall` and a `Source` menu. Set the filters\' *Filter Cutoff (Hz)* to `parent().par.Lowcut` etc., `lag1`\'s *Lag* to `parent().par.Rise` / `parent().par.Fall`, and drive a Switch CHOP between the file and device inputs from `Source`. Append an Out CHOP, then outside wire `audio` into a Null CHOP that the rest of the show reads. Save as `audio.tox` with a version number, as in lesson 6.2.',
     },
     {
       kind: 'quiz',

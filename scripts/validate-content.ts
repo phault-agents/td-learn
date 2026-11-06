@@ -172,6 +172,20 @@ function checkGraph(where0: string, g: Graph) {
       (strict ? err : warn)(where, `no blurb for ${node.type} (add one in src/content/blurbs/*.ts)`);
     }
   }
+  // overlapping tiles within a network (grid units: a tile is ~0.7 columns wide, ~0.7 rows tall)
+  const byNet = new Map<string | null, GraphNode[]>();
+  for (const [, { node, parent }] of all) byNet.set(parent, [...(byNet.get(parent) || []), node]);
+  for (const [net, ns] of byNet) {
+    const placed = ns.filter((n) => n.x !== undefined && n.y !== undefined);
+    for (let i = 0; i < placed.length; i++)
+      for (let j = i + 1; j < placed.length; j++) {
+        const a = placed[i], b = placed[j];
+        if (Math.abs(a.x! - b.x!) < 0.75 && Math.abs(a.y! - b.y!) < 0.75) {
+          warn(where, `nodes '${a.id}' and '${b.id}' overlap in ${net ?? 'the root network'} (x ${a.x}/${b.x}, y ${a.y}/${b.y})`);
+        }
+      }
+    if (placed.length !== ns.length && placed.length) warn(where, `some nodes in ${net ?? 'root'} have no x/y while others do`);
+  }
   for (const l of g.links || []) {
     if (!all.has(l.from)) err(where, `link from unknown node '${l.from}'`);
     if (!all.has(l.to)) err(where, `link to unknown node '${l.to}'`);

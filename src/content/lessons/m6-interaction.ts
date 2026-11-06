@@ -71,7 +71,7 @@ Stage 5 is what makes a show maintainable: swap the mouse for a tracking camera 
               'Position Y': 'ty',
               'Left Button': 'lselect',
             },
-            note: 'Reads the system mouse. In *Normalized* mode the position runs roughly from −1 to 1 across the screen — move to the corners and watch the channels to confirm on your setup. We name the channels ourselves so nothing depends on defaults.',
+            note: 'The system mouse. In *Normalized* mode the position runs roughly −1 to 1 across the screen — check the corners on your setup. We name the channels ourselves.',
           },
           {
             id: 'select_xy',
@@ -79,7 +79,7 @@ Stage 5 is what makes a show maintainable: swap the mouse for a tracking camera 
             x: 1,
             y: 0,
             params: { CHOP: { ref: 'mouse1' }, 'Channel Names': 'tx ty' },
-            note: 'Keeps only the position. The button channel must not go through the smoothing filter — a smeared click is useless.',
+            note: 'Position only — a click must not be smoothed.',
           },
           {
             id: 'filter1',
@@ -88,7 +88,7 @@ Stage 5 is what makes a show maintainable: swap the mouse for a tracking camera 
             y: 0,
             inputs: ['select_xy'],
             params: { Type: 'One Euro', 'Cutoff Frequency (Hz)': 1, 'Speed Coefficient': 0.5 },
-            note: 'The One Euro filter smooths hard when the hand is slow (no jitter) and barely at all when it moves fast (no lag). Starting values — tune them as described below.',
+            note: 'One Euro: heavy smoothing when slow, almost none when fast. Starting values — tune as described below.',
           },
           {
             id: 'scale1',
@@ -101,7 +101,7 @@ Stage 5 is what makes a show maintainable: swap the mouse for a tracking camera 
               'Name[1]': 'ty',
               'Value[1]': { expr: "op('cam1').par.orthowidth / 2 * op('render1').par.resolutionh / op('render1').par.resolutionw" },
             },
-            note: 'Half the visible width and half the visible height, in world units, computed from the camera and the render resolution. Change either and the mapping follows. We read the Render TOP\'s *parameters*, not its image size, so this never forces it to cook.',
+            note: 'Half the visible width and height in world units, from the camera and render resolution. Reading the Render TOP\'s *parameters* (not its image) never forces it to cook.',
           },
           {
             id: 'toworld',
@@ -110,7 +110,7 @@ Stage 5 is what makes a show maintainable: swap the mouse for a tracking camera 
             y: 0,
             inputs: ['filter1', 'scale1'],
             params: { 'Combine CHOPs': 'Multiply', 'Match by': 'Channel Name' },
-            note: 'Multiplies `tx` by the half-width and `ty` by the half-height: normalized screen position becomes a position in the world.',
+            note: 'Multiplies by name: `tx` × half-width, `ty` × half-height.',
           },
           {
             id: 'cursor',
@@ -118,7 +118,7 @@ Stage 5 is what makes a show maintainable: swap the mouse for a tracking camera 
             x: 4,
             y: 0,
             inputs: ['toworld'],
-            note: 'The cursor in world units. The POPs read only this node — replace everything to its left with a tracker one day and nothing else changes.',
+            note: 'The cursor in world units. POPs read only this — swap the mouse for a tracker and nothing else changes.',
           },
           {
             id: 'select_click',
@@ -135,7 +135,7 @@ Stage 5 is what makes a show maintainable: swap the mouse for a tracking camera 
             y: 2,
             inputs: ['select_click'],
             params: { 'Attack Length': 0.03, 'Peak Level': 1, 'Decay Length': 0.8, 'Decay Shape': 'Ease Out', 'Sustain Level': 0 },
-            note: 'Turns a click into a shape over time: a fast rise and a soft 0.8 s decay. *Sustain Level* 0 means holding the button doesn\'t hold the effect.',
+            note: 'A click becomes a fast rise and a soft 0.8 s decay; *Sustain Level* 0 means holding doesn\'t hold the effect.',
           },
           {
             id: 'keyboard1',
@@ -143,7 +143,7 @@ Stage 5 is what makes a show maintainable: swap the mouse for a tracking camera 
             x: 0,
             y: 3,
             params: { Active: 'On', Keys: '1 2 3' },
-            note: 'One channel per listed key, 1 while held. We don\'t rely on the channel names — the CHOP Execute DAT uses each channel\'s position instead.',
+            note: 'One channel per key, 1 while held. We use channel positions, not names.',
           },
           {
             id: 'keys_exec',
@@ -160,7 +160,7 @@ Stage 5 is what makes a show maintainable: swap the mouse for a tracking camera 
             x: 2,
             y: 3,
             params: { 'Name[0]': 'index', 'Value[0]': 0 },
-            note: 'Holds the chosen layout (0, 1 or 2). Its *Value* is set by Python, so it is also a handy place to change the layout by hand.',
+            note: 'The chosen layout (0–2), set by Python — or by hand.',
           },
           {
             id: 'layout',
@@ -177,7 +177,7 @@ Stage 5 is what makes a show maintainable: swap the mouse for a tracking camera 
             x: 5,
             y: 1,
             params: { Material: { ref: '../line1' } },
-            note: 'All the POPs. The CHOPs live outside, so the expressions inside use absolute paths like `/project1/cursor` to reach them.',
+            note: 'All the POPs. Expressions inside reach the CHOPs by absolute path, e.g. `/project1/cursor`.',
             children: [
               {
                 id: 'grid1',
@@ -193,7 +193,7 @@ Stage 5 is what makes a show maintainable: swap the mouse for a tracking camera 
                 x: 0,
                 y: 1,
                 params: { Connectivity: 'Point Primitives', Size: [4, 2.25], Columns: 160, Rows: 90, Random: [1, 1, 0] },
-                note: 'Layout 1: the same grid with every point randomized inside its own cell — organic, but still evenly spread. Same point count, so it can blend with layout 0.',
+                note: 'Layout 1: every point randomized inside its own cell — organic but evenly spread, same count.',
               },
               {
                 id: 'noise_layout',
@@ -214,7 +214,7 @@ Stage 5 is what makes a show maintainable: swap the mouse for a tracking camera 
                   Index: { expr: "op('/project1/layout')['index']" },
                   'Blend between Inputs': true,
                 },
-                note: 'With *Blend between Inputs* on, a fractional index mixes neighbouring inputs point by point — the lagged index becomes a smooth morph. Going from 0 to 2 passes through layout 1 on the way.',
+                note: 'With *Blend between Inputs*, a fractional index mixes neighbouring inputs point by point, so the lagged index morphs (0 → 2 passes through 1).',
               },
               {
                 id: 'field1',
@@ -268,7 +268,7 @@ Stage 5 is what makes a show maintainable: swap the mouse for a tracking camera 
                   'Result Scope[4]': 'Color',
                   'Delete Attributes': 'away',
                 },
-                note: 'Five tiny equations: direction from cursor to point, normalized, scaled by `Weight` and `push`, added to `P`; then colour blends from cool to warm by `Weight`. Middle-click it to read the pseudo-code.',
+                note: 'Direction away from the cursor, normalized, scaled by `Weight` and `push`, added to `P`; colour blends cool→warm by `Weight`. Middle-click for pseudo-code.',
               },
               {
                 id: 'null1',
@@ -405,28 +405,23 @@ Create a **CHOP Execute DAT** \`keys_exec\`: *CHOP* = \`keyboard1\`, **Off to On
 
 ### From screen to world
 
-An orthographic camera shows a window of the world that is exactly *Ortho Width* units wide. Its height follows from the image's aspect ratio: at 1920 × 1080, a width of 4 shows a height of 4 × 1080 / 1920 = 2.25. The camera looks at the origin, so the visible area runs from −2 to 2 in X and −1.125 to 1.125 in Y.
+An orthographic camera shows a window of the world exactly *Ortho Width* units wide; the height follows the aspect ratio — at 1920 × 1080, 4 × 1080 / 1920 = 2.25. Centred on the origin, X runs from −2 to 2 and Y from −1.125 to 1.125.
 
-The Mouse In CHOP's normalized coordinates run from about −1 to 1 across the screen in both directions. Multiplying X by half the visible width and Y by half the visible height lines the two up — that's all \`scale1\` and \`toworld\` do. Because the scale factors are expressions on the camera and render parameters, zooming the camera or changing the output resolution keeps the cursor aligned.
+The Mouse In CHOP's normalized coordinates run from about −1 to 1 across the screen, so multiplying X by half the visible width and Y by half the visible height lines them up. That's all \`scale1\` and \`toworld\` do, and since the factors are expressions on the camera and render parameters, the mapping survives zooms and resolution changes. It measures the whole *screen*, so it's exact when the output fills the screen in **Perform Mode**; for a window, see the tip below.
 
-The Mouse In CHOP measures the whole screen, so the alignment is exact when your output fills the screen in **Perform Mode**. In the editor, the cursor lines up with the screen, not with a small viewer — which is fine for testing, but see the tip below for exact mapping inside a window.
-
-With a **perspective** camera the cursor describes a ray, not a point. You'd have to pick a depth (for instance the plane your points live on) and intersect — or use the [[Render Pick CHOP]] to ask the renderer what's under the cursor.
+With a **perspective** camera the cursor is a ray, not a point: intersect it with the plane your points live on, or ask the renderer with a [[Render Pick CHOP]].
 
 ### Smoothing that doesn't feel laggy
 
-A plain [[Lag CHOP]] or Gaussian [[Filter CHOP]] trades jitter for latency: smooth enough to hide a trembling hand means sluggish when the hand moves fast. The **One Euro** filter adapts — at low speed it filters heavily, at high speed it opens up. Tune it in two passes: hold the mouse almost still and lower *Cutoff Frequency* until the jitter is gone; then move fast and raise *Speed Coefficient* until the lag disappears. Use a Lag CHOP where you *want* inertia, like the preset glide.
+A plain [[Lag CHOP]] or Gaussian [[Filter CHOP]] trades jitter for latency. The **One Euro** filter adapts: heavy smoothing at low speed, little at high speed. Tune it in two passes — hold nearly still and lower *Cutoff Frequency* until the jitter is gone, then move fast and raise *Speed Coefficient* until the lag disappears. Keep the Lag CHOP for places where you *want* inertia, like the preset glide.
 
 ### Moments vs states
 
-Inputs come in two kinds. **States** (a position, a knob) are used continuously — read them through a Null. **Moments** (a click, a key press) need to become something with duration or memory:
-
-* The [[Trigger CHOP]] turns a moment into an **envelope** — attack, peak, decay, sustain, release — ideal for hits, flashes and shockwaves.
-* A [[CHOP Execute DAT]] turns a moment into an **action**. Its \`onOffToOn(channel, sampleIndex, val, prev)\` runs once when a channel crosses from off to on; here it stores a choice in a Constant CHOP, which is a *state* again.
+**States** (a position, a knob) are used continuously through a Null. **Moments** (a click, a key press) must become something with duration or memory: the [[Trigger CHOP]] turns one into an **envelope** (attack, peak, decay, sustain, release), and a [[CHOP Execute DAT]] turns one into an **action** — \`onOffToOn(channel, sampleIndex, val, prev)\` runs once per press, here storing a choice in a Constant CHOP, which is a state again.
 
 ### Why the Math Mix maths works
 
-Block 0 gives each point the vector from the cursor to itself. Block 1 normalizes it to length 1 — a pure direction, "away from the cursor". Block 2 scales it by \`Weight\` (1 close to the cursor, 0 outside the field) and by \`push\`, so only nearby points move, and by an amount the click can boost. Block 3 adds that offset to \`P\`. Because the push is strongest right at the cursor, the points there are thrown furthest and an empty pocket opens under your hand. (A point sitting exactly on the cursor has no direction to go; in practice the grid spacing makes that vanishingly rare.)
+Block 0 gives each point the vector from the cursor to itself; block 1 normalizes it into a pure "away" direction; block 2 scales it by \`Weight\` (1 near the cursor, 0 outside) and by \`push\`; block 3 adds it to \`P\`. The push is strongest at the cursor, so an empty pocket opens under your hand. (A point exactly on the cursor has no direction; with this grid spacing that's vanishingly rare.)
 `,
     },
     {
@@ -439,7 +434,7 @@ Block 0 gives each point the vector from the cursor to itself. Block 1 normalize
       kind: 'callout',
       tone: 'warning',
       title: 'Keyboard input in a show',
-      md: 'The Keyboard In CHOP can miss very fast repeats and only covers letters and numbers. For a few preset keys it\'s perfect. For anything more (shortcuts, text entry, every key), a [[Keyboard In DAT]] or a [[Panel Execute DAT]] watching a panel\'s `key` value catches every keystroke. Either way, use the CHOP\'s *Panels* parameter (or keep the perform window focused) so typing in another app doesn\'t change your show.',
+      md: 'The Keyboard In CHOP covers letters and numbers and can miss very fast repeats — fine for preset keys. For every keystroke use a [[Keyboard In DAT]] or a [[Panel Execute DAT]] watching a panel\'s `key` value. Its *Panels* parameter limits it to a focused panel, so typing elsewhere can\'t change the show.',
     },
     {
       kind: 'graph',
@@ -464,7 +459,7 @@ Block 0 gives each point the vector from the cursor to itself. Block 1 normalize
               'Controller Index': '1-4',
               'Control:Normalize': '0 to 1',
             },
-            note: 'Reads Control Change messages 1–4 on MIDI channel 1 from the device with ID 1 (set up in *Dialogs → MIDI Device Mapper*). *Controller Name* `c` plus the index gives channels like `c1`–`c4`; *Normalize* maps 0–127 to 0–1.',
+            note: 'CC 1–4 on MIDI channel 1 from device ID 1 (*Dialogs → MIDI Device Mapper*). *Controller Name* `c` gives channels like `c1`–`c4`; *Normalize* maps 0–127 to 0–1.',
           },
           {
             id: 'midi_lag',
@@ -541,13 +536,11 @@ A normalized knob gives you 0–1; the parameter wants its own range. \`tdu.rema
 | \`parting\` \`push\` uniform | \`tdu.remap(op('/project1/midi_ctrl')['c2'], 0, 1, 0, 1) + op('/project1/trigger1')[0] * 0.6\` |
 | \`layout\` *Lag* | \`tdu.remap(op('/project1/midi_ctrl')['c3'], 0, 1, 0.1, 3)\` |
 
-Three habits make controllers pleasant to play:
+* **Give every knob a useful full range.** Square the value (\`v * v\`) for controls that need fine adjustment near zero.
+* **Expect jumps on startup.** The last MIDI values are saved in the \`.toe\`, but the knobs may have moved; the first touch jumps. Sweep every control before a show.
+* **Know your network.** OSC In needs a UDP port nothing else uses; on Windows the firewall is the usual reason nothing arrives.
 
-* **Give every knob a useful full range.** If only the first quarter of the travel does anything interesting, remap it. Square the value (\`v * v\`) for controls that need fine adjustment near zero, like a radius or a speed.
-* **Expect jumps on startup.** TouchDesigner saves the last received MIDI values in the \`.toe\`, but the physical knobs may sit elsewhere when you reopen it; the first touch jumps to the knob's real position. Before a show, sweep every control once.
-* **Know your network.** OSC In listens on a UDP port that nothing else may be using. On Windows, the firewall is the usual reason "nothing arrives" — allow TouchDesigner through it, and put the phone and computer on the same network.
-
-Because everything downstream reads \`cursor\`, \`midi_ctrl\` and \`osc_ctrl\`, you can mix sources freely: the mouse for testing, a tracker on site, knobs for the operator, a phone for a guest performer.
+Because everything reads \`cursor\`, \`midi_ctrl\` and \`osc_ctrl\`, sources mix freely: mouse for testing, a tracker on site, knobs for the operator, a phone for a guest.
 `,
     },
     {
@@ -577,14 +570,6 @@ Because everything downstream reads \`cursor\`, \`midi_ctrl\` and \`osc_ctrl\`, 
       ],
       solution:
         'Make a Noise CHOP `autopilot` with channels `tx ty`, slow and scaled to roughly ±1.5 / ±0.8. From `cursor`, chain a Slope CHOP, a Math CHOP (*Channel Pre OP* **Positive**, *Combine Channels* **Maximum**, a large *Multiply*), a [[Limit CHOP]] clamping to 0–1, and a Lag CHOP with an almost-zero rise and a fall of several seconds. Call the result `presence`: it jumps to 1 as soon as the mouse moves and only drains away after a long idle stretch — tune the fall until "gone" feels like about ten seconds. Then blend: `presence * cursor + (1 - presence) * autopilot` (two Math CHOPs, or expressions per channel), and point the Field POP and Math Mix at the blend instead of `cursor`.',
-    },
-    {
-      kind: 'challenge',
-      title: 'A knob with a curve',
-      md: 'Map MIDI knob `c1` to the field radius so that the first half of the knob covers 0.2–0.5 (fine control) and the second half 0.5–1.5.',
-      hints: ['A power curve compresses the low end: `v ** 2` or `v ** 1.6` before remapping.'],
-      solution:
-        'Solve `0.2 + 1.3 * 0.5^k = 0.5` → `0.5^k ≈ 0.23` → `k ≈ 2.1`. So use `0.2 + 1.3 * op(\'/project1/midi_ctrl\')[\'c1\'] ** 2.1` for all three components of *Radius*. Halfway lands near 0.5 and the full turn reaches 1.5.',
     },
     {
       kind: 'quiz',

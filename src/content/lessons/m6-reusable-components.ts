@@ -40,7 +40,7 @@ const parexecCode = `# Parameter Execute DAT inside sparks.
 # Value Change and On Pulse are on. The other default
 # callbacks can stay as they are.
 
-def onValueChange(par, val, prev):
+def onValueChange(par, prev):
     if par.name == 'Preset':
         parent().ApplyPreset(par.eval())
     return
@@ -362,10 +362,10 @@ These are the parameters the steps create. Ranges are starting points — set th
 
 The Parameter Execute DAT watches the parameters you list on the operators you point it at, and calls a function when something happens. The callbacks you'll use most:
 
-* \`onValueChange(par, val, prev)\` — the value changed. \`par\` is the Par object, \`val\` the new value, \`prev\` the old one.
+* \`onValueChange(par, prev)\` — the value changed. \`par\` is the Par object (read the new value with \`par.eval()\`), \`prev\` the old one.
 * \`onPulse(par)\` — a pulse parameter was pressed (or \`par.pulse()\` was called from a script).
 
-There are also \`onExpressionChange\`, \`onExportChange\`, \`onEnableChange\` and \`onModeChange\` with the same \`(par, val, prev)\` signature, each switched on by its own toggle. Remember that the DAT reacts to **changes**: choosing the preset that's already selected does nothing. To re-apply it, a script can call \`op('sparks').ApplyPreset('storm')\` directly.
+There are also \`onExpressionChange\`, \`onExportChange\`, \`onEnableChange\` and \`onModeChange\`, each switched on by its own toggle. Their signatures differ slightly — always start from the function stubs the DAT creates for you rather than typing them from memory. Remember that the DAT reacts to **changes**: choosing the preset that's already selected does nothing. To re-apply it, a script can call \`op('sparks').ApplyPreset('storm')\` directly.
 
 ### The extension
 
@@ -471,7 +471,7 @@ A \`.tox\` is a component saved on its own. With **External .tox Path** set and 
         },
         {
           q: 'Which callback runs when the **Reset** pulse parameter is pressed?',
-          options: ['`onValueChange(par, val, prev)`', '`onPulse(par)`', '`onOffToOn(channel, sampleIndex, val, prev)`', '`onFrameEnd(frame)`'],
+          options: ['`onValueChange(par, prev)`', '`onPulse(par)`', '`onOffToOn(channel, sampleIndex, val, prev)`', '`onFrameEnd(frame)`'],
           answer: 1,
           explain: 'Pulse parameters fire `onPulse(par)` in a Parameter Execute DAT, provided its *On Pulse* toggle is on and the parameter is listed.',
         },

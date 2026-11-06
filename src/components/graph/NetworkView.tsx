@@ -30,6 +30,9 @@ interface View {
 
 const HEADER = 18;
 const THUMB = 62;
+/** inspector drawer width, and the canvas width from which it overlays (below it stacks) */
+const DRAWER_W = 350;
+const DRAWER_MIN_CANVAS = 860;
 
 function buildIndex(nodes: GraphNode[], parent: string | null, out: Map<string, IndexEntry>) {
   for (const n of nodes) {
@@ -174,10 +177,12 @@ export function NetworkView({ graph, lessonTitle }: Props) {
     const id = window.setTimeout(() => {
       const v = targetRef.current;
       const pad = 24;
+      // on wide layouts the inspector drawer covers the right edge of the canvas
+      const visW = size.w >= DRAWER_MIN_CANVAS ? size.w - DRAWER_W : size.w;
       const sx = p.x * v.k + v.x, sy = p.y * v.k + v.y;
       const ex = sx + NODE_W * v.k, ey = sy + NODE_H * v.k;
-      if (sx >= pad && sy >= pad && ex <= size.w - pad && ey <= size.h - pad) return;
-      const cx = size.w / 2 - (p.x + NODE_W / 2) * v.k;
+      if (sx >= pad && sy >= pad && ex <= visW - pad && ey <= size.h - pad) return;
+      const cx = visW / 2 - (p.x + NODE_W / 2) * v.k;
       const cy = size.h / 2 - (p.y + NODE_H / 2) * v.k;
       animateTo({ k: v.k, x: cx, y: cy });
     }, 420);
@@ -555,6 +560,11 @@ export function NetworkView({ graph, lessonTitle }: Props) {
             </g>
           </svg>
           {hint && <div className="nv-hint">Hold Ctrl (⌘ on Mac) and scroll to zoom · drag to pan</div>}
+          {!selected && !hint && (
+            <div className="nv-tip">
+              <Icon name="pointer" size={13} /> Click a node for its parameters{index.size > [...index.values()].filter((e) => !e.parent).length ? ' · double-click a COMP to dive in' : ''}
+            </div>
+          )}
           {legend && <Legend onClose={() => setLegend(false)} />}
           {path.length > 0 && (
             <button className="nv-up nv-noplan" onClick={() => setPath(path.slice(0, -1))}>

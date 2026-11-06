@@ -481,7 +481,17 @@ JSONPath reads like a path through the JSON: \`$\` is the root, \`.features\` st
             y: 1.1,
             code: {
               lang: 'python',
-              text: "# timer1_callbacks — TouchDesigner fills this DAT with empty\n# callback functions when you create the Timer CHOP.\n# Find the existing onDone(...) function and add this line\n# to its body (keep the signature exactly as it is):\n\n    op('webclient1').par.request.pulse()\n",
+              text: `# timer1_callbacks - the Timer CHOP's callbacks DAT.
+# TouchDesigner fills it with empty callback functions when you create
+# the Timer CHOP. Only onDone needs a body: each time the timer finishes
+# (and, with On Done set to Re-Start, starts over) we ask for fresh data.
+# If your generated onDone stub has a different argument list, keep
+# TouchDesigner's version and just paste the body line.
+
+def onDone(timerOp, segment, interrupt):
+    op('webclient1').par.request.pulse()
+    return
+`,
             },
             note: 'The Timer CHOP\'s callbacks DAT. One added line in `onDone` pulses the Web Client DAT\'s *Request* parameter each time the timer completes.',
           },
