@@ -371,7 +371,7 @@ Its *Neighbors Type* menu has a second mode, **Connected**, where neighbours are
       md: `* Cost grows with points × candidates, and candidates grow fast with *Maximum Distance*. Halving the distance is often better than halving the points.
 * Set *Num Hash Buckets* (on both Proximity and Neighbor) roughly to your point count — the docs\' own rule of thumb.
 * Keep *Max Lines per Point* as low as the look allows: memory is reserved for the maximum.
-* Never put a [[POP to DAT]] or Python \`numPrims()\` on the Proximity output in a running show — each read waits for the GPU.`,
+* Never put a [[POP to DAT]] or Python \`numPoints()\` on the Proximity output in a running show — each read waits for the GPU.`,
     },
     {
       kind: 'md',
@@ -673,7 +673,7 @@ Whatever the method, a few rules keep node-link diagrams readable:
         'You probably want more lines per point here than in the base plexus.',
       ],
       solution:
-        'Inside `geo_plexus`, create a single point — for example a Point POP whose position is driven by expressions such as `math.sin(absTime.seconds * 0.5) * 2` on X. Add a second Proximity POP: input 0 = `noise1` (the cloud), input 1 = the probe. Give it its own *Maximum Distance* (try 0.9) and a higher *Max Lines per Point*. Run it through its own Facet → Attribute Convert → ReRange chain, then merge it with `rerange1` before `null_lines` using a Merge POP. Make the probe lines a different color by adding a `Color` attribute in that branch and pointing *Line Color Attribute* at `Color`.',
+        'Inside `geo_plexus`, create a single point — for example a Point POP whose position is driven by expressions such as `math.sin(absTime.seconds * 0.5) * 2` on X. Add a second Proximity POP: input 0 = `noise1` (the cloud), input 1 = the probe. Give it its own *Maximum Distance* (try 0.9) and a higher *Max Lines per Point*. Run it through its own Facet → Attribute Convert → ReRange chain (mapping `LineLength` from 0–0.9 to `LineWidth` 1–0) and end it in its own Null POP. The cleanest way to style it differently is a separate Geometry COMP: create `geo_probe` with a Select POP pointing at that Null, give it its own Line MAT in a warm color, spin it with the same expression, and add it to the Render TOP.',
     },
     {
       kind: 'challenge',
@@ -685,7 +685,7 @@ Whatever the method, a few rules keep node-link diagrams readable:
         'Pulling toward neighbours shrinks everything; a tiny outward scale each frame counteracts it.',
       ],
       solution:
-        'Branch after `mathmix1` (before the Facet POP, so points are still shared between edges): **Feedback POP** `feedback1` (input `mathmix1`, *Target POP* `relax_out`) → **Neighbor POP** (*Neighbors Type* **Connected**, *Output* **Average**, *Neighbor Point Attributes* `P`) → **Math Mix**: **mix(A, B, C)** with `P`, the averaged position (with *Add Prefix* on its name starts with `Nebr` — check the info popup), and `0.05` → `P`; then **A * B** (`P`, `1.004`) → `P` → **Null POP** `relax_out`. Feed `relax_out` into the Facet chain. Press *Start* on `feedback1` and watch connected nodes drift together. This is Laplacian smoothing with a rescale, not a full force-directed layout (there\'s no node-node repulsion), and the labels won\'t follow — they read positions from the table. To make them follow, send `relax_out` through a [[POP to CHOP]] and use its X/Y as the Text POP\'s *Specification CHOP* (channels named `tx` and `ty`).',
+        'Branch after `mathmix1` (before the Facet POP, so points are still shared between edges): **Feedback POP** `feedback1` (input `mathmix1`, *Target POP* `relax_out`) → **Neighbor POP** (*Neighbors Type* **Connected**, *Output* **Average**, *Neighbor Point Attributes* `P`) → **Math Mix**: **mix(A, B, C)** with `P`, the averaged position (with *Add Prefix* on its name starts with `Nebr` — check the info popup), and `0.05` → `P`; then **A * B** (`P`, `1.004`) → `P` → **Null POP** `relax_out`. Feed `relax_out` into the Facet chain. Press *Start* on `feedback1` and watch connected nodes drift together. This is Laplacian smoothing with a rescale, not a full force-directed layout (there\'s no node-node repulsion), and the labels won\'t follow — they read positions from the table. To make them follow, send `relax_out` through a [[POP to CHOP]], rename its X and Y channels to `tx` and `ty` with a [[Rename CHOP]], and use that as the Text POP\'s *Specification CHOP* — one sample per node, matching the rows of `nodes`.',
     },
     {
       kind: 'quiz',
