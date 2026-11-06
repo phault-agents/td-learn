@@ -148,7 +148,7 @@ The payoff: adding a fourth series is just adding a fourth channel. Nothing in t
                 x: 2,
                 y: 0,
                 inputs: ['linebreak1'],
-                params: { 'Vert Index in Line Strip Normalized': true, 'Line Strip Index Normalized': true },
+                params: { 'Vert Index in Line Strip Normalized': [true, 't'], 'Line Strip Index Normalized': [true, 'series'] },
                 note: 'Adds two attributes per point. Rename them in the fields beside the toggles: **`t`** for the normalized index (0 = oldest sample, 1 = newest) and **`series`** for the normalized strip index (0, 0.5, 1 with three series).',
               },
               {
@@ -252,7 +252,7 @@ The payoff: adding a fourth series is just adding a fourth channel. Nothing in t
                 type: 'gridPOP',
                 x: 0,
                 y: 0,
-                params: {
+                params: { 'Line X/Y/Z': [true, true, false],
                   Connectivity: 'Line Strips',
                   Size: [8, 4],
                   Columns: 2,

@@ -160,9 +160,13 @@ function paramLines(
   }
   if (Array.isArray(val)) {
     const comps = p.comps?.length ? p.comps : val.map((_, i) => `${p.name}${i}`);
-    return val.map((x, i) =>
-      typeof x === 'number' ? `setp(${v}, ${py(pyName(r, comps[i]))}, ${x})` : `setexpr(${v}, ${py(pyName(r, comps[i]))}, ${py(x.expr)})`,
-    );
+    return val.map((x, i) => {
+      const n = py(pyName(r, comps[i]));
+      if (typeof x === 'number') return `setp(${v}, ${n}, ${x})`;
+      if (typeof x === 'boolean') return `setp(${v}, ${n}, ${x ? 'True' : 'False'})`;
+      if (typeof x === 'string') return `setp(${v}, ${n}, ${py(x)})`;
+      return `setexpr(${v}, ${n}, ${py(x.expr)})`;
+    });
   }
   if (typeof val === 'boolean') return [`setp(${v}, ${py(name)}, ${val ? 'True' : 'False'})`];
   if (typeof val === 'number') {

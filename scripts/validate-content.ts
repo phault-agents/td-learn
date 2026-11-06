@@ -126,7 +126,7 @@ function checkValue(where: string, node: GraphNode, key: string, v: ParamValue, 
     }
     return;
   }
-  if (p.type === 'Toggle' && typeof v !== 'boolean') err(where, `${node.id}.${key}: toggle expects true/false`);
+  if (p.type === 'Toggle' && typeof v !== 'boolean' && !(Array.isArray(v) && p.comps?.length)) err(where, `${node.id}.${key}: toggle expects true/false`);
   if (Array.isArray(v)) {
     for (const c of v) {
       if (typeof c === 'object') for (const name of opsInExpr(c.expr)) checkPath(where, node, key, name, all);

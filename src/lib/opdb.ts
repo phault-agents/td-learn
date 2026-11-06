@@ -157,7 +157,7 @@ export function opsInExpr(expr: string): string[] {
 }
 
 export function formatValue(v: ParamValue): string {
-  if (Array.isArray(v)) return v.map((n) => (typeof n === 'number' ? fmtNum(n) : n.expr)).join('  ');
+  if (Array.isArray(v)) return v.map((n) => (typeof n === 'number' ? fmtNum(n) : typeof n === 'boolean' ? (n ? 'On' : 'Off') : typeof n === 'string' ? n : n.expr)).join('  ');
   if (typeof v === 'number') return fmtNum(v);
   if (typeof v === 'boolean') return v ? 'On' : 'Off';
   if (typeof v === 'string') return v;

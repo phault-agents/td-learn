@@ -31,7 +31,9 @@ export type ParamValue =
   | { expr: string }
   | { ref: string };
 
-export type TupleValue = (number | { expr: string })[];
+/** Components of a multi-value parameter, in TD order. Toggle+name pairs (e.g. Field POP *Weight*)
+ *  take a boolean and a string: Weight: [true, 'w']. */
+export type TupleValue = (number | string | boolean | { expr: string })[];
 
 export interface NodeFlags {
   display?: boolean;

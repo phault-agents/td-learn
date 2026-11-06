@@ -295,7 +295,7 @@ function Value({ value, isMenu, type, ids, onSelect }: { value: ParamValue; isMe
       </span>
     );
   }
-  if (typeof value === 'boolean' || type === 'Toggle') {
+  if (typeof value === 'boolean' || (type === 'Toggle' && !Array.isArray(value))) {
     const on = value === true;
     return (
       <span className={`pv pv-toggle ${on ? 'is-on' : ''}`}>
@@ -311,6 +311,15 @@ function Value({ value, isMenu, type, ids, onSelect }: { value: ParamValue; isMe
           typeof v === 'number' ? (
             <span key={i} className="pv pv-num">
               {formatValue(v)}
+            </span>
+          ) : typeof v === 'boolean' ? (
+            <span key={i} className={`pv pv-toggle ${v ? 'is-on' : ''}`}>
+              <span className="pv-switch" />
+              {v ? 'On' : 'Off'}
+            </span>
+          ) : typeof v === 'string' ? (
+            <span key={i} className="pv pv-str">
+              {v}
             </span>
           ) : (
             <span key={i} className="pv pv-expr" title="This component is an expression">

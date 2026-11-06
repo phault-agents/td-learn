@@ -87,6 +87,7 @@ Targets: **1800–3000 words** of prose per lesson; main graph **8–25 nodes** 
     Material: { ref: 'pbr1' },                            // OP reference (draws a dashed line)
     'Xform:Rotate': [0, { expr: 'absTime.seconds * 12' }, 0], // tuple, components may be expressions
     'Compute Point Normals': true,                        // toggle
+    Weight: [true, 'w'],                                  // toggle + its output-name field (comps)
   },
   note: 'Markdown: why this node is here, what to look for.',
   flags: { display: true, render: true },

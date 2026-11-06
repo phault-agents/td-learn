@@ -168,7 +168,7 @@ Keep the difference between *resample* (same shape, new points) and *smooth* (ne
                 x: 4,
                 y: 0,
                 inputs: ['resample1'],
-                params: { 'Distance from Start Normalized': true },
+                params: { 'Distance from Start Normalized': [true, 'along'] },
                 note: 'Adds the distance along the strip, normalized to 0–1. Rename its output to `along` (text field next to the toggle). Unlike `_PointU`, it follows actual arc length.',
               },
               {

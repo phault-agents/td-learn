@@ -368,7 +368,7 @@ This third approach is the most transparent, so it's what the next build uses: a
                 x: 1,
                 y: 0,
                 inputs: ['grid2'],
-                params: { Mode: 'Sphere', Radius: [1.4, 1.4, 1.4] },
+                params: { 'Output:Weight': [true, 'wball'], Mode: 'Sphere', Radius: [1.4, 1.4, 1.4] },
                 note: 'The ball. Output page: rename the *Weight* output to `wball`. No transition range — booleans want crisp 0/1 edges.',
               },
               {
@@ -377,7 +377,7 @@ This third approach is the most transparent, so it's what the next build uses: a
                 x: 2,
                 y: 0,
                 inputs: ['field2'],
-                params: {
+                params: { 'Output:Weight': [true, 'wbox'],
                   Mode: 'Box',
                   Size: [0.8, 0.8, 4],
                   Rotate: [0, { expr: 'absTime.seconds * 20' }, 0],

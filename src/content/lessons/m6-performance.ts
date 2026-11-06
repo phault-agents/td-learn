@@ -62,7 +62,7 @@ TouchDesigner is a *pull* system: an operator cooks only when something downstre
         root: '/project1',
         height: 560,
         caption:
-          'The rig watches three names — `geo1`, `render1` and `out1` — so it drops into almost any project. **stats** is the single place to read numbers from; **trail1** shows the last few seconds of frame time; **hud** is a monitoring copy of your output with the numbers burned in.',
+          'The rig watches three names — `geo1`, `render1`, `out1` — so it drops into almost any project. Read numbers from **stats**; **trail1** shows recent frame time; **hud** is a monitoring copy of the output.',
         nodes: [
           {
             id: 'geo1',
@@ -313,7 +313,7 @@ bounds = pop.bounds(delayed=True)`,
         root: '/project1',
         height: 540,
         caption:
-          'Both versions draw a small box on each of 90 000 noisy grid points. **geo_before** builds every box as real geometry with a Copy POP and leaves a debugging table that downloads from the GPU. **geo_after** keeps only the points and lets the Geometry COMP instance one box onto them. Point `render1`\'s *Geometry* at one, then the other, and compare the rig.',
+          'Both draw a box on each of 90 000 noisy points. **geo_before** copies real geometry and leaves a GPU-downloading debug table; **geo_after** instances one box. Point `render1` at each and compare the rig.',
         nodes: [
           {
             id: 'geo_before',
@@ -546,7 +546,7 @@ TOP costs mostly scale with pixel count — halve width and height and you shade
         'Probe with *GPU Time* selected shows costs per component; click into the worst one.',
       ],
       solution:
-        'If the frame time collapses at tiny resolution, the project is pixel-bound: lower the render resolution or anti-aliasing, or simplify expensive post TOPs. If it barely moves, look at `children_cpu_cook_time` and the Performance Monitor for CPU work (Python, CHOP chains, downloads) and at `geo_gpu_ms` for heavy POP chains. Whatever you change, the result to report is a **millisecond** difference measured with the rig, in Perform Mode, with viewers closed.',
+        'If frame time collapses at tiny resolution, you are pixel-bound: lower resolution or anti-aliasing, or simplify post TOPs. If not, check `children_cpu_cook_time` and the Performance Monitor for CPU work, and `geo_gpu_ms` for heavy POP chains. Report a **millisecond** difference, measured in Perform Mode with viewers closed.',
     },
     {
       kind: 'challenge',
@@ -557,7 +557,7 @@ TOP costs mostly scale with pixel count — halve width and height and you shade
         'Every POP data method accepts the same keyword.',
       ],
       solution:
-        'Change the call to `op(\'pts_a\').points(\'P\', delayed=True)[0]`. The value is one frame old, but the CPU no longer waits for the GPU, so the spike disappears from the trail. (And printing every frame is itself slow — remove the print once you\'ve seen the difference.)',
+        'Change the call to `op(\'pts_a\').points(\'P\', delayed=True)[0]`. The value is one frame old, but the CPU no longer waits for the GPU, so the spike leaves the trail. (Printing every frame is slow too — remove it afterwards.)',
     },
     {
       kind: 'quiz',
@@ -566,7 +566,7 @@ TOP costs mostly scale with pixel count — halve width and height and you shade
           q: 'Your project must run at 60 fps. What is the time budget for one frame?',
           options: ['60 ms', 'About 16.7 ms', 'About 33.3 ms', '1 ms per operator'],
           answer: 1,
-          explain: '1000 ms ÷ 60 frames ≈ 16.7 ms. Everything the CPU and GPU do for that frame has to fit, and the slower of the two sets the pace.',
+          explain: '1000 ms ÷ 60 ≈ 16.7 ms, and the slower of CPU and GPU sets the pace.',
         },
         {
           q: 'A big POP chain shows tiny CPU cook times, yet the frame rate is low. Where do you look next?',
@@ -577,7 +577,7 @@ TOP costs mostly scale with pixel count — halve width and height and you shade
             'At the timeline length',
           ],
           answer: 1,
-          explain: 'For POPs and TOPs the CPU cook time is only the set-up. The real work runs on the GPU and is reported separately.',
+          explain: 'For POPs and TOPs the CPU cook time is only set-up; the real work is GPU time.',
         },
         {
           q: 'Which call reads point positions without forcing the CPU to wait for the GPU?',
@@ -588,7 +588,7 @@ TOP costs mostly scale with pixel count — halve width and height and you shade
             'A POP to DAT with Download Type set to Immediate (Slow)',
           ],
           answer: 1,
-          explain: '`delayed=True` returns the previous frame\'s data, which is already on the CPU. The others all trigger an immediate download.',
+          explain: '`delayed=True` returns last frame\'s data, already on the CPU. The others download immediately.',
         },
         {
           q: 'A Delete POP\'s info popup says *Point Count Info on GPU*. What does that imply?',
@@ -599,7 +599,7 @@ TOP costs mostly scale with pixel count — halve width and height and you shade
             'It cannot be rendered',
           ],
           answer: 1,
-          explain: 'The real count is only known on the GPU, so allocation is for the worst case. A Topology POP can lower the maximums, or *Copy Topology Info Back to CPU* can make it exact at the price of a download.',
+          explain: 'Allocation is for the worst case. A Topology POP can lower the maximums; *Copy Topology Info Back to CPU* makes it exact at the price of a download.',
         },
         {
           q: 'When is the Copy POP the better choice than instancing?',
@@ -610,7 +610,7 @@ TOP costs mostly scale with pixel count — halve width and height and you shade
             'When you want to save GPU memory',
           ],
           answer: 1,
-          explain: 'Copies are real geometry you can keep working on. If the copies only need to be positioned, coloured and drawn, instancing does it without allocating anything per copy.',
+          explain: 'Copies are real geometry you can keep processing; instancing only places, colours and draws.',
         },
       ],
     },

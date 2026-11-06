@@ -134,7 +134,7 @@ The [[Normalize POP]] looks similar but works differently: it inspects the data 
             y: 0.5,
             params: {
               'Points DAT': { ref: 'switch1' },
-              'Points:Convert All Excluding': true,
+              'Points:Convert All Excluding': [true, 'text'],
             },
             note: 'One point per row; every column becomes an attribute. Type `text` into the *Exclude Columns* field beside the toggle — words can\'t become point attributes. Middle-click: you should see 12 points with `tx` and `value`.',
           },
@@ -268,7 +268,7 @@ The [[Normalize POP]] looks similar but works differently: it inspects the data 
                 type: 'gridPOP',
                 x: 0,
                 y: 0,
-                params: {
+                params: { 'Line X/Y/Z': [true, false, false],
                   Connectivity: 'Line Strips',
                   Size: [12.4, 6],
                   Columns: 2,
