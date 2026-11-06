@@ -22,10 +22,11 @@ Learners will reproduce every graph in TouchDesigner. Wrong parameter names dest
 2. **Read the official description** before using an operator whose behaviour you're not certain of. The raw docs are cached locally (see the path given in your task, `docs/<Op_Name>.wiki`), or at `https://docs.derivative.ca/<Op_Name>`.
 3. **Menu values** must be the menu *label* exactly as listed (e.g. `'Simplex 4D (GPU)'`).
 4. If a label appears on more than one page, prefix the page: `'Xform:Translate'`, `'Output:Combine Operation'`.
-5. **Sequential parameter blocks** (Math Mix *Combine* blocks, Map page blocks, Uniform blocks…) use a 0-based block suffix: `'Operation[0]'`, `'Scope A[0]'`, `'Operation[1]'`… Block 0 can also be written without the suffix.
-6. Don't state default values, exact point counts, or exact visual results you can't verify. Prefer "try values around…", "roughly".
-7. Removed operators (e.g. Line Thick POP, GLSL Create POP) must not be used. The validator enforces this.
-8. Run `npm run validate -- --lesson <slug>` until it reports **0 errors and 0 warnings**, and `npx tsc --noEmit` until clean.
+5. If a label appears **twice on the same page** (e.g. Math Mix's uniform *Name* fields), use the Python name shown by `opinfo` as the key instead (`'vec0name'`).
+6. **Sequential parameter blocks** (Math Mix *Combine* blocks, Map page blocks, Uniform blocks…) use a 0-based block suffix: `'Operation[0]'`, `'Scope A[0]'`, `'Operation[1]'`… Block 0 can also be written without the suffix.
+7. Don't state default values, exact point counts, or exact visual results you can't verify. Prefer "try values around…", "roughly".
+8. Removed operators (e.g. Line Thick POP, GLSL Create POP) must not be used. The validator enforces this.
+9. Run `npm run validate -- --lesson <slug>` until it reports **0 errors and 0 warnings**, and `npx tsc --noEmit` until clean.
 
 ## Lesson file
 
