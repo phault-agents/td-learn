@@ -1,0 +1,30 @@
+{
+  "name": "td-learning",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Interactive TouchDesigner course with POP-first lessons and follow-along network graphs.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run gen && tsc --noEmit && vite build",
+    "gen": "tsx scripts/gen-ops.ts",
+    "validate": "tsx scripts/validate-content.ts",
+    "typecheck": "tsc --noEmit",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "highlight.js": "^11.11.1",
+    "marked": "^15.0.12",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@vitejs/plugin-react": "^5.2.0",
+    "tsx": "^4.20.0",
+    "typescript": "~5.9.3",
+    "vite": "^7.3.7"
+  }
+}
