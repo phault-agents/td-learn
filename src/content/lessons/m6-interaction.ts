@@ -565,7 +565,7 @@ Because everything downstream reads \`cursor\`, \`midi_ctrl\` and \`osc_ctrl\`, 
         'Toggling means "flip the current state" — the CHOP Execute DAT can read the current index and write the opposite.',
       ],
       solution:
-        'Add a [[Bloom TOP]] after `render1` and a Switch TOP `look` with inputs `render1` and the bloom; point `out1` at `look`. Add `B` to a second Keyboard In CHOP (or extend the first one\'s *Keys* to `1 2 3 b` and check `channel.index == 3`). In its CHOP Execute `onOffToOn`: `s = op(\'look\').par.index; s.val = 1 - int(s.eval())`.',
+        'Add a [[Bloom TOP]] after `render1` and a Switch TOP `look` with inputs `render1` and the bloom, and wire `look` into `out1`. Create a second Keyboard In CHOP with only **B** in its *Keys* (pick it from the menu next to the field) and a second CHOP Execute DAT watching it. In its `onOffToOn`: `s = op(\'look\').par.index` then `s.val = 1 - int(s.eval())`. Keeping B in its own CHOP means the layout keys\' channel indices don\'t change.',
     },
     {
       kind: 'challenge',
@@ -573,10 +573,10 @@ Because everything downstream reads \`cursor\`, \`midi_ctrl\` and \`osc_ctrl\`, 
       md: 'In an installation, nobody may touch the mouse for minutes. Make the cursor drift slowly by itself when the mouse hasn\'t moved for 10 seconds, and hand control back the moment someone moves it.',
       hints: [
         'You need two things: a wandering position (an [[LFO CHOP]] or [[Noise CHOP]] in world units) and a 0–1 "someone is here" signal.',
-        'The [[Slope CHOP]] gives speed; a [[Trigger CHOP]] with a long sustain or a [[Lag CHOP]] with a long fall time can turn movement into a presence value that fades after 10 s.',
+        'The [[Slope CHOP]] turns position into speed. Clamp that into a 0–1 "moving" signal, then give it a fast rise and a very slow fall.',
       ],
       solution:
-        'Make a Noise CHOP with channels `tx ty` scaled to about ±1.5 / ±0.8. From `cursor`, take a Slope CHOP, a Math CHOP set to absolute values (*Channel Pre OP* **Positive**) and *Combine Channels* **Maximum**, then a Lag CHOP with a near-zero rise and a 10-second fall: that is `presence`, 1 while moving and fading to 0 after ten idle seconds. Blend the two positions with a Math CHOP or expressions: `presence * cursor + (1 - presence) * autopilot`, and point the Field POP and Math Mix at the blend instead of `cursor`.',
+        'Make a Noise CHOP `autopilot` with channels `tx ty`, slow and scaled to roughly ±1.5 / ±0.8. From `cursor`, chain a Slope CHOP, a Math CHOP (*Channel Pre OP* **Positive**, *Combine Channels* **Maximum**, a large *Multiply*), a [[Limit CHOP]] clamping to 0–1, and a Lag CHOP with an almost-zero rise and a fall of several seconds. Call the result `presence`: it jumps to 1 as soon as the mouse moves and only drains away after a long idle stretch — tune the fall until "gone" feels like about ten seconds. Then blend: `presence * cursor + (1 - presence) * autopilot` (two Math CHOPs, or expressions per channel), and point the Field POP and Math Mix at the blend instead of `cursor`.',
     },
     {
       kind: 'challenge',

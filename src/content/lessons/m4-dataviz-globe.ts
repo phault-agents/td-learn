@@ -339,18 +339,23 @@ Leave *Angle Units* on **Degrees**. The points now sit on a unit sphere.`,
             nodes: ['mathmix1'],
           },
           {
-            title: 'A graticule and a core',
-            body: `Create a **Geometry COMP** \`geo_globe\` holding a **Sphere POP** \`sphere1\`: *Type* **Grid**, *Grid Connectivity* **Rows and Columns**, *Orientation* **Y Axis**, *Radius* **1**, *Rows* **13**, *Columns* **24**. Give it a **Line MAT** \`linemat1\` (dim blue-grey, width 1.2).
+            title: 'A graticule',
+            body: `Create a **Geometry COMP** \`geo_globe\` holding a **Sphere POP** \`sphere1\`: *Type* **Grid**, *Grid Connectivity* **Rows and Columns**, *Orientation* **Y Axis**, *Radius* **1**, *Rows* **13**, *Columns* **24**.
 
-Create \`geo_core\` holding \`sphere2\`: a **Geodesic** sphere with **Triangles**, *Frequency* **24**, *Radius* **0.985**. Its material comes in the next steps.`,
+Create a **Line MAT** \`linemat1\` (dim blue-grey, *Width Near/Far* **1.2**) and assign it to \`geo_globe\`.`,
             nodes: ['geo_globe', 'sphere1', 'linemat1'],
           },
           {
-            title: 'Core material, camera, render',
-            body: `Create a **Constant MAT** \`constant1\` (near-black) and assign it to \`geo_core\`. Create a **Camera COMP** \`cam1\` at **0, 0, 3.4**, a **Render TOP** \`render1\` with *Geometry* \`geo_core geo_globe\`, and a **Null TOP** \`out1\`.
+            title: 'A solid core',
+            body: `Create \`geo_core\` holding \`sphere2\`: a **Geodesic** Sphere POP with **Triangles**, *Frequency* **24** and *Radius* **0.985**. Create a **Constant MAT** \`constant1\` (near-black) and assign it to \`geo_core\`.`,
+            nodes: ['geo_core', 'sphere2', 'constant1'],
+          },
+          {
+            title: 'Camera and render',
+            body: `Create a **Camera COMP** \`cam1\` at **0, 0, 3.4**, a **Render TOP** \`render1\` with *Geometry* \`geo_core geo_globe\` (anti-aliased, near-black background), and a **Null TOP** \`out1\`.
 
 You should see a dark globe with a fine grid, poles at top and bottom.`,
-            nodes: ['geo_core', 'sphere2', 'constant1'],
+            nodes: ['cam1', 'render1', 'out1'],
           },
           {
             title: 'Encode magnitude',
@@ -377,7 +382,7 @@ Create a **Ramp TOP** \`ramp1\` (*Type* **Horizontal**, a sequential light → d
 * **Reykjavik** and **Anchorage** are near the top.
 
 If something is mirrored, look at blocks 2–5 first.`,
-            focus: ['render1', 'cam1', 'out1'],
+            focus: ['render1', 'geo_spikes'],
           },
           {
             title: 'A slow spin',
@@ -635,7 +640,7 @@ Every minute the feed is re-requested, the tables update, and the spikes follow.
         'For the spike direction, `N` can simply be the constant `0 0 1`.',
       ],
       solution:
-        'Branch from `rerange1` into a second Math Mix: block 0 **A * B** (`1 0 0`, `lon`) → `P`; block 1 **A * B + C** (`0 1 0`, `lat`, `P`) → `P`; block 2 **A * B** (`P`, `0.0111`) → `P` (that\'s 1/90, so the map is 4 × 2 units); block 3 **A** (`0 0 1`) → `N`. Instance the same needle from it in a new Geometry COMP and render through an orthographic camera (*Ortho Width* about 4.5). Every event is now visible at once and lengths are directly comparable — at the cost of stretching areas near the poles.',
+        'Branch from `lookuptex1` (so `h` and `Color` come along) into a second Math Mix: block 0 **A * B** (`1 0 0`, `lon`) → `P`; block 1 **A * B + C** (`0 1 0`, `lat`, `P`) → `P`; block 2 **A * B** (`P`, `0.0111`) → `P` (that\'s 1/90, so the map is 4 × 2 units); block 3 **A** (`0 0 1`) → `N`. Instance the same needle from it in a new Geometry COMP and render through an orthographic camera (*Ortho Width* about 4.5). Every event is now visible at once and lengths are directly comparable — at the cost of stretching areas near the poles.',
     },
     {
       kind: 'challenge',
