@@ -247,7 +247,7 @@ A [[Camera COMP]]'s *View* page sets its *Projection*:
               'Anti-Alias': '8x (Medium)',
               'Background Color': [0, 0, 0, 1],
               'Output Resolution': 'Custom Resolution',
-              Resolution: [1920, 1080],
+              'Common:Resolution': [1920, 1080],
               'Pixel Format': '16-bit float (RGBA)',
             },
             note: 'Two Geometry COMPs, two lights, one camera. Rendered at the output resolution, with more anti-aliasing for the small dots, in **16-bit float** so trails fade smoothly and values above 1 survive into the bloom.',
@@ -259,7 +259,7 @@ A [[Camera COMP]]'s *View* page sets its *Projection*:
             y: 1.9,
             inputs: ['render1'],
             params: { 'Target TOP': { ref: 'comp1' } },
-            note: 'Outputs whatever `comp1` produced on the **previous** frame. Its input (`render1`) supplies the resolution and format, and the starting image after a reset.',
+            note: 'Outputs whatever `comp1` produced on the **previous** frame. Its input (`render1`) sets the resolution and format, and is what it passes through when the feedback is reset or bypassed.',
           },
           {
             id: 'level1',
@@ -441,7 +441,7 @@ Render at the resolution you'll output. Rendering small and scaling up softens e
 
 ## Getting the image out
 
-The [[Window COMP]] is how TouchDesigner drives a screen. Its *Window Operator* names the TOP (or panel) to show, *Opening Size* and *Width*/*Height* set its size, the *Display* and justify settings choose the monitor and position, and *Borders* off gives you a clean full-frame image. **Open as Separate Window** opens it while you keep working; **Open as Perform Window** makes it the project's perform-mode output.
+The [[Window COMP]] is how TouchDesigner drives a screen. Its *Window Operator* names the TOP (or panel) to show, *Opening Size* and *Width*/*Height* set its size, the *Display* and justify settings choose the monitor and position, and *Borders* off gives you a clean full-frame image. **Open as Separate Window** opens it while you keep working; **Open as Perform Window** switches TouchDesigner into perform mode with this window as the output.
 
 Always point outputs at a Null like \`final\`, never at the middle of a chain. When you later package a look like this inside a component (Module 6), you'll end it in an [[Out TOP]] instead: the Out TOP gives the component an output connector, so the finished image can be wired onward like any other TOP.
 `,
@@ -450,7 +450,7 @@ Always point outputs at a Null like \`final\`, never at the middle of a chain. W
       kind: 'callout',
       tone: 'perf',
       title: 'Where the GPU time goes',
-      md: `* **Pixels.** Every TOP in the post chain processes the full 1920 × 1080 image every frame. A few TOPs are cheap; dozens add up. Middle-click a TOP to see its cook time.
+      md: `* **Pixels.** Every TOP in the post chain processes the full 1920 × 1080 image every frame. A few TOPs are cheap; dozens add up. The Probe palette tool and the [[Perform CHOP]] show where the time goes.
 * **Anti-aliasing** multiplies the cost of the render itself, not the post chain.
 * **Level TOP parameters** are turned into a lookup table on the CPU. Animating them rebuilds the table every frame — fine for one, but don't animate dozens.
 * **Float formats** double memory traffic compared to 8-bit. Use them where they matter (render, feedback, glow), and drop to 8-bit at the very end if you're recording or streaming.`,
@@ -459,14 +459,14 @@ Always point outputs at a Null like \`final\`, never at the middle of a chain. W
       kind: 'callout',
       tone: 'warning',
       title: 'When the loop misbehaves',
-      md: 'If trails never fade, check that `level1`\'s *Opacity* is below 1 and that `render1` really is a float format. If the image drifts off-center, look for a *Translate* left in `transform1`. If everything turns white, you probably used **Add** instead of **Maximum** in `comp1`. Pulse the Feedback TOP\'s *Reset Pulse* after any fix.',
+      md: 'If trails never fade, check that `level1`\'s *Opacity* is below 1, that *Pre-Multiply RGB by Alpha* on its Post page is on, and that `render1` really is a float format. If the image drifts off-center, look for a *Translate* left in `transform1`. If everything turns white, you probably used **Add** instead of **Maximum** in `comp1`. Pulse the Feedback TOP\'s *Reset Pulse* after any fix.',
     },
     {
       kind: 'callout',
       tone: 'art',
       title: 'Make it yours',
       md: `* Swap *Maximum* for **Screen** in \`comp1\` for softer, more photographic trails.
-* Give \`transform1\` a *Rotate* of 0.3 for a whirlpool, or a negative scale change (0.995) so trails rush *inward*.
+* Give \`transform1\` a *Rotate* of 0.3 for a whirlpool, or a scale just below 1 (0.995) so trails rush *inward*.
 * Feed the halo's \`Point Near Color\` from a CHOP chain like last lesson's \`pulse\`, so the glow breathes.
 * Put the blob on a [[Constant MAT]] in deep black with only the halo glowing: a silhouette eclipse.`,
     },

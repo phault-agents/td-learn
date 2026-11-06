@@ -242,7 +242,7 @@ Four parameters on the first page decide most of the behaviour:
               },
             ],
             childComments: [
-              { x: 0, y: 1.1, w: 1.6, text: 'Shader inputs: CHOP → uniform, TOP → sampler, DAT → code.' },
+              { x: 3.1, y: 1, w: 1.8, text: 'Shader inputs: CHOP → uniform, TOP → sampler, DAT → code.' },
             ],
           },
           {

@@ -164,7 +164,7 @@ Both are GPU-to-GPU: no pixel ever visits the CPU. The main build uses the first
                 x: 3,
                 y: 0,
                 inputs: ['mathmix1'],
-                params: { Entity: 'Points', 'Attribute[0]': 'lum', 'Function[0]': '<', 'Value[0]': 0.08 },
+                params: { Entity: 'Points', 'Attribute:Attribute[0]': 'lum', 'Function[0]': '<', 'Value[0]': 0.08 },
                 note: 'Removes every point darker than 0.08. On the *Attribute* page, block 0 reads: attribute **`lum`**, function **<**, value **0.08**. Background gone, render cost down.',
               },
               {

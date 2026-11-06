@@ -452,7 +452,7 @@ Color goes through TOP-land on purpose. The [[Lookup TOP]] recolors the whole st
       kind: 'callout',
       tone: 'perf',
       title: 'Cost and resolution',
-      md: 'The simulation costs about pixels × passes × 9 texture reads per frame: here 1024 × 512 × 12, comfortably light for any modern GPU. Halving the resolution makes every feature twice as large relative to the image, cuts the cost per step by four, and lets the pattern fill the image in about half the steps. That's handy while you explore parameters. The two lookups are cheap: one texture read per point each.',
+      md: 'The simulation costs about pixels × passes × 9 texture reads per frame: here 1024 × 512 × 12, comfortably light for any modern GPU. Halving the resolution makes every feature twice as large relative to the image, cuts the cost per step by four, and lets the pattern fill the image in about half the steps. That is handy while you explore parameters. The two lookups are cheap: one texture read per point each.',
     },
     {
       kind: 'callout',

@@ -66,7 +66,7 @@ Derivative's names start with a capital letter. Start yours with a **lowercase**
 
 1. **Explicitly, with the [[Attribute POP]].** You choose a name (a reserved one or your own), a type, a number of components, an initial value — even arrays and matrices. Use it when you want an attribute to exist with a known value before anything writes to it.
 2. **By naming a new output.** Most POPs that compute something have an *Output Attribute Scope* field. Type a name that doesn't exist yet and the POP creates it, picking a sensible type. If you need to control the type yourself, expand the **>>>** button next to the field: *Override Automatic Attribute*, *Attribute Type* and *Components* appear.
-3. **As a side effect.** The [[Normal POP]] writes \`N\`; the Noise POP can output raw \`Noise\`, \`NoiseGradient\` or \`NoiseCurl\`; generators add \`N\` and \`Tex\`. Check the viewer's bottom-left list to see what a node added.
+3. **As a side effect.** The [[Normal POP]] writes \`N\`; the Noise POP can output raw \`Noise\`, \`NoiseGradient\` or \`NoiseCurl\`; generators can add \`N\` and \`Tex\`. Check the viewer's bottom-left list to see what a node added.
 
 ## Choosing components: swizzles
 
@@ -331,7 +331,7 @@ Notice that only steps 4 and 5 change the shape. Everything else is bookkeeping 
                 y: 1.35,
                 inputs: ['limit1'],
                 params: { 'Normals Action': 'Always Compute' },
-                note: 'Rebuilds `N` from the deformed quads. *Always Compute* matters: the grid already arrived with flat, straight-up normals, and the other options would keep them.',
+                note: 'Rebuilds `N` from the deformed quads. *Always Compute* matters: if the grid brought its own flat normals along, the other actions could leave them in place and the lighting would ignore the hills.',
               },
               {
                 id: 'normalize2',
@@ -501,7 +501,7 @@ Append a **Normal POP** \`normal1\` with *Normals Action* **Always Compute**. Co
             title: 'Height as a 0–1 attribute, and a palette',
             body: `Append a **Normalize POP** \`normalize2\`: *Input Attribute Scope* \`P.y\`, *Output Attribute Scope* \`height\`.
 
-Still inside \`geo1\`, create a **Table DAT** \`palette\` with the five columns \`pos r g b a\` and the seven rows shown in the inspector. Then create a **Ramp TOP** \`ramp1\`: *Type* **Horizontal**, *DAT* \`palette\`, and on its Common page *Output Resolution* **Custom Resolution**, *Resolution* **256 × 1**. You should see a thin strip running from sea blue to snow.`,
+Still inside \`geo1\`, create a **Table DAT** \`palette\`: a header row \`pos r g b a\`, then the seven color keys shown in the inspector — the same layout as the keys table a Ramp TOP keeps for its own ramp editor. Then create a **Ramp TOP** \`ramp1\`: *Type* **Horizontal**, *DAT* \`palette\`, and on its Common page *Output Resolution* **Custom Resolution**, *Resolution* **256 × 1**. You should see a thin strip running from sea blue to snow.`,
             nodes: ['normalize2', 'palette', 'ramp1'],
           },
           {

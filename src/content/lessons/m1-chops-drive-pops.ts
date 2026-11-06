@@ -105,6 +105,7 @@ Turn **Time Slice off** (Common page) on a generator like the Noise CHOP and it 
                 params: {
                   CHOP: { ref: 'profile' },
                   'Lookup Index Attribute(s)': '_PointU',
+                  Interpolate: true,
                   'Channel Scope[0]': 'chan1',
                   'From Low[0]': -1,
                   'From High[0]': 1,
@@ -181,7 +182,7 @@ Turn **Time Slice off** (Common page) on a generator like the Noise CHOP and it 
                 x: 1,
                 y: 2.5,
                 inputs: ['lfo1'],
-                params: { Lag: [0.05, 0.9] },
+                params: { Lag: [0.05, 0.9], 'Lag Unit': 'Seconds' },
                 note: 'Rises almost instantly (0.05 s) and falls slowly (0.9 s). The hard square becomes an inhale-and-sigh envelope.',
               },
               {
@@ -319,7 +320,7 @@ End it with a **Null CHOP** named \`profile\`. Its viewer shows one wiggly curve
             title: 'One sample per point',
             body: `Insert a **Lookup Channel POP** \`lookupchannel1\` after \`circle1\`:
 
-* *CHOP* \`profile\`, *Lookup Index Attribute(s)* \`_PointU\`.
+* *CHOP* \`profile\`, *Lookup Index Attribute(s)* \`_PointU\`, *Interpolate* on.
 * In the first *Lookup* block: *Channel Scope* \`chan1\`, *From Low* **−1**, *From High* **1**, *To Low* **0.6**, *To High* **1.4**, *Output Attribute Scope* \`radius\`.
 
 Then insert a **Transform POP** \`transform1\`. On its **Map** page, first block: *Element* \`radius\`, *Target Parameter* **scale (Uniform Scale)**, *Combine Operation* **Multiply**. The circle now wears the noise curve as its outline.`,
@@ -327,7 +328,7 @@ Then insert a **Transform POP** \`transform1\`. On its **Map** page, first block
           },
           {
             title: 'A beat, smoothed',
-            body: `Below the profile chain, create an **LFO CHOP** \`lfo1\` with *Type* **Square** and *Frequency* **0.5**. Append a **Lag CHOP** \`lag1\` with *Lag* **0.05** and **0.9** (rise, fall).
+            body: `Below the profile chain, create an **LFO CHOP** \`lfo1\` with *Type* **Square** and *Frequency* **0.5**. Append a **Lag CHOP** \`lag1\` with *Lag* **0.05** and **0.9** (rise, fall) and its unit menu on **Seconds**.
 
 Put the two viewers side by side: a hard on/off square becomes a quick swell and a long, soft decay.`,
             nodes: ['lfo1', 'lag1'],
@@ -519,7 +520,7 @@ Up in \`/project1\`, set \`geo2\`'s *Material* to \`line1\` and change \`render1
       tone: 'art',
       title: 'Make it yours',
       md: `* Raise \`noise1\`'s *Harmonics* and shorten its *Period* for a nervous, electric outline; lengthen the Lag fall time for a sleepier breath.
-* Replace \`lfo1\` with an \`absTime\`-free source of beats later on — audio analysis in Module 3 slots straight into the \`pulse\` Null.
+* Later, replace \`lfo1\` with real beats: the audio analysis in Module 3 can feed the \`pulse\` Null directly.
 * Copy \`geo1\` a few times, give each copy's \`noise1\` a different *Seed* and a slightly different radius, and you have a set of concentric, independently breathing rings.`,
     },
     {
@@ -531,7 +532,7 @@ Up in \`/project1\`, set \`geo2\`'s *Material* to \`line1\` and change \`render1
         'You don\'t need a second Lookup Channel POP. One POP can run several lookup blocks.',
       ],
       solution:
-        'Add a second block to `lookupchannel1`: *Channel Scope* `chan1`, *From Low* −1, *From High* 1, *To Low* around 0.4, *To High* around 2, *Output Attribute Scope* `LineWidth`. Then on `line1`\'s **Attributes** page set *Line Width Attribute* to `LineWidth`. The per-point value scales the stroke, so wide bulges get heavier lines. Tune the To range by eye — what looks right depends on *Width Near*.',
+        'Add a second block to `lookupchannel1`: *Channel Scope* `chan1`, *From Low* −1, *From High* 1, *To Low* around 0.4, *To High* around 2, *Output Attribute Scope* `LineWidth`. Then on `line1`\'s **Attributes** page set *Line Width Attribute* to `LineWidth`. Each point\'s `LineWidth` now modulates the stroke, so wide bulges get heavier lines. Tune the To range by eye — how the attribute combines with *Width Near* is easiest to judge visually.',
     },
     {
       kind: 'challenge',

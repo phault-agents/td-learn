@@ -329,7 +329,7 @@ export const blurbs: Record<string, OpBlurb> = {
     what: 'Runs your own GLSL compute shader over one attribute class (points, vertices or primitives) to modify or create attributes, with TOPs, CHOPs, uniforms and other POPs available as inputs. It cannot change the number of elements; the [[GLSL Advanced POP]] can.',
   },
   glsladvancedPOP: {
-    what: 'The full-control compute shader POP: one shader can read and write point, vertex and primitive attributes together, run over multiple passes, generate new geometry up to the maximums you set, and publish extra outputs. Use it when the [[GLSL POP]] is too limited.',
+    what: 'The full-control compute shader POP: one shader can read and write point, vertex and primitive attributes together, dispatch once per primitive batch, generate new geometry up to the maximums you set, and publish extra outputs. Use it when the [[GLSL POP]] is too limited.',
   },
   glslcopyPOP: {
     what: 'Makes copies of its input (a set number, or one per template point) and runs your compute shader on each copy, so every copy can be warped or animated differently based on its template point\'s attributes.',
