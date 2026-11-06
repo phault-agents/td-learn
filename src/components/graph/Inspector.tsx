@@ -126,8 +126,32 @@ export function Inspector({ entry, graph, db, built, fresh, onToggleBuilt, onSel
       <div className="insp-scroll">
         {blurb && <p className="insp-blurb" dangerouslySetInnerHTML={{ __html: renderMarkdown(blurb.what, true) }} />}
 
-        {node.note && <div className="insp-note prose prose-sm" dangerouslySetInnerHTML={{ __html: renderMarkdown(node.note) }} />}
 
+        {node.flags && (node.flags.display || node.flags.render || node.flags.bypass) && (
+          <div className="insp-flags">
+            {node.flags.display && <span className="flagtag flag-display">Display flag</span>}
+            {node.flags.render && <span className="flagtag flag-render">Render flag</span>}
+            {node.flags.bypass && <span className="flagtag flag-bypass">Bypassed</span>}
+          </div>
+        )}
+
+        {pages.length > 0 ? (
+          <div className="insp-params">
+            <div className="insp-section-title">Parameters to set</div>
+            {pages.map((pg) => (
+              <div key={pg.page} className="insp-page">
+                <div className="insp-page-name">{pg.page}</div>
+                {pg.rows.map((row) => (
+                  <ParamRow key={row.key} row={row} ids={ids} onSelect={onSelect} />
+                ))}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="insp-small">Defaults are fine for this node — just create it{node.inputs?.length ? ' and wire it up' : ''}.</p>
+        )}
+
+        {node.note && <div className="insp-note prose prose-sm" dangerouslySetInnerHTML={{ __html: renderMarkdown(node.note) }} />}
         {(node.inputs?.some(Boolean) || feeds.length > 0 || referencedBy.length > 0) && (
           <div className="insp-io">
             {node.inputs?.some(Boolean) && (
@@ -163,30 +187,6 @@ export function Inspector({ entry, graph, db, built, fresh, onToggleBuilt, onSel
               </div>
             )}
           </div>
-        )}
-
-        {node.flags && (node.flags.display || node.flags.render || node.flags.bypass) && (
-          <div className="insp-flags">
-            {node.flags.display && <span className="flagtag flag-display">Display flag</span>}
-            {node.flags.render && <span className="flagtag flag-render">Render flag</span>}
-            {node.flags.bypass && <span className="flagtag flag-bypass">Bypassed</span>}
-          </div>
-        )}
-
-        {pages.length > 0 ? (
-          <div className="insp-params">
-            <div className="insp-section-title">Parameters to set</div>
-            {pages.map((pg) => (
-              <div key={pg.page} className="insp-page">
-                <div className="insp-page-name">{pg.page}</div>
-                {pg.rows.map((row) => (
-                  <ParamRow key={row.key} row={row} ids={ids} onSelect={onSelect} />
-                ))}
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="insp-small">Defaults are fine for this node — just create it{node.inputs?.length ? ' and wire it up' : ''}.</p>
         )}
 
         {node.code && (

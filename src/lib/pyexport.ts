@@ -58,6 +58,10 @@ export function buildScript(graph: Graph, db: OpDB, lessonTitle: string): string
   L.push('        problems.append("%s.seq.%s.numBlocks = %d  (%s)" % (o.path, seq, count, e))');
   L.push('');
 
+  const known = new Set<string>();
+  const collect = (nodes: GraphNode[]) => nodes.forEach((n) => (known.add(n.id), n.children && collect(n.children)));
+  collect(graph.nodes);
+
   const emitNetwork = (nodes: GraphNode[], parentVar: string, indent: string) => {
     // create all nodes first
     for (const n of nodes) {
@@ -86,7 +90,7 @@ export function buildScript(graph: Graph, db: OpDB, lessonTitle: string): string
           const s = seqName(r);
           if (s) seqCounts.set(s, Math.max(seqCounts.get(s) || 0, r.block + 1));
         }
-        lines.push(...paramLines(v, r, val, py));
+        lines.push(...paramLines(known, v, r, val, py));
       }
       const seqLines = [...seqCounts].map(([s, c]) => `setseq(${v}, ${py(s)}, ${c})`);
       const body = [...seqLines, ...lines];
@@ -132,6 +136,7 @@ export function buildScript(graph: Graph, db: OpDB, lessonTitle: string): string
 }
 
 function paramLines(
+  known: Set<string>,
   v: string,
   r: NonNullable<ReturnType<typeof resolveParam>>,
   val: ParamValue,
@@ -143,7 +148,15 @@ function paramLines(
     if (p.comps?.length) return p.comps.map((c) => `setexpr(${v}, ${py(pyName(r, c))}, ${py(val.expr)})`);
     return [`setexpr(${v}, ${py(name)}, ${py(val.expr)})`];
   }
-  if (isRef(val)) return [`setp(${v}, ${py(name)}, ${py(val.ref)})`];
+  if (isRef(val)) {
+    // references to nodes created by this script use absolute paths, so they resolve the same
+    // way for COMPs and non-COMPs; anything else (patterns, external paths) is passed through
+    const parts = val.ref.split(/\s+/).filter(Boolean);
+    if (parts.every((p) => known.has(p))) {
+      return [`setp(${v}, ${py(name)}, ' '.join([${parts.map((p) => `made[${py(p)}].path`).join(', ')}]))`];
+    }
+    return [`setp(${v}, ${py(name)}, ${py(val.ref)})`];
+  }
   if (Array.isArray(val)) {
     const comps = p.comps?.length ? p.comps : val.map((_, i) => `${p.name}${i}`);
     return val.map((x, i) =>

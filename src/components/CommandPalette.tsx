@@ -20,7 +20,9 @@ export function CommandPalette({ onClose }: { onClose: () => void }) {
   const [q, setQ] = useState('');
   const [sel, setSel] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
-  useEffect(() => inputRef.current?.focus(), []);
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
 
   const items = useMemo(() => {
     const out: Item[] = [];

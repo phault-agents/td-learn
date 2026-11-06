@@ -5,7 +5,9 @@ import { href } from '../lib/router';
 
 export function Reference({ id }: { id?: string }) {
   const page = REFERENCE.find((r) => r.id === id) ?? REFERENCE[0];
-  useEffect(() => window.scrollTo(0, 0), [page.id]);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [page.id]);
   return (
     <div className="page reference">
       <aside className="ref-nav" aria-label="Reference topics">

@@ -125,7 +125,9 @@ export function NetworkView({ graph, lessonTitle }: Props) {
     return { minX, minY, maxX, maxY };
   }, [placed, comments]);
 
+  const targetRef = useRef<View>(view);
   const animateTo = useCallback((target: View, ms = 380) => {
+    targetRef.current = target;
     if (anim.current) cancelAnimationFrame(anim.current);
     const from = { ...viewRef.current };
     const t0 = performance.now();
@@ -143,10 +145,16 @@ export function NetworkView({ graph, lessonTitle }: Props) {
       const b = bounds();
       const pad = 36;
       const bw = b.maxX - b.minX, bh = b.maxY - b.minY;
-      const k = Math.max(0.28, Math.min(1.05, (size.w - pad * 2) / bw, (size.h - pad * 2) / bh));
-      const target = { k, x: (size.w - bw * k) / 2 - b.minX * k, y: (size.h - bh * k) / 2 - b.minY * k };
+      const narrow = size.w < 600;
+      const k = Math.max(narrow ? 0.42 : 0.28, Math.min(1.05, (size.w - pad * 2) / bw, (size.h - pad * 2) / bh));
+      // when the graph is wider than the view at minimum zoom, start at its left edge (data flows left → right)
+      const x = bw * k > size.w - pad * 2 ? pad - b.minX * k : (size.w - bw * k) / 2 - b.minX * k;
+      const target = { k, x, y: (size.h - bh * k) / 2 - b.minY * k };
       if (animated) animateTo(target);
-      else setView(target);
+      else {
+        targetRef.current = target;
+        setView(target);
+      }
     },
     [bounds, size.w, size.h, animateTo],
   );
@@ -157,11 +165,31 @@ export function NetworkView({ graph, lessonTitle }: Props) {
     firstFit.current = false;
   }, [current, size.w, size.h, full]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // keep the selected node on screen (e.g. when a build step introduces it outside the view)
+  useEffect(() => {
+    if (!selected) return;
+    const p = pos.get(selected);
+    if (!p) return;
+    const id = window.setTimeout(() => {
+      const v = targetRef.current;
+      const pad = 24;
+      const sx = p.x * v.k + v.x, sy = p.y * v.k + v.y;
+      const ex = sx + NODE_W * v.k, ey = sy + NODE_H * v.k;
+      if (sx >= pad && sy >= pad && ex <= size.w - pad && ey <= size.h - pad) return;
+      const cx = size.w / 2 - (p.x + NODE_W / 2) * v.k;
+      const cy = size.h / 2 - (p.y + NODE_H / 2) * v.k;
+      animateTo({ k: v.k, x: cx, y: cy });
+    }, 420);
+    return () => window.clearTimeout(id);
+  }, [selected, pos, size.w, size.h, animateTo]);
+
   const zoomAt = useCallback((factor: number, px: number, py: number) => {
     const v = viewRef.current;
     const k = Math.max(0.2, Math.min(2.4, v.k * factor));
     const f = k / v.k;
-    setView({ k, x: px - (px - v.x) * f, y: py - (py - v.y) * f });
+    const next = { k, x: px - (px - v.x) * f, y: py - (py - v.y) * f };
+    targetRef.current = next;
+    setView(next);
   }, []);
 
   // wheel: zoom with ctrl/cmd (or always when fullscreen); otherwise let the page scroll.
@@ -211,13 +239,19 @@ export function NetworkView({ graph, lessonTitle }: Props) {
     if (pointers.current.size === 1) {
       const dx = e.clientX - d.sx, dy = e.clientY - d.sy;
       if (Math.abs(dx) + Math.abs(dy) > 4) d.moved = true;
-      if (d.moved) setView((v) => ({ ...v, x: d.vx + dx, y: d.vy + dy }));
+      if (d.moved) {
+        const next = { ...viewRef.current, x: d.vx + dx, y: d.vy + dy };
+        targetRef.current = next;
+        setView(next);
+      }
     } else if (pointers.current.size === 2) {
       const [a, b] = [...pointers.current.values()];
       const dist = Math.hypot(a.x - b.x, a.y - b.y);
       const k = Math.max(0.2, Math.min(2.4, (d.k * dist) / (d.dist || 1)));
       const f = k / d.k;
-      setView({ k, x: d.cx - (d.cx - d.vx) * f, y: d.cy - (d.cy - d.vy) * f });
+      const next = { k, x: d.cx - (d.cx - d.vx) * f, y: d.cy - (d.cy - d.vy) * f };
+      targetRef.current = next;
+      setView(next);
     }
   };
   const onPointerUp = (e: React.PointerEvent) => {
@@ -320,13 +354,21 @@ export function NetworkView({ graph, lessonTitle }: Props) {
     const add = (src: string, dst: Placed, label: string) => {
       const s = pos.get(src);
       if (!s || src === dst.node.id) return;
-      const x1 = s.x + NODE_W / 2, y1 = s.y + NODE_H;
-      const x2 = dst.x + NODE_W / 2, y2 = dst.y + NODE_H;
-      const sag = 46 + Math.abs(x2 - x1) * 0.08;
-      const d = `M${x1},${y1} C${x1},${y1 + sag} ${x2},${y2 + sag} ${x2},${y2}`;
+      const c1x = s.x + NODE_W / 2, c1y = s.y + NODE_H / 2;
+      const c2x = dst.x + NODE_W / 2, c2y = dst.y + NODE_H / 2;
+      const dx = c2x - c1x, dy = c2y - c1y;
+      const len = Math.hypot(dx, dy) || 1;
+      const hw = NODE_W / 2 + 6, hh = NODE_H / 2 + 6;
+      const tEdge = Math.min(hw / (Math.abs(dx) || 1e-6), hh / (Math.abs(dy) || 1e-6));
+      const x1 = c1x + dx * tEdge, y1 = c1y + dy * tEdge;
+      const x2 = c2x - dx * tEdge, y2 = c2y - dy * tEdge;
+      // bend sideways a little so references never sit on top of wires
+      const bend = Math.min(60, len * 0.12);
+      const cx = (x1 + x2) / 2 + (-dy / len) * bend, cy = (y1 + y2) / 2 + (dx / len) * bend;
+      const d = `M${x1},${y1} Q${cx},${cy} ${x2},${y2}`;
       const key = `${src}~${dst.node.id}~${label}`;
       if (out.some((o) => o.key === key)) return;
-      out.push({ key, d, color: FAMILY_COLOR[familyOf(s.node.type)], from: src, to: dst.node.id, label, mx: (x1 + x2) / 2, my: (y1 + y2) / 2 + sag * 0.75 });
+      out.push({ key, d, color: FAMILY_COLOR[familyOf(s.node.type)], from: src, to: dst.node.id, label, mx: 0.25 * x1 + 0.5 * cx + 0.25 * x2, my: 0.25 * y1 + 0.5 * cy + 0.25 * y2 });
     };
     for (const p of placed) {
       for (const [k, v] of Object.entries(p.node.params || {})) {
@@ -405,10 +447,10 @@ export function NetworkView({ graph, lessonTitle }: Props) {
           <button className="nv-btn" onClick={() => fit()} title="Fit to view (F)">
             <Icon name="fit" />
           </button>
-          <button className="nv-btn" onClick={() => zoomAt(1 / 1.2, size.w / 2, size.h / 2)} title="Zoom out">
+          <button className="nv-btn nv-zoom" onClick={() => zoomAt(1 / 1.2, size.w / 2, size.h / 2)} title="Zoom out">
             <Icon name="minus" />
           </button>
-          <button className="nv-btn" onClick={() => zoomAt(1.2, size.w / 2, size.h / 2)} title="Zoom in">
+          <button className="nv-btn nv-zoom" onClick={() => zoomAt(1.2, size.w / 2, size.h / 2)} title="Zoom in">
             <Icon name="plus" />
           </button>
           <button className={`nv-btn ${flow ? 'is-on' : ''}`} onClick={() => setFlow(!flow)} title="Animate data flow along wires">
@@ -437,7 +479,7 @@ export function NetworkView({ graph, lessonTitle }: Props) {
           onClick={(e) => {
             if (!drag.current.moved && (e.target as Element).classList.contains('nv-bg')) setSelected(null);
           }}
-          style={{ height: full ? undefined : graph.height ?? 520 }}
+          style={{ ['--h' as string]: `${graph.height ?? 520}px` }}
         >
           <svg className="nv-svg" width="100%" height="100%">
             <defs>
