@@ -20,9 +20,9 @@ const lesson: Lesson = {
     {
       kind: 'md',
       md: `
-Every TouchDesigner project eventually meets the same moment: it runs beautifully on your desk, and then the projector is bigger, the song is louder, the particle count doubles — and the motion starts to stutter. Optimizing at that point is guesswork unless you have numbers.
+Every project eventually runs beautifully on your desk and then stutters on the projector: bigger output, louder song, twice the particles. Optimizing at that point is guesswork unless you have numbers.
 
-This lesson gives you the numbers. You'll build a small **profiling rig** you can paste into any project, learn to tell CPU time from GPU time, and then work through the costs that are specific to a POP-based project: what POPs allocate, which POPs over-allocate, which innocent-looking nodes force the CPU to wait for the GPU, and how render settings multiply everything. The rule for the whole lesson: **measure, change one thing, measure again.**
+This lesson gives you the numbers. You'll build a **profiling rig** you can paste into any project, learn to tell CPU time from GPU time, and then work through the costs specific to POP projects: what POPs allocate, which ones over-allocate, which innocent nodes make the CPU wait for the GPU, and how render settings multiply everything. The rule throughout: **measure, change one thing, measure again.**
 `,
     },
     {
@@ -44,19 +44,14 @@ Think in **milliseconds, not fps**. "We dropped from 60 to 50 fps" hides the use
       md: `
 ## Two processors, one frame
 
-TouchDesigner keeps two very different workers busy. The **CPU** cooks the network: it evaluates expressions, runs CHOPs and DATs and Python, and *prepares* GPU work. The **GPU** executes that work: POP compute shaders, TOP pixel shaders, the Render TOP's drawing. The two run as a pipeline — while the GPU chews on one batch of work, the CPU is already preparing the next — so the slower of the two sets your frame rate. Speeding up the faster one changes nothing.
+The **CPU** cooks the network: expressions, CHOPs, DATs, Python, and the *preparation* of GPU work. The **GPU** executes that work: POP compute shaders, TOP pixel shaders, the Render TOP's drawing. They run as a pipeline — while the GPU works on one batch, the CPU prepares the next — so the slower of the two sets your frame rate. Speeding up the faster one changes nothing. Two quick tests tell you which side you're on:
 
-That gives you two quick bottleneck tests:
-
-* **The resolution test.** Temporarily drop your render and post-processing TOPs to a tiny resolution. If the frame time falls sharply, you were GPU-bound on pixels.
-* **The CPU-load test.** Drop in a [[Hog CHOP]], which deliberately burns CPU time. If the frame rate drops as soon as it runs, the CPU was already the limit; if nothing changes, the GPU is the bottleneck.
+* **Resolution test.** Drop your render and post TOPs to a tiny resolution for a moment. If frame time falls sharply, you were GPU-bound on pixels.
+* **CPU-load test.** Add a [[Hog CHOP]], which deliberately burns CPU time. If the frame rate drops at once, the CPU was already the limit.
 
 ## Nothing cooks unless something asks
 
-TouchDesigner is a *pull* system. An operator cooks only when something downstream wants its data **and** it has a reason to (its inputs, parameters or referenced operators changed, or it is time-dependent). The things that pull are your outputs: a Window COMP, panels on screen, out-devices — and **every open node viewer**. Two consequences matter for performance:
-
-1. A big POP or TOP with its viewer on keeps cooking and drawing even if nothing else uses it. Close viewers you aren't looking at.
-2. A whole branch that nobody requests costs nothing. You can also switch a component's **Cooking flag** off (\`allowCooking\` in Python): its contents keep their memory but stop cooking entirely, which is ideal for a scene you'll need later in the show.
+TouchDesigner is a *pull* system: an operator cooks only when something downstream wants its data and it has a reason to (changed inputs or parameters, or time dependence). Outputs pull — Window COMPs, visible panels, out-devices — and so does **every open node viewer**. So close viewers you aren't using, and remember that a branch nobody requests costs nothing. A component's **Cooking flag** (\`allowCooking\` in Python) goes further: switched off, its contents keep their memory but cook not at all — ideal for a scene you'll need later in the show.
 `,
     },
     {
@@ -74,14 +69,14 @@ TouchDesigner is a *pull* system. An operator cooks only when something downstre
             type: 'geometryCOMP',
             x: 0,
             y: 0,
-            note: 'Stands in for whatever you are profiling — the noise blob from lesson 1.1, a particle system, anything. Its POPs live inside; the rig only needs its name to sum up their cook times.',
+            note: 'Whatever you are profiling — lesson 1.1\'s noise blob, a particle system. The rig only needs its name.',
           },
           {
             id: 'render1',
             type: 'renderTOP',
             x: 1,
             y: 0,
-            note: 'Your scene\'s Render TOP. We read its CPU set-up time, its real GPU time and the texture memory it holds.',
+            note: 'Your scene\'s Render TOP: we read its CPU time, GPU time and texture memory.',
           },
           {
             id: 'out1',
@@ -89,7 +84,7 @@ TouchDesigner is a *pull* system. An operator cooks only when something downstre
             x: 2,
             y: 0,
             inputs: ['render1'],
-            note: 'The image you actually send to the show output. The HUD below is a *copy* of it with text on top, so the numbers never leak into the real output.',
+            note: 'The image sent to the show output. The HUD is a separate copy, so numbers never leak into it.',
           },
           {
             id: 'hud',
@@ -102,7 +97,7 @@ TouchDesigner is a *pull* system. An operator cooks only when something downstre
               'Comp Over Input': true,
               'Background Alpha': 0,
             },
-            note: 'Burns frame time and fps over the image. Show it in a rehearsal monitor window, never in the show output. `.eval()` turns the CHOP channels into plain floats for Python\'s `format()`.',
+            note: 'Burns frame time and fps over the image for a rehearsal monitor. `.eval()` turns channels into plain floats for `format()`.',
           },
           {
             id: 'perform1',
@@ -115,7 +110,7 @@ TouchDesigner is a *pull* system. An operator cooks only when something downstre
               'Dropped Frames': true,
               'GPU Mem Used (MB)': true,
             },
-            note: 'Whole-process health: how many frames were drawn in the last second, how long a frame took, how many were dropped, and how much GPU memory is in use. Turn on only the channels you will read.',
+            note: 'Whole-process health: fps, milliseconds per frame, dropped frames, GPU memory in use. Only turn on what you read.',
           },
           {
             id: 'info_geo',
@@ -127,7 +122,7 @@ TouchDesigner is a *pull* system. An operator cooks only when something downstre
               'Info:Scope': 'children_cpu_cook_time',
               'Children Cook Time': true,
             },
-            note: '*Children Cook Time* adds `children_cpu_cook_time`: the summed CPU time of everything inside `geo1`. Summing has its own cost on big networks, so keep this on a component, not on `/project1`.',
+            note: '*Children Cook Time* adds `children_cpu_cook_time`, the summed CPU time of everything inside `geo1`. Summing costs time too — aim it at a component, not `/project1`.',
           },
           {
             id: 'info_render',
@@ -138,7 +133,7 @@ TouchDesigner is a *pull* system. An operator cooks only when something downstre
               Operator: { ref: 'render1' },
               'Info:Scope': 'cook_time gpu_memory_used',
             },
-            note: '`cook_time` is the Render TOP\'s **CPU** time — mostly preparing draw calls. `gpu_memory_used` is the memory its output texture occupies.',
+            note: '`cook_time` is the Render TOP\'s **CPU** time (preparing draw calls); `gpu_memory_used` is its texture memory.',
           },
           {
             id: 'gputime',
@@ -149,7 +144,7 @@ TouchDesigner is a *pull* system. An operator cooks only when something downstre
               'Name[0]': 'geo_gpu_ms',
               'Name[1]': 'render_gpu_ms',
             },
-            note: 'A holder for the GPU times. Its two values are written every frame by `gpu_exec` — nobody types them.',
+            note: 'Holds the GPU times, written every frame by `gpu_exec`.',
           },
           {
             id: 'gpu_exec',
@@ -170,7 +165,7 @@ def onFrameEnd(frame):
     return
 `,
             },
-            note: '`childrenGPUCookTime` sums the GPU work of every POP inside `geo1`; `gpuCookTime` is the Render TOP\'s own GPU time. `const0value`/`const1value` are the Python names of *Value* in blocks 0 and 1.',
+            note: '`childrenGPUCookTime` sums the GPU work inside `geo1`; `gpuCookTime` is the Render TOP\'s own. `const0value`/`const1value` are *Value* in blocks 0 and 1.',
           },
           {
             id: 'merge1',
@@ -178,7 +173,7 @@ def onFrameEnd(frame):
             x: 1,
             y: 2.9,
             inputs: ['perform1', 'info_geo', 'info_render', 'gputime'],
-            note: 'Collects every number into one CHOP. The channel names don\'t collide, so nothing gets renamed.',
+            note: 'All the numbers in one CHOP; no names collide.',
           },
           {
             id: 'stats',
@@ -186,7 +181,7 @@ def onFrameEnd(frame):
             x: 2,
             y: 2.9,
             inputs: ['merge1'],
-            note: 'The one node everything reads from. Expressions point here, so you can rebuild the rig behind it without breaking them.',
+            note: 'The one node everything reads from, so the rig behind it can change freely.',
           },
           {
             id: 'frametime',
@@ -194,7 +189,7 @@ def onFrameEnd(frame):
             x: 3,
             y: 3.7,
             params: { CHOP: { ref: 'stats' }, 'Channel Names': 'msec' },
-            note: 'Pulls out just the frame time so the trail graph isn\'t squashed by large values like GPU memory in megabytes.',
+            note: 'Just the frame time, so the trail isn\'t squashed by large values like megabytes.',
           },
           {
             id: 'trail1',
@@ -202,7 +197,7 @@ def onFrameEnd(frame):
             x: 4,
             y: 3.7,
             inputs: ['frametime'],
-            note: 'A rolling history of frame time. Spikes — a frame that took 40 ms once every few seconds — are invisible in an fps counter but obvious here.',
+            note: 'Rolling frame-time history. A 40 ms spike every few seconds is invisible in an fps counter, obvious here.',
           },
         ],
         boxes: [
@@ -213,51 +208,37 @@ def onFrameEnd(frame):
         steps: [
           {
             title: 'The scene under test',
-            body: `Open a project to profile — the noise blob from lesson 1.1 is perfect to start with. The rig only relies on three names: a Geometry COMP \`geo1\`, its Render TOP \`render1\`, and a Null TOP \`out1\` after it. Rename yours to match, or adjust the references as you go.
-
-Middle-click \`render1\` and note what the info popup says about its cook time. That's your first measurement.`,
+            body: `Open a project to profile — lesson 1.1's noise blob is a good start. The rig relies on three names: Geometry COMP \`geo1\`, Render TOP \`render1\` and Null TOP \`out1\`. Rename yours to match, or adjust the references. Middle-click \`render1\` and note its cook time: your first measurement.`,
             nodes: ['geo1', 'render1', 'out1'],
           },
           {
             title: 'Process health: the Perform CHOP',
-            body: `Create a **Perform CHOP** \`perform1\`. On its page turn on **Frames per Second**, **Frame Time**, **Dropped Frames** and **GPU Mem Used (MB)**, and leave the rest off — every channel you don't need is noise.
-
-Watch \`msec\`: that's the number to compare with your budget (16.7 ms at 60 fps).`,
+            body: `Create a **Perform CHOP** \`perform1\` and turn on only **Frames per Second**, **Frame Time**, **Dropped Frames** and **GPU Mem Used (MB)**. Watch \`msec\` — the number to compare with your budget.`,
             nodes: ['perform1'],
           },
           {
             title: 'CPU time per operator: Info CHOPs',
-            body: `Create an **Info CHOP** \`info_geo\`, set *Operator* to \`geo1\`, turn on **Children Cook Time** and type \`children_cpu_cook_time\` into *Scope* so only that channel comes out.
-
-Create a second Info CHOP \`info_render\` pointing at \`render1\`, with *Scope* \`cook_time gpu_memory_used\`.`,
+            body: `Create an **Info CHOP** \`info_geo\`: *Operator* \`geo1\`, **Children Cook Time** on, *Scope* \`children_cpu_cook_time\`. A second one, \`info_render\`, points at \`render1\` with *Scope* \`cook_time gpu_memory_used\`.`,
             nodes: ['info_geo', 'info_render'],
           },
           {
             title: 'GPU time needs a line of Python',
-            body: `Info CHOPs report CPU time. GPU time is available as Python members, so we copy it into a CHOP every frame.
-
-Create a **Constant CHOP** \`gputime\` with two channels named \`geo_gpu_ms\` and \`render_gpu_ms\` (add a second block with the **+**). Then create an **Execute DAT** \`gpu_exec\`, turn on **Frame End**, and replace its text with the code shown in the inspector.`,
+            body: `GPU time is only available as Python members, so we copy it into a CHOP each frame. Create a **Constant CHOP** \`gputime\` with channels \`geo_gpu_ms\` and \`render_gpu_ms\`, and an **Execute DAT** \`gpu_exec\` with **Frame End** on and the code from the inspector.`,
             nodes: ['gputime', 'gpu_exec'],
           },
           {
             title: 'One place to read it all',
-            body: `Wire \`perform1\`, \`info_geo\`, \`info_render\` and \`gputime\` into a **Merge CHOP** \`merge1\` and end with a **Null CHOP** \`stats\`.
-
-You now have, side by side: frame time, fps, dropped frames, GPU memory, the CPU time inside \`geo1\`, the Render TOP's CPU time and texture memory, and the GPU times of both.`,
+            body: `Merge \`perform1\`, \`info_geo\`, \`info_render\` and \`gputime\` with a **Merge CHOP** \`merge1\` and end in a **Null CHOP** \`stats\`: every number side by side.`,
             nodes: ['merge1', 'stats'],
           },
           {
             title: 'Watch for spikes',
-            body: `Create a **Select CHOP** \`frametime\`, set *CHOP* to \`stats\` and *Channel Names* to \`msec\`. Feed it into a **Trail CHOP** \`trail1\` and set its *Window Length* to about ten seconds (pick seconds as the unit next to it).
-
-A steady line under your budget is the goal. Regular spikes usually mean something periodic: a Python script on a timer, a file being read, a GPU download.`,
+            body: `A **Select CHOP** \`frametime\` (*CHOP* \`stats\`, *Channel Names* \`msec\`) feeds a **Trail CHOP** \`trail1\` with a *Window Length* of about ten seconds. Aim for a steady line under budget; regular spikes usually mean something periodic — a timed script, a file read, a GPU download.`,
             nodes: ['frametime', 'trail1'],
           },
           {
             title: 'A heads-up display',
-            body: `Create a **Text TOP** \`hud\` and wire \`out1\` into it. On the *Output* page turn on **Comp Over Input**; on the *Color* page set **Background Alpha** to 0. Put *Text* in expression mode and paste the expression from the inspector.
-
-Open \`hud\` in a floating viewer while you work. When you're done profiling, delete the viewer — or the whole HUD — because it costs a Text TOP cook every frame.`,
+            body: `Wire \`out1\` into a **Text TOP** \`hud\`: **Comp Over Input** on (*Output* page), **Background Alpha** 0 (*Color* page), and *Text* as the expression from the inspector. View it in a floating viewer; delete it when done, since it cooks every frame.`,
             nodes: ['hud'],
           },
         ],
@@ -268,24 +249,18 @@ Open \`hud\` in a floating viewer while you work. When you're done profiling, de
       md: `
 ## Reading the rig
 
-Start every investigation with one question: **is \`msec\` over budget, and on which side?**
+Start with one question: **is \`msec\` over budget, and on which side?** If \`geo_gpu_ms\` + \`render_gpu_ms\` (plus post) approaches the budget, reduce work per point and per pixel. If the CPU numbers dominate — \`children_cpu_cook_time\`, Python, many CHOPs — reduce what cooks every frame.
 
-* If \`geo_gpu_ms\` + \`render_gpu_ms\` (plus your post-processing) is close to the budget, the GPU is the limit. Reduce work per point and per pixel.
-* If the CPU numbers dominate — large \`children_cpu_cook_time\`, Python, many CHOPs — the CPU is the limit. Fewer cooks, less Python per frame, fewer operators that cook every frame.
+For POPs and TOPs the **CPU cook time is only the set-up**; the real work shows up as GPU time. A POP chain can look free in CPU terms while eating most of the GPU budget. The middle-click popup shows both for one node; the rig shows both for the scene.
 
-Keep in mind what the numbers mean. For GPU operators (POPs and TOPs) the **CPU cook time is only the set-up**: building and submitting the work. A POP chain can look almost free in CPU terms while it eats most of the GPU budget. The middle-click info popup shows both times for one node; the rig shows both for the whole scene.
-
-### Two built-in tools
-
-* **Probe** lives in the Palette under *Tools*. Drag it into your project (ideally at \`/\`) and toggle it with <kbd>Ctrl</kbd>+<kbd>P</kbd>. It draws your network as stacks of circles coloured by cost, and its menu switches between CPU time, GPU time, CPU memory and GPU memory. It's the fastest way to find *which* node is expensive.
-* The **Performance Monitor** (*Dialogs → Performance Monitor*, <kbd>Alt</kbd>+<kbd>Y</kbd>) lists everything that cooked in a frame, in order, with timings. Its *Frame Trigger* field only reports frames slower than a threshold — perfect for catching a spike that happens once a minute.
+Two built-in tools complete the picture. **Probe** (Palette → *Tools*; toggle with <kbd>Ctrl</kbd>+<kbd>P</kbd>) draws your network coloured by CPU time, GPU time or memory — the fastest way to find *which* node is expensive. The **Performance Monitor** (*Dialogs*, <kbd>Alt</kbd>+<kbd>Y</kbd>) lists everything that cooked in a frame, in order; its *Frame Trigger* only reports frames slower than a threshold, perfect for a once-a-minute spike.
 `,
     },
     {
       kind: 'callout',
       tone: 'perf',
       title: 'Measuring changes what you measure',
-      md: 'Probe costs a little time while it is displayed, the Info CHOP\'s *Children Cook Time* has to sum many nodes, and the HUD cooks a Text TOP every frame. Profile with them, then switch them off before you judge the final frame rate. A good habit: keep the rig inside its own Base COMP and turn that component\'s **Cooking flag** off for the show.',
+      md: 'Probe, *Children Cook Time* and the HUD all cost something. Profile with them, then switch them off before judging the final frame rate — keep the rig in its own Base COMP and turn its **Cooking flag** off for the show.',
     },
     {
       kind: 'md',
@@ -294,29 +269,25 @@ Keep in mind what the numbers mean. For GPU operators (POPs and TOPs) the **CPU 
 
 ### Memory: references, not copies
 
-A POP allocates GPU memory only for the attributes it **creates or modifies**; everything else is a reference to the upstream buffer (shown as \`(r)\` in the info popup). So a long chain isn't expensive by itself — what matters is what each node writes.
+A POP allocates GPU memory only for attributes it **creates or modifies**; the rest are references to upstream buffers (\`(r)\` in the info popup). A long chain isn't expensive by itself — what each node *writes* is.
 
-Do the arithmetic once and it sticks. One million points with \`P\` (three 32-bit floats) is 12 MB. A [[Math POP]] that rewrites \`P\` allocates another 12 MB; one that writes a new \`Color\` (four floats) allocates 16 MB. A particle system reserves its attributes for **Maximum Particles**, whether or not they are alive: \`P\`, \`PartVel\` and \`PartForce\` are 12 bytes each, and age, lifespan, mass, drag and id add 4 bytes apiece — over 50 bytes per particle before any of your own attributes. Set *Maximum Particles* to what the piece needs, not to a round number with too many zeros.
+Do the arithmetic once: a million points of \`P\` (three 32-bit floats) is 12 MB. A [[Math POP]] rewriting \`P\` allocates another 12 MB; a new \`Color\` (four floats) 16 MB. A particle system reserves its attributes for **Maximum Particles**, alive or not: \`P\`, \`PartVel\` and \`PartForce\` at 12 bytes each plus age, lifespan, mass, drag and id at 4 bytes — over 50 bytes per particle before your own attributes. Size it to the piece, not to a round number with too many zeros.
 
 ### Indirect POPs and over-allocation
 
-Some operations can't know their output size until the GPU has run them: deleting by a condition ([[Delete POP]]), proximity searches, some facet and convert operations. The info popup of such a POP says **Point Count Info on GPU** and/or **Topology Info on GPU**. Because the CPU doesn't know the real count, the POP allocates for the **maximum it could produce**, and the POPs after it allocate that maximum too, receiving the real counts through GPU buffers ("indirect dispatch"). It works and it's fast, but memory can balloon if a big indirect POP feeds a long chain.
+Some operations only know their output size after the GPU has run them: deleting by a condition ([[Delete POP]]), proximity searches, some facet and convert modes. Their info popup says **Point Count Info on GPU** and/or **Topology Info on GPU**. Such a POP allocates for the **maximum it could produce**, the POPs after it allocate that maximum too, and real counts travel through GPU buffers ("indirect dispatch"). Fast, but memory can balloon when a big indirect POP feeds a long chain. Your options:
 
-You have three tools:
-
-* **Do nothing** when the chain is short — indirect dispatch is designed for this.
-* **[[Topology POP]]** after the indirect POP. If you know an upper bound (say, never more than half the points survive), set smaller maximums on its *Points* and *Topology* pages so everything downstream allocates less — without a stall. If you know the exact counts, you can declare them and the POP becomes a regular one again.
-* **Copy Topology Info Back to CPU** (on the Delete POP and some others) downloads the real counts and turns the result back into a regular POP. Downstream allocation becomes exact, but the download is a GPU→CPU sync — exactly the thing the next section warns about.
+* **Do nothing** when the chain is short — this is what indirect dispatch is for.
+* Add a **[[Topology POP]]**. If you know an upper bound (say, at most half the points survive), set smaller maximums on its *Points* and *Topology* pages and everything downstream allocates less, with no stall. If you know the exact counts you can declare them, making it a regular POP again.
+* Turn on **Copy Topology Info Back to CPU** (Delete POP and some others): exact allocation downstream, paid for with a GPU→CPU sync — the subject of the next section.
 
 ### GPU→CPU stalls
 
-The GPU usually runs a little behind the CPU: the CPU queues work and moves on. The moment the CPU *needs* a POP's data — a [[POP to CHOP]], a [[POP to DAT]], a Python \`points()\` call, even \`numPoints()\` on an indirect POP — it has to wait until the GPU has finished everything queued so far, then download. The pipeline drains, and you lose the overlap that made the frame fit.
+The GPU runs a little behind the CPU, which queues work and moves on. The moment the CPU *needs* POP data — a [[POP to CHOP]], a [[POP to DAT]], Python \`points()\`, even \`numPoints()\` on an indirect POP — it must wait for the GPU to finish everything queued, then download. The pipeline drains and the overlap that made the frame fit is gone. Accept one frame of latency instead:
 
-The fix is to accept one frame of latency:
-
-* POP to CHOP and POP to DAT have a **Download Type** menu: choose **Next frame (Fast)** instead of *Immediate (Slow)*.
-* The Python methods take \`delayed=True\` and return last frame's result without waiting.
-* If the number is only needed by other GPU work (a bounding box to centre a camera, a maximum to normalize colours), compute it on the GPU with the [[Analyze POP]] and never download it at all.
+* On POP to CHOP / POP to DAT, set **Download Type** to **Next frame (Fast)**.
+* In Python, pass \`delayed=True\` to get last frame's result without waiting.
+* If only GPU work needs the number (a bounding box, a maximum), compute it with the [[Analyze POP]] and never download it.
 `,
     },
     {
@@ -388,7 +359,7 @@ bounds = pop.bounds(delayed=True)`,
                 x: 2,
                 y: 0,
                 inputs: ['box_b', 'noise_b'],
-                note: 'Input 0 is the geometry to copy, input 1 the template points. The output is real geometry: every box\'s points, faces and attributes are allocated and recomputed every frame because the template moves.',
+                note: 'Input 0 is the shape, input 1 the template points. The result is real geometry, reallocated and recomputed every frame because the template moves.',
               },
               {
                 id: 'null_b',
@@ -412,7 +383,7 @@ bounds = pop.bounds(delayed=True)`,
               'Thin Out Range': true,
               'Thin Range Length': 10,
             },
-            note: 'The forgotten debugging table. Even a handful of rows forces the CPU to wait for the GPU every frame while its viewer (or anything else) pulls on it. Switch it to *Next frame (Fast)* — or delete it.',
+            note: 'The forgotten debugging table: even ten rows make the CPU wait for the GPU whenever something pulls on it. Use *Next frame (Fast)*, or delete it.',
           },
           {
             id: 'grid_a',
@@ -458,7 +429,7 @@ bounds = pop.bounds(delayed=True)`,
               'Translate Y': 'P(1)',
               'Translate Z': 'P(2)',
             },
-            note: 'One box, drawn once per point of `pts_a`. The GPU receives the box geometry a single time plus a list of positions — nothing is copied or recomputed per box.',
+            note: 'One box drawn once per point of `pts_a`: the GPU gets the box once plus a list of positions.',
             children: [
               {
                 id: 'box_a',
@@ -486,14 +457,14 @@ bounds = pop.bounds(delayed=True)`,
             title: 'Stamp a box on every point',
             body: `Add a **Box POP** \`box_b\` (*Size* **0.012** on all axes, *Normal* **Primitive**) and a **Copy POP** \`copy_b\`. Wire the box into input 0 and \`noise_b\` into input 1. End with a **Null POP** \`null_b\` carrying the render and display flags.
 
-Point \`render1\` at \`geo_before\` and read the rig: GPU time, GPU memory, frame time. Middle-click \`null_b\` to see how much geometry the Copy POP made.`,
+Point \`render1\` at \`geo_before\` and read the rig. Middle-click \`null_b\` to see how much geometry the Copy POP made.`,
             nodes: ['box_b', 'copy_b', 'null_b'],
           },
           {
             title: 'The forgotten debug table',
             body: `Back in \`/project1\`, add a **POP to DAT** \`debug_b\` with *POP* = \`geo_before/noise_b\`, *Download Type* **Immediate (Slow)**, *Thin Out Range* on and *Thin Range Length* **10** — the kind of table you make while debugging and forget to delete.
 
-Turn its viewer on and watch the trail in your rig. Then switch *Download Type* to **Next frame (Fast)** and compare. Finally, delete it.`,
+Turn its viewer on and watch the trail; switch to **Next frame (Fast)** and compare; then delete it.`,
             nodes: ['debug_b'],
           },
           {
@@ -510,9 +481,7 @@ On \`geo_after\`'s **Instance** page turn on **Instancing**, set *Instance Count
           },
           {
             title: 'Measure the difference',
-            body: `Set \`render1\`'s *Geometry* to \`geo_after\` and read the rig again. The image should be the same. Compare GPU memory and the GPU times — the instanced version skips allocating and recomputing every box each frame.
-
-Then turn \`geo_before\`'s **Cooking flag** off: it keeps its memory but costs nothing per frame. Delete it once you are convinced.`,
+            body: `Set \`render1\`'s *Geometry* to \`geo_after\`: same image, but compare GPU memory and GPU time — nothing is allocated or recomputed per box. Then turn \`geo_before\`'s **Cooking flag** off (memory kept, zero cook time) and delete it once convinced.`,
             focus: ['geo_before', 'geo_after'],
           },
         ],
@@ -534,13 +503,13 @@ Then turn \`geo_before\`'s **Cooking flag** off: it keeps its memory but costs n
       md: `
 ## Pixels: resolution, anti-aliasing and formats
 
-Most TOP costs scale with the number of pixels. Halve the width and height and you shade a quarter of the pixels. Three settings deserve a deliberate choice:
+TOP costs mostly scale with pixel count — halve width and height and you shade a quarter of the pixels.
 
-**Resolution.** Render at the size of the output, not bigger "just in case". A 3840 × 2160 render has four times the pixels of 1920 × 1080, and every TOP after it inherits that size unless you change it.
+**Resolution.** Render at the output size, not bigger "just in case": 3840 × 2160 is four times 1920 × 1080, and every TOP after the render inherits it.
 
-**Anti-aliasing.** The Render TOP's *Anti-Alias* renders into a multi-sampled buffer: with **4x**, each pixel stores four samples. Memory and fill cost grow with the sample count, and the buffer must be resolved down every frame. Fine points and thin lines usually look good at 4x or 8x; reach for 16x or 32x only after you've checked the cost in the rig.
+**Anti-aliasing.** *Anti-Alias* renders into a multi-sampled buffer — at **4x**, four samples per pixel — so memory and fill cost grow with the setting. Points and lines usually look fine at 4x or 8x; check the rig before going higher.
 
-**Pixel format.** Every TOP's *Common* page has a *Pixel Format*. The memory per 1920 × 1080 image:
+**Pixel format.** Set on each TOP's *Common* page:
 
 | Pixel format | Bytes per pixel | 1920 × 1080 | 3840 × 2160 |
 |---|---|---|---|
@@ -548,25 +517,24 @@ Most TOP costs scale with the number of pixels. Halve the width and height and y
 | 16-bit float (RGBA) | 8 | ≈ 16.6 MB | ≈ 66 MB |
 | 32-bit float (RGBA) | 16 | ≈ 33 MB | ≈ 133 MB |
 
-8-bit is right for most finished images. Use 16-bit float where precision matters — slow fades in a feedback loop band badly in 8-bit, and data you will read back as numbers needs the range. 32-bit float is rarely needed for colour.
+8-bit suits most finished images. Use 16-bit float where precision matters — slow feedback fades band in 8-bit — and 32-bit float only for data, rarely for colour.
 
 ## Cook only what's needed
 
-* **Close viewers.** Node viewers pull cooks and cost drawing time; a Geometry COMP's viewer draws the scene a second time.
-* **Use Perform Mode** for the real test. It renders only the perform Window COMP, so the network editor's drawing disappears from the measurement.
-* **Turn off what isn't used.** Unused live inputs have *Active* toggles; whole scenes can sit in a component with cooking off until their moment.
-* **Keep per-frame Python small.** An expression that runs every frame is fine; a loop over thousands of items in an Execute DAT is not. Move heavy work into operators, or run it only when something changes.
+* **Close viewers**, and judge the final frame rate in **Perform Mode**, which renders only the perform Window COMP.
+* **Switch off what isn't used**: *Active* toggles on idle inputs, the Cooking flag on idle scenes.
+* **Keep per-frame Python small.** A per-frame expression is fine; a loop over thousands of items in an Execute DAT is not.
 `,
     },
     {
       kind: 'callout',
       tone: 'tip',
       title: 'A five-minute triage',
-      md: `1. Read \`msec\` against the budget. Is there a problem at all?
-2. Resolution test: tiny render → faster? GPU pixels.
+      md: `1. \`msec\` vs budget — is there a problem at all?
+2. Resolution test: tiny render faster? GPU pixels.
 3. Probe on **GPU Time**: which component, which node?
-4. Look for downloads: POP to CHOP/DAT on *Immediate*, Python \`points()\` without \`delayed=True\`, open info popups on indirect POPs.
-5. Middle-click the big POPs: point counts, *allocated vs used*, attributes that aren't \`(r)\`.
+4. Downloads: POP to CHOP/DAT on *Immediate*, \`points()\` without \`delayed=True\`.
+5. Middle-click big POPs: counts, allocated vs used, non-\`(r)\` attributes.
 6. Change **one** thing. Measure again.`,
     },
     {
@@ -590,14 +558,6 @@ Most TOP costs scale with the number of pixels. Halve the width and height and y
       ],
       solution:
         'Change the call to `op(\'pts_a\').points(\'P\', delayed=True)[0]`. The value is one frame old, but the CPU no longer waits for the GPU, so the spike disappears from the trail. (And printing every frame is itself slow — remove the print once you\'ve seen the difference.)',
-    },
-    {
-      kind: 'challenge',
-      title: 'Budget the trails',
-      md: 'A show runs at 3840 × 2160 with a feedback loop of three TOPs (feedback, fade, composite). How much GPU memory do those three images use in *32-bit float (RGBA)*, and how much in *16-bit float (RGBA)*?',
-      hints: ['Pixels × bytes per pixel × number of TOPs. 32-bit float RGBA is 16 bytes per pixel.'],
-      solution:
-        '3840 × 2160 = 8 294 400 pixels. At 16 bytes per pixel that is about 133 MB per TOP, so roughly 400 MB for three. At 16-bit float (8 bytes) it halves to about 66 MB per TOP, roughly 200 MB in total — and 16-bit float is already plenty to keep slow fades from banding.',
     },
     {
       kind: 'quiz',
