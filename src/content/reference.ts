@@ -322,7 +322,7 @@ Click a node to see what it's for and **only the parameters you need to change**
 
 * plain values are typed in as-is; ▾ values are menu choices;
 * **ƒx** values are Python expressions (switch the parameter to expression mode first);
-* linked names are OP references — click them to jump to that node. In TouchDesigner, the easiest way to fill an OP field is to **drag the node onto the parameter**; TouchDesigner writes a path that resolves correctly from that operator (from inside a component it may read \`../pbr1\` rather than \`pbr1\`).
+* linked names are OP references — click them to jump to that node. Paths are written exactly as they resolve in TouchDesigner: relative to the *inside* of the operator that owns the parameter. For most operators a sibling is just \`name\`; for a **component's** own parameters (Material, Look At, Instance OP…) a sibling is \`../name\`. Dragging a node onto a parameter always writes the right path.
 
 Click a parameter's label to reveal its Python name (useful for scripting).
 

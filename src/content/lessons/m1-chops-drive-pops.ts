@@ -79,7 +79,7 @@ Turn **Time Slice off** (Common page) on a generator like the Noise CHOP and it 
             type: 'geometryCOMP',
             x: 0,
             y: 0,
-            params: { Material: { ref: 'line1' } },
+            params: { Material: { ref: '../line1' } },
             note: 'Everything the ring needs lives inside this one component — its geometry *and* the CHOPs that animate it — so you can copy or save it as a unit.',
             children: [
               {
@@ -497,7 +497,7 @@ The Lookup Channel POP decorates points that already exist. The [[CHOP to POP]] 
             title: 'Samples become points',
             body: `Add a **CHOP to POP** \`chopto1\`: *CHOP* \`curve\`, *Connectivity* **Line Strip**, *Channel Scope* \`tx ty tz\`, *Attribute Scope* \`P\`. Append a **Null POP** \`null2\` with display and render on.
 
-Up in \`/project1\`, set \`geo2\`'s *Material* to \`line1\` and change \`render1\`'s *Geometry* to \`geo1 geo2\`.`,
+Up in \`/project1\`, set \`geo2\`'s *Material* to \`../line1\` and change \`render1\`'s *Geometry* to \`geo1 geo2\`.`,
             nodes: ['chopto1', 'null2'],
           },
         ],

@@ -1,6 +1,7 @@
 import type { Graph, GraphNode, ParamValue } from '../content/types';
 import { isExpr, isRef, pyName, resolveParam, seqName, type OpDB } from './opdb';
 import { COL, ROW } from './layout';
+import { lastSeg } from './paths';
 
 /**
  * Generate a TouchDesigner Python script that rebuilds a lesson graph.
@@ -152,8 +153,8 @@ function paramLines(
     // references to nodes created by this script use absolute paths, so they resolve the same
     // way for COMPs and non-COMPs; anything else (patterns, external paths) is passed through
     const parts = val.ref.split(/\s+/).filter(Boolean);
-    if (parts.every((p) => known.has(p))) {
-      return [`setp(${v}, ${py(name)}, ' '.join([${parts.map((p) => `made[${py(p)}].path`).join(', ')}]))`];
+    if (parts.every((p) => known.has(lastSeg(p)) && !/[*?]/.test(p))) {
+      return [`setp(${v}, ${py(name)}, ' '.join([${parts.map((p) => `made[${py(lastSeg(p))}].path`).join(', ')}]))`];
     }
     return [`setp(${v}, ${py(name)}, ${py(val.ref)})`];
   }

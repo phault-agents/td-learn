@@ -5,6 +5,7 @@ import { FAMILY_COLOR } from '../../lib/families';
 import { docsUrl } from '../../lib/opsData';
 import { highlight, renderMarkdown } from '../../lib/markdown';
 import { blurbs } from '../../content';
+import { lastSeg } from '../../lib/paths';
 import { href } from '../../lib/router';
 import { Icon } from '../Icon';
 import { CopyButton } from '../CopyButton';
@@ -95,9 +96,9 @@ export function Inspector({ entry, graph, db, built, fresh, onToggleBuilt, onSel
     .filter((n) =>
       Object.values(n.params || {}).some(
         (v) =>
-          (isRef(v) && v.ref.split(/\s+/).includes(node.id)) ||
-          (isExpr(v) && opsInExpr(v.expr).includes(node.id)) ||
-          (Array.isArray(v) && v.some((c) => typeof c === 'object' && opsInExpr(c.expr).includes(node.id))),
+          (isRef(v) && v.ref.split(/\s+/).map(lastSeg).includes(node.id)) ||
+          (isExpr(v) && opsInExpr(v.expr).map(lastSeg).includes(node.id)) ||
+          (Array.isArray(v) && v.some((c) => typeof c === 'object' && opsInExpr(c.expr).map(lastSeg).includes(node.id))),
       ),
     )
     .map((n) => n.id);
@@ -283,8 +284,8 @@ function Value({ value, isMenu, type, ids, onSelect }: { value: ParamValue; isMe
     return (
       <span className="pv pv-ref">
         {value.ref.split(/\s+/).map((t, i) =>
-          ids.has(t) ? (
-            <button key={i} onClick={() => onSelect(t)} title="Select this node">
+          ids.has(lastSeg(t)) ? (
+            <button key={i} onClick={() => onSelect(lastSeg(t))} title="Select this node">
               {t}
             </button>
           ) : (

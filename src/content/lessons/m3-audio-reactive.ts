@@ -147,7 +147,7 @@ If you later need just a handful of bands as separate numbers, the [[Resample CH
             y: 3.4,
             params: {
               'Xform:Rotate': [0, 0, { expr: 'absTime.seconds * 5' }],
-              Material: { ref: 'linemat1' },
+              Material: { ref: '../linemat1' },
             },
             note: 'Holds the ring. A slow spin around Z (5° per second) keeps the image from feeling static between beats.',
             children: [

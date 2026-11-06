@@ -10,11 +10,12 @@
  *  - steps reference real nodes; [[Op Name]] chips in markdown resolve
  *  - every operator used has a blurb
  */
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { modules, blurbs } from '../src/content/index';
 import type { Block, Graph, GraphNode, Lesson, ParamValue } from '../src/content/types';
+import { buildNetIndex, relPath, resolvePath, lastSeg, type NetIndex } from '../src/lib/paths';
 import {
   familyOf,
   isExpr,
@@ -71,6 +72,23 @@ function flatten(nodes: GraphNode[], parent: string | null, out: Map<string, { n
   }
 }
 
+let netIdx: NetIndex;
+const fixOut = args.includes('--fixes') ? args[args.indexOf('--fixes') + 1] : null;
+const fixes: { where: string; node: string; key: string; from: string; to: string }[] = [];
+
+/** Check that an OP path typed into `node`'s parameter resolves the way TouchDesigner would. */
+function checkPath(where: string, node: GraphNode, key: string, path: string, all: Map<string, { node: GraphNode; parent: string | null }>) {
+  const res = resolvePath(node.id, path, netIdx);
+  if (res.kind !== 'missing') return;
+  const name = lastSeg(path);
+  if (all.has(name)) {
+    if (fixOut) fixes.push({ where, node: node.id, key, from: path, to: relPath(node.id, name, netIdx) });
+    err(where, `${node.id}.${key}: '${path}' does not resolve from ${node.id}${familyOf(node.type) === 'COMP' ? ' (a COMP resolves paths from its inside)' : ''} — use '${relPath(node.id, name, netIdx)}'`);
+  } else if (!path.includes('..')) {
+    warn(where, `${node.id}.${key}: '${path}' is not a node in this graph`);
+  }
+}
+
 function checkValue(where: string, node: GraphNode, key: string, v: ParamValue, all: Map<string, { node: GraphNode; parent: string | null }>) {
   const info = db[node.type];
   if (!info) return;
@@ -87,20 +105,11 @@ function checkValue(where: string, node: GraphNode, key: string, v: ParamValue, 
   if (r.samePage) warn(where, `${node.id}: label '${key}' is used by several parameters on page ${r.page} (${[p.name, ...r.samePage].join(', ')}) — use the Python name as the key`);
   if (r.block !== undefined && !/^[a-z]+?0[a-z]/i.test(p.name)) err(where, `${node.id}: '${key}' uses a [block] index but '${p.label}' is not a sequential-block parameter`);
   if (isExpr(v)) {
-    for (const name of opsInExpr(v.expr)) {
-      if (!all.has(name) && !name.startsWith('/') && !name.includes('*') && !name.includes('.')) {
-        warn(where, `${node.id}.${key}: expression references op('${name}') which is not in the graph`);
-      }
-    }
+    for (const name of opsInExpr(v.expr)) checkPath(where, node, key, name, all);
     return;
   }
   if (isRef(v)) {
-    const targets = v.ref.split(/\s+/).filter(Boolean);
-    for (const t of targets) {
-      if (!all.has(t) && !t.startsWith('/') && !t.includes('*') && !t.startsWith('..') && !t.includes('/')) {
-        warn(where, `${node.id}.${key}: reference '${t}' is not a node in this graph`);
-      }
-    }
+    for (const t of v.ref.split(/\s+/).filter(Boolean)) checkPath(where, node, key, t, all);
     if (!/OP|COMP|TOP|CHOP|SOP|DAT|MAT|POP|Object|Str/i.test(p.type)) {
       warn(where, `${node.id}.${key}: {ref} used on a parameter of type '${p.type}'`);
     }
@@ -120,11 +129,7 @@ function checkValue(where: string, node: GraphNode, key: string, v: ParamValue, 
   if (p.type === 'Toggle' && typeof v !== 'boolean') err(where, `${node.id}.${key}: toggle expects true/false`);
   if (Array.isArray(v)) {
     for (const c of v) {
-      if (typeof c === 'object') {
-        for (const name of opsInExpr(c.expr)) {
-          if (!all.has(name) && !name.startsWith('/')) warn(where, `${node.id}.${key}: expression references op('${name}') which is not in the graph`);
-        }
-      }
+      if (typeof c === 'object') for (const name of opsInExpr(c.expr)) checkPath(where, node, key, name, all);
     }
     const n = p.comps?.length ?? 0;
     if (n && v.length > n) err(where, `${node.id}.${key}: ${v.length} values but parameter has ${n} components`);
@@ -139,6 +144,7 @@ function checkGraph(where0: string, g: Graph) {
   const where = `${where0} graph '${g.id}'`;
   const all = new Map<string, { node: GraphNode; parent: string | null }>();
   flatten(g.nodes, null, all, where);
+  netIdx = buildNetIndex(g.nodes);
   for (const [id, { node, parent }] of all) {
     const info = db[node.type];
     usedOps.add(node.type);
@@ -255,5 +261,6 @@ for (const m of modules) {
 }
 for (const k of Object.keys(blurbs)) if (!db[k]) err('blurbs', `blurb key '${k}' is not a known operator type`);
 
+if (fixOut) writeFileSync(fixOut, JSON.stringify(fixes, null, 1));
 console.log(`\n${errors} error(s), ${warnings} warning(s); ${usedOps.size} operator types used.`);
 process.exit(errors ? 1 : 0);

@@ -349,7 +349,7 @@ bounds = pop.bounds(delayed=True)`,
             type: 'geometryCOMP',
             x: 0,
             y: 0,
-            params: { Material: 'pbr1' },
+            params: { Material: '../pbr1' },
             note: 'The naive version. Uses the material from lesson 1.1 (`pbr1`) — any lit material works.',
             children: [
               {
@@ -450,10 +450,10 @@ bounds = pop.bounds(delayed=True)`,
             x: 3,
             y: 2.6,
             params: {
-              Material: 'pbr1',
+              Material: '../pbr1',
               Instancing: true,
               'Instance Count Mode': 'Instance OP(s) Length',
-              'Default Instance OP': { ref: 'pts_a' },
+              'Default Instance OP': { ref: '../pts_a' },
               'Translate X': 'P(0)',
               'Translate Y': 'P(1)',
               'Translate Z': 'P(2)',
@@ -479,7 +479,7 @@ bounds = pop.bounds(delayed=True)`,
         steps: [
           {
             title: 'A dense point surface',
-            body: `Create a Geometry COMP \`geo_before\` and set its *Material* to your lit material (\`pbr1\` from lesson 1.1). Inside, add a **Grid POP** \`grid_b\`: *Connectivity* **None**, *Size* **4, 4**, *Columns* and *Rows* **300**. Append a **Noise POP** \`noise_b\` with *Type* **Simplex 4D (GPU)**, *Period* **1**, *Amplitude* **0.15** and *Translate 4D* = \`absTime.seconds * 0.2\`.`,
+            body: `Create a Geometry COMP \`geo_before\` and set its *Material* to your lit material — \`../pbr1\` for the PBR MAT from lesson 1.1 (a COMP's own parameters look *inside* the COMP, so siblings need \`../\`). Inside, add a **Grid POP** \`grid_b\`: *Connectivity* **None**, *Size* **4, 4**, *Columns* and *Rows* **300**. Append a **Noise POP** \`noise_b\` with *Type* **Simplex 4D (GPU)**, *Period* **1**, *Amplitude* **0.15** and *Translate 4D* = \`absTime.seconds * 0.2\`.`,
             nodes: ['geo_before', 'grid_b', 'noise_b'],
           },
           {
@@ -505,7 +505,7 @@ Turn its viewer on and watch the trail in your rig. Then switch *Download Type* 
             title: 'Instance one box',
             body: `Create a Geometry COMP \`geo_after\` (same *Material*). Inside, a **Box POP** \`box_a\` like \`box_b\`, with render and display flags on.
 
-On \`geo_after\`'s **Instance** page turn on **Instancing**, set *Instance Count Mode* to **Instance OP(s) Length**, drag \`pts_a\` onto *Default Instance OP*, and choose \`P(0)\`, \`P(1)\`, \`P(2)\` for *Translate X/Y/Z* from their drop-down menus.`,
+On \`geo_after\`'s **Instance** page turn on **Instancing**, set *Instance Count Mode* to **Instance OP(s) Length**, drag \`pts_a\` onto *Default Instance OP* (it reads \`../pts_a\`), and choose \`P(0)\`, \`P(1)\`, \`P(2)\` for *Translate X/Y/Z* from their drop-down menus.`,
             nodes: ['geo_after', 'box_a'],
           },
           {

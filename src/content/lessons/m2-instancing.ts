@@ -75,7 +75,7 @@ Each group also has its own OP field (*Translate OP*, *Scale OP*, *Color OP*…)
               R: 'Color(0)',
               G: 'Color(1)',
               B: 'Color(2)',
-              Material: { ref: 'pbr1' },
+              Material: { ref: '../pbr1' },
               'Xform:Rotate': [0, { expr: 'absTime.seconds * 6' }, 0],
             },
             note: 'The instancer. *Instance* page: source and per-instance translate/scale. *Instance 2* page: per-instance color. The *Xform* spin turns the whole city as one object.',
@@ -325,7 +325,7 @@ There's one subtlety, and it's a classic. *Rotate to Vector: Order* decides **wh
               'Rotate to Vector X': 'N(0)',
               'Rotate to Vector Y': 'N(1)',
               'Rotate to Vector Z': 'N(2)',
-              Material: { ref: 'pbr2' },
+              Material: { ref: '../pbr2' },
             },
             note: 'Same idea as geo1, plus *Rotate to Vector* from `N` on the Instance 2 page, applied **Pre-Rot** so the height scale happens along each tower\'s own axis.',
             children: [

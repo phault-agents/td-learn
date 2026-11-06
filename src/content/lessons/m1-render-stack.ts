@@ -97,7 +97,7 @@ A [[Camera COMP]]'s *View* page sets its *Projection*:
             y: 0,
             params: {
               'Xform:Rotate': [0, { expr: 'absTime.seconds * 12' }, 0],
-              Material: { ref: 'pbr1' },
+              Material: { ref: '../pbr1' },
             },
             note: 'The blob from lesson 1.1, unchanged except for its material.',
             children: [
@@ -149,7 +149,7 @@ A [[Camera COMP]]'s *View* page sets its *Projection*:
             type: 'geometryCOMP',
             x: 0,
             y: 1.3,
-            params: { 'Xform:Rotate': [20, 0, -12], Material: { ref: 'line1' } },
+            params: { 'Xform:Rotate': [20, 0, -12], Material: { ref: '../line1' } },
             note: 'A second renderable object with its own material. Its *Rotate* tilts the halo so it reads as a ring in perspective rather than a flat line.',
             children: [
               {
@@ -216,7 +216,7 @@ A [[Camera COMP]]'s *View* page sets its *Projection*:
             type: 'cameraCOMP',
             x: 0,
             y: 2.6,
-            params: { 'Xform:Translate': [0, 0.6, 5.2], 'Look At': { ref: 'geo1' }, 'FOV Angle': 38 },
+            params: { 'Xform:Translate': [0, 0.6, 5.2], 'Look At': { ref: '../geo1' }, 'FOV Angle': 38 },
             note: 'Slightly above the blob and aimed at it with *Look At*. A narrower field of view than usual flattens the perspective a little, like a longer lens.',
           },
           {
@@ -320,7 +320,7 @@ A [[Camera COMP]]'s *View* page sets its *Projection*:
             x: 8,
             y: 1.9,
             params: {
-              'Window Operator': { ref: 'final' },
+              'Window Operator': { ref: '../final' },
               Title: 'Render Stack',
               'Opening Size': 'Custom',
               Width: 1920,
@@ -368,7 +368,7 @@ Yes, colors above 1 are allowed — they'll matter in a minute.`,
           },
           {
             title: 'One camera, two objects',
-            body: `Create a **Camera COMP** \`cam1\`: *Translate* **0, 0.6, 5.2**, *Look At* \`geo1\`, and on the View page *FOV Angle* **38**.
+            body: `Create a **Camera COMP** \`cam1\`: *Translate* **0, 0.6, 5.2**, *Look At* \`../geo1\`, and on the View page *FOV Angle* **38**.
 
 Create a **Render TOP** \`render1\`: *Camera(s)* \`cam1\`, *Geometry* \`geo1 geo2\`, *Lights* \`light1 envlight1\`, *Anti-Alias* **8x (Medium)**, black background. On its Common page set *Output Resolution* **Custom Resolution**, *Resolution* **1920 × 1080** and *Pixel Format* **16-bit float (RGBA)**.
 
@@ -400,7 +400,7 @@ Compare \`comp1\` and \`bloom1\` side by side: the near halo dots, brighter than
           },
           {
             title: 'Out to a window',
-            body: `Create a **Window COMP** \`window1\`: *Window Operator* \`final\`, *Title* \`Render Stack\`, *Opening Size* **Custom**, *Width* **1920**, *Height* **1080**, *Borders* off.
+            body: `Create a **Window COMP** \`window1\`: *Window Operator* \`../final\`, *Title* \`Render Stack\`, *Opening Size* **Custom**, *Width* **1920**, *Height* **1080**, *Borders* off.
 
 On its Open/Close page pulse **Open as Separate Window**. Close it with the same page's *Close* pulse (or <kbd>Esc</kbd> if *Close on Escape Key* is on).`,
             nodes: ['window1'],

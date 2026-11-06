@@ -133,7 +133,7 @@ Four parameters on the first page decide most of the behaviour:
             y: 0,
             params: {
               'Xform:Rotate': [0, { expr: 'absTime.seconds * 8' }, 0],
-              Material: { ref: 'pbr1' },
+              Material: { ref: '../pbr1' },
             },
             note: 'The renderable container. A slow turntable spin on *Rotate Y* shows the twist from every side.',
             children: [

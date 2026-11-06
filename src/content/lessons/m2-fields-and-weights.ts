@@ -64,7 +64,7 @@ Both outputs are just attributes. The text field to the right of each toggle nam
             type: 'geometryCOMP',
             x: 0,
             y: 0,
-            params: { Material: { ref: 'pbr1' } },
+            params: { Material: { ref: '../pbr1' } },
             note: 'Holds the whole field chain. Only `null1` inside has render/display flags.',
             children: [
               {
@@ -345,7 +345,7 @@ This third approach is the most transparent, so it's what the next build uses: a
             type: 'geometryCOMP',
             x: 0,
             y: 0,
-            params: { Material: { ref: 'linemat1' } },
+            params: { Material: { ref: '../linemat1' } },
             note: 'A second object: a 3D lattice of point primitives, rendered as dots by the Line MAT.',
             children: [
               {

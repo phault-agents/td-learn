@@ -2,6 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } fr
 import type { Graph, GraphNode } from '../../content/types';
 import { COL, NODE_H, NODE_W, ROW, placeNodes, type Placed } from '../../lib/layout';
 import { familyOf, isExpr, isRef, opsInExpr } from '../../lib/opdb';
+import { lastSeg } from '../../lib/paths';
 import { FAMILY_COLOR } from '../../lib/families';
 import { useOps } from '../../lib/opsData';
 import { progress, useProgress } from '../../lib/progress';
@@ -351,7 +352,8 @@ export function NetworkView({ graph, lessonTitle }: Props) {
 
   const refLinks = useMemo(() => {
     const out: { key: string; d: string; color: string; from: string; to: string; label: string; mx: number; my: number }[] = [];
-    const add = (src: string, dst: Placed, label: string) => {
+    const add = (path: string, dst: Placed, label: string) => {
+      const src = lastSeg(path);
       const s = pos.get(src);
       if (!s || src === dst.node.id) return;
       const c1x = s.x + NODE_W / 2, c1y = s.y + NODE_H / 2;

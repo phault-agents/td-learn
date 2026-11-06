@@ -102,6 +102,7 @@ Conventions:
 * **Name nodes like TouchDesigner would** (`noise1`, `lfo1`, `geo1`) unless a descriptive name genuinely helps (`spectrum`, `emitter`, `final`). Expressions reference names, so they must match.
 * End chains in **Null** operators; put render/display flags on the Null POP inside a Geometry COMP.
 * Layout: data flows left→right. Keep the root network compact: a Geometry COMP with its POPs inside (`children`), cameras/lights/materials below, render + post to the right. Avoid overlapping nodes (one node per grid cell).
+* **Paths resolve from the inside of the operator that owns the parameter** (as in TouchDesigner). Non-COMP operators: a sibling is `'name'`, a node one level up is `'../name'`. A **COMP's own parameters** (Material, Look At, Default Instance OP, Window Operator, expressions on its Xform…) resolve from *inside* the COMP: a sibling is `'../name'`, a child is `'name'`. The validator checks every path and suggests the right one.
 * **Expressions** that read other operators (`op('lfo1')['chan1']`) automatically draw a dashed reference line — use them instead of CHOP exports.
 * **Every node gets a `note`** explaining its role (1–3 sentences).
 * Steps: each introduces 1–3 nodes. The body says exactly what to create, name, set and wire. Use `focus` to revisit existing nodes. Nodes inside a COMP must be introduced in the same or a later step than the COMP.

@@ -176,7 +176,7 @@ Stage 5 is what makes a show maintainable: swap the mouse for a tracking camera 
             type: 'geometryCOMP',
             x: 5,
             y: 1,
-            params: { Material: { ref: 'line1' } },
+            params: { Material: { ref: '../line1' } },
             note: 'All the POPs. The CHOPs live outside, so the expressions inside use absolute paths like `/project1/cursor` to reach them.',
             children: [
               {
@@ -337,7 +337,7 @@ Stage 5 is what makes a show maintainable: swap the mouse for a tracking camera 
             title: 'An orthographic view',
             body: `In \`/project1\`, create a **Camera COMP** \`cam1\`: *Translate* **0, 0, 5**, and on the *View* page *Projection* **Orthographic**, *Ortho Width* **4**.
 
-Create a **Line MAT** \`line1\` (*Draw Points* on, *Point Type* **Circle**, and *Point Color Attribute* \`Color\` on the *Attributes* page) and assign it to \`geo1\`. Add a **Render TOP** \`render1\` with *Output Resolution* **Custom Resolution** at **1920 × 1080** and *Anti-Alias* **4x**, and a **Null TOP** \`out1\`. The grid should exactly fill the frame.`,
+Create a **Line MAT** \`line1\` (*Draw Points* on, *Point Type* **Circle**, and *Point Color Attribute* \`Color\` on the *Attributes* page) and assign it to \`geo1\` as \`../line1\`. Add a **Render TOP** \`render1\` with *Output Resolution* **Custom Resolution** at **1920 × 1080** and *Anti-Alias* **4x**, and a **Null TOP** \`out1\`. The grid should exactly fill the frame.`,
             nodes: ['cam1', 'line1', 'render1', 'out1'],
           },
           {

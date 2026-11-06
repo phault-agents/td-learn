@@ -87,6 +87,13 @@ for f in sorted(glob.glob(DOCS + '/*.wiki')):
                     p['menuNames'] = [clean(it.get('itemName', '')) for it in items]
                 else:
                     p['comps'] = [clean(it.get('itemName', '')) for it in items]
+            if 'Menu' in p['type'] and 'menu' not in p and re.search(r'unit', p['name'] + ' ' + p['label'], re.I):
+                # unit menus are documented only in prose ("Samples, Frames, or Seconds")
+                summ = clean(ff.get('parSummary', ''))
+                found = [u for u in ('Samples', 'Frames', 'Seconds') if re.search(u, summ, re.I)]
+                if found:
+                    p['menu'] = found
+                    p['menuNames'] = [u.lower() for u in found]
             params.append(p)
         if not params: continue
         if pname in seen: seen[pname]['params'] += params

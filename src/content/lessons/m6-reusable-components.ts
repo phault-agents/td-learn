@@ -204,7 +204,7 @@ That's what a component is for. In this lesson you'll wrap a curl-noise particle
             x: 2,
             y: 0,
             inputs: ['sparks'],
-            params: { Material: { ref: 'line1' } },
+            params: { Material: { ref: '../line1' } },
             note: 'Renders whatever comes out of `sparks`. Keeping rendering outside the component means the same tool can feed a Line MAT here and an instancer somewhere else.',
             children: [
               {
@@ -289,7 +289,7 @@ Create a **Geometry COMP** \`geo1\`, delete its default contents, and inside add
           },
           {
             title: 'Render it',
-            body: `Create a **Line MAT** \`line1\` (*Draw Points* on, *Point Type* **Circle**, a warm *Point Near Color*) and assign it as \`geo1\`'s *Material*. Add a **Camera COMP** \`cam1\` at *Translate* **0, 0, 6**, a **Render TOP** \`render1\` (*Anti-Alias* **4x**, dark background) and a **Null TOP** \`final\`.
+            body: `Create a **Line MAT** \`line1\` (*Draw Points* on, *Point Type* **Circle**, a warm *Point Near Color*) and assign it as \`geo1\`'s *Material* (\`../line1\` — a COMP's parameters look inside the COMP, so a sibling needs \`../\`). Add a **Camera COMP** \`cam1\` at *Translate* **0, 0, 6**, a **Render TOP** \`render1\` (*Anti-Alias* **4x**, dark background) and a **Null TOP** \`final\`.
 
 You should see sparks swirling off the sphere.`,
             nodes: ['line1', 'cam1', 'render1', 'final'],

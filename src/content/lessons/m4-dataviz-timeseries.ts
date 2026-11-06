@@ -112,7 +112,7 @@ The payoff: adding a fourth series is just adding a fourth channel. Nothing in t
             type: 'geometryCOMP',
             x: 5,
             y: 0,
-            params: { Material: { ref: 'linemat1' } },
+            params: { Material: { ref: '../linemat1' } },
             note: 'Holds the whole POP side of the chart. Its material is the Line MAT, which turns line strips into clean, camera-facing strokes.',
             children: [
               {
@@ -244,7 +244,7 @@ The payoff: adding a fourth series is just adding a fourth channel. Nothing in t
             type: 'geometryCOMP',
             x: 6,
             y: 1.2,
-            params: { Material: { ref: 'linemat2' } },
+            params: { Material: { ref: '../linemat2' } },
             note: 'The plot frame and horizontal gridlines, in their own COMP with a quieter Line MAT.',
             children: [
               {
@@ -350,7 +350,7 @@ Inside \`geo_lines\`, append a **Lookup Texture POP** \`lookuptex1\`: *TOP* \`..
             title: 'Mark "now", then style the lines',
             body: `Append a **Math Mix POP** \`mathmix1\`: block 0 *Operation* **A >= B**, *Scope A* \`t\`, *Scope B* \`0.999\`, *Result Scope* \`PointScale\`. End with a **Null POP** \`null_lines\` (render + display on).
 
-At the root, create a **Line MAT** \`linemat1\` and assign it to \`geo_lines\`. *Width Near/Far* **2.5**, *Line Color Attribute* \`Color\`; on the *Point* page turn on **Draw Points**, *Point Type* **Circle**, *Point Size Multiplier* **3**; on *Attributes* set *Point Size Attribute* \`PointScale\` and *Point Color Attribute* \`Color\`.`,
+At the root, create a **Line MAT** \`linemat1\` and assign it to \`geo_lines\` (*Material* \`../linemat1\`). *Width Near/Far* **2.5**, *Line Color Attribute* \`Color\`; on the *Point* page turn on **Draw Points**, *Point Type* **Circle**, *Point Size Multiplier* **3**; on *Attributes* set *Point Size Attribute* \`PointScale\` and *Point Color Attribute* \`Color\`.`,
             nodes: ['mathmix1', 'null_lines', 'linemat1'],
           },
           {
@@ -474,7 +474,7 @@ A chart without numbers is a mood board. The second network adds tick values on 
             type: 'geometryCOMP',
             x: 1,
             y: 0,
-            params: { Material: { ref: 'constant1' } },
+            params: { Material: { ref: '../constant1' } },
             note: 'Labels need solid, unlit fills — a Constant MAT, not the Line MAT.',
             children: [
               {

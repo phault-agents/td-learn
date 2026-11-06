@@ -263,7 +263,7 @@ Notice what the shader *doesn't* do: it never reads the outputs. Every boid read
             params: {
               Instancing: true,
               'Instance Count Mode': 'Instance OP(s) Length',
-              'Default Instance OP': { ref: 'flock' },
+              'Default Instance OP': { ref: '../flock' },
               'Translate X': 'P(0)',
               'Translate Y': 'P(1)',
               'Translate Z': 'P(2)',
@@ -274,7 +274,7 @@ Notice what the shader *doesn't* do: it never reads the outputs. Every boid read
               R: 'Color(0)',
               G: 'Color(1)',
               B: 'Color(2)',
-              Material: { ref: 'pbr1' },
+              Material: { ref: '../pbr1' },
             },
             note: 'One cone per point of `flock`, placed at `P`, turned so its +Z axis follows `vel`, tinted by `Color`.',
             children: [
@@ -311,7 +311,7 @@ Notice what the shader *doesn't* do: it never reads the outputs. Every boid read
             type: 'cameraCOMP',
             x: 7,
             y: 1.4,
-            params: { 'Xform:Translate': [0, 3, 9], 'Look At': { ref: 'geo1' } },
+            params: { 'Xform:Translate': [0, 3, 9], 'Look At': { ref: '../geo1' } },
             note: 'Up and back far enough to see the whole 6 × 3 × 6 box, aimed at its centre.',
           },
           {
@@ -403,14 +403,14 @@ Watch \`flock\`'s viewer. Within a few seconds the random cloud organises into s
           },
           {
             title: 'Instance it along the velocity',
-            body: `On \`geo1\` → **Instance**: *Instancing* on, *Instance Count Mode* **Instance OP(s) Length**, *Default Instance OP* \`flock\`, *Translate X/Y/Z* \`P(0)\` \`P(1)\` \`P(2)\`. Use the menus next to each field: they list the POP's attributes.
+            body: `On \`geo1\` → **Instance**: *Instancing* on, *Instance Count Mode* **Instance OP(s) Length**, *Default Instance OP* \`../flock\`, *Translate X/Y/Z* \`P(0)\` \`P(1)\` \`P(2)\`. Use the menus next to each field: they list the POP's attributes.
 
 On **Instance 2**: *Rotate to Vector: Forward Direction* **+Z**, *Rotate to Vector X/Y/Z* \`vel(0)\` \`vel(1)\` \`vel(2)\`, and *R/G/B* \`Color(0)\` \`Color(1)\` \`Color(2)\`.`,
             focus: ['geo1'],
           },
           {
             title: 'Light and render',
-            body: `At \`/project1\` add **Camera COMP** \`cam1\` (*Translate* **0 3 9**, *Look At* \`geo1\`), **Light COMP** \`light1\` (*Translate* **5 8 6**), **PBR MAT** \`pbr1\` (white, *Roughness* **0.5**) assigned as \`geo1\`'s material, a **Render TOP** \`render1\` and a **Null TOP** \`out1\`.`,
+            body: `At \`/project1\` add **Camera COMP** \`cam1\` (*Translate* **0 3 9**, *Look At* \`../geo1\`), **Light COMP** \`light1\` (*Translate* **5 8 6**), **PBR MAT** \`pbr1\` (white, *Roughness* **0.5**) assigned as \`geo1\`'s material, a **Render TOP** \`render1\` and a **Null TOP** \`out1\`.`,
             nodes: ['cam1', 'light1', 'pbr1', 'render1', 'out1'],
           },
           {

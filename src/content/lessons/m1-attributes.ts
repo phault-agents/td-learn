@@ -239,7 +239,7 @@ Notice that only steps 4 and 5 change the shape. Everything else is bookkeeping 
             y: 0,
             params: {
               'Xform:Rotate': [0, { expr: 'absTime.seconds * 4' }, 0],
-              Material: { ref: 'pbr1' },
+              Material: { ref: '../pbr1' },
             },
             note: 'Holds the whole island network. A very slow turntable spin (4° per second) lets the raking light travel across the slopes.',
             children: [
@@ -412,7 +412,7 @@ Notice that only steps 4 and 5 change the shape. Everything else is bookkeeping 
             type: 'cameraCOMP',
             x: 0,
             y: 1.2,
-            params: { 'Xform:Translate': [0, 2.8, 4.4], 'Look At': { ref: 'geo1' } },
+            params: { 'Xform:Translate': [0, 2.8, 4.4], 'Look At': { ref: '../geo1' } },
             note: 'Raised and pulled back for a three-quarter aerial view. *Look At* keeps it aimed at the island\'s center however you move it.',
           },
           {
@@ -515,7 +515,7 @@ Finish with a **Null POP** \`null1\`, move the display and render flags to it, a
             title: 'Material, camera, light',
             body: `Back in \`/project1\`, create a **PBR MAT** \`pbr1\` with *Base Color* **1, 1, 1** and *Roughness* **0.8**, and assign it on \`geo1\`'s Render page. White base color means the point colors come through unchanged.
 
-Create a **Camera COMP** \`cam1\` (*Translate* **0, 2.8, 4.4**, *Look At* \`geo1\`) and a **Light COMP** \`light1\` (*Translate* **−4, 5, 2**). Give \`geo1\` a slow spin: *Rotate Y* = \`absTime.seconds * 4\`.`,
+Create a **Camera COMP** \`cam1\` (*Translate* **0, 2.8, 4.4**, *Look At* \`../geo1\`) and a **Light COMP** \`light1\` (*Translate* **−4, 5, 2**). Give \`geo1\` a slow spin: *Rotate Y* = \`absTime.seconds * 4\`.`,
             nodes: ['pbr1', 'cam1', 'light1'],
             focus: ['geo1'],
           },

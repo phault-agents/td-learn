@@ -78,7 +78,7 @@ Two rules keep the loop healthy. **Only the Particle POP creates and removes par
             type: 'geometryCOMP',
             x: 0,
             y: 0,
-            params: { Material: { ref: 'linemat1' } },
+            params: { Material: { ref: '../linemat1' } },
             note: 'Holds the whole particle system. Only `null1` is flagged for render.',
             children: [
               {

@@ -101,7 +101,7 @@ Both are GPU-to-GPU: no pixel ever visits the CPU. The main build uses the first
             y: 2.4,
             params: {
               'Xform:Rotate': [0, { expr: 'math.sin(absTime.seconds * 0.4) * 25' }, 0],
-              Material: { ref: 'linemat1' },
+              Material: { ref: '../linemat1' },
             },
             note: 'A gentle ±25° sway reveals the depth — head-on, an extruded image looks almost flat.',
             children: [
