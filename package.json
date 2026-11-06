@@ -5,6 +5,7 @@
   "description": "Interactive TouchDesigner course with POP-first lessons and follow-along network graphs.",
   "type": "module",
   "scripts": {
+    "predev": "npm run gen",
     "dev": "vite",
     "build": "npm run gen && tsc --noEmit && vite build",
     "gen": "tsx scripts/gen-ops.ts",
