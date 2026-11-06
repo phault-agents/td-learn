@@ -276,7 +276,7 @@ On \`geo1\`'s **Instance 2** page: *Color Mode* **Replace**, and *R / G / B* = \
       md: `
 ## What just happened
 
-**The instance source is a spreadsheet.** Middle-click \`city\`: 2304 rows, each with \`P\`, \`Noise\`, \`h01\`, \`Color\` and \`height\`. The Instance pages are a mapping from columns of that spreadsheet onto transform channels. Nothing about instancing knows about noise or cities — any attribute you can compute can drive any channel. Data visualization lessons later in the course use exactly this: rows of a table become points, columns become attributes, attributes become height and color.
+**The instance source is a spreadsheet.** Middle-click \`city\`: 2304 points, each carrying \`P\`, \`Noise\`, \`h01\`, \`Color\` and \`height\` — think of it as a table with one row per point. The Instance pages are a mapping from columns of that spreadsheet onto transform channels. Nothing about instancing knows about noise or cities — any attribute you can compute can drive any channel. Data visualization lessons later in the course use exactly this: rows of a table become points, columns become attributes, attributes become height and color.
 
 **Why the box is lifted.** Instance scale happens around the shape's own origin. A box centred on the origin would grow both up *and* down, sinking half of every building into the ground. Translating the Box POP by half its height puts its base on the origin, so a Y scale of 2.4 makes a tower exactly 2.4 units tall standing on its lot.
 
@@ -427,7 +427,7 @@ On **Instance 2**: *Rotate to Vector X/Y/Z* = \`N(0)\` \`N(1)\` \`N(2)\`, *Forwa
         md: 'The shape exists **once**; the GPU draws it N times with per-instance transform and color. Memory barely grows with the count, and changing the point list updates instantly. But the copies are not geometry you can touch: no POP can bend, noise or delete *parts* of an instance. Best for many rigid objects — particles as meshes, data bars, crowds of props.',
       },
       right: {
-        title: 'Copying ([[Copy POP]])',
+        title: 'Copying (Copy POP)',
         md: 'Creates real geometry: every copy\'s points exist in the output, with the template\'s attributes copied onto them if you ask. Downstream POPs can deform the result as a whole — noise across all copies, twist the entire city, delete half of a building. Costs memory proportional to copies × points. Best when you need to process the copies *after* placing them.',
       },
     },

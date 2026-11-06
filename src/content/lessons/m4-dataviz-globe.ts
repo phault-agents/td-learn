@@ -361,12 +361,12 @@ You should see a dark globe with a fine grid, poles at top and bottom.`,
             title: 'Encode magnitude',
             body: `Back on the data row, append a **ReRange POP** \`rerange1\`: \`mag\` from **0–8** to **0–1** into \`h\`.
 
-Create a **Ramp TOP** \`ramp1\` (*Type* **Horizontal**, a sequential light → dark palette) and append a **Lookup Texture POP** \`lookuptex1\`: *TOP* \`ramp1\`, *Lookup Index Attribute U* \`h\`, *Output Attribute Scope* \`Color\`. End with a **Null POP** \`quakepts\`.`,
+Create a **Ramp TOP** \`ramp1\` (*Type* **Horizontal**, a sequential light → dark palette) and append a **Lookup Texture POP** \`lookuptex1\`: *TOP* \`ramp1\`, *Lookup Index Attribute U* \`h\`, *Output Attribute Scope* \`Color\`.`,
             nodes: ['rerange1', 'ramp1', 'lookuptex1'],
           },
           {
             title: 'Spikes along the normal',
-            body: `Create the **Null POP** \`quakepts\` if you haven't, then a Geometry COMP \`geo_spikes\` holding a **Box POP** \`box1\`: *Size* **0.015, 0.5, 0.015**, *Translate* **0, 0.25, 0**. Material: \`constant1\`.
+            body: `Append a **Null POP** \`quakepts\` to the data row. Then create a Geometry COMP \`geo_spikes\` holding a **Box POP** \`box1\`: *Size* **0.015, 0.5, 0.015**, *Translate* **0, 0.25, 0**. Material: \`constant1\`.
 
 *Instance* page: **Instancing** on, *Instance Count Mode* **Instance OP(s) Length**, drag \`quakepts\` onto *Default Instance OP*, *Translate X/Y/Z* \`P(0)\` \`P(1)\` \`P(2)\`, *Scale Y* \`h\`.
 
@@ -377,11 +377,11 @@ Create a **Ramp TOP** \`ramp1\` (*Type* **Horizontal**, a sequential light → d
             title: 'Check the orientation',
             body: `Add \`geo_spikes\` to the Render TOP's *Geometry*. Before anything spins, check:
 
-* the short spike at **0, 0** is dead centre, facing you;
-* **Tokyo** is right of centre and up (east and north), **Santiago** left and down;
-* **Reykjavik** and **Anchorage** are near the top.
+* the spike at **0, 0** is dead centre, pointing straight at you (so it looks like a dot);
+* **Istanbul** is right of centre and up (east and north), **Reykjavik** near the top, slightly left;
+* **Santiago** and **Lima** are on the left, below the equator; **Kathmandu** is near the right edge.
 
-If something is mirrored, look at blocks 2–5 first.`,
+Tokyo, Jakarta, Wellington, Anchorage and Los Angeles are on the far side for now — the spin in the next step brings them round. If something is mirrored, look at blocks 2–5 first.`,
             focus: ['render1', 'geo_spikes'],
           },
           {

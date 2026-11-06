@@ -234,12 +234,12 @@ Middle-click it: roughly 48 000 points. That density is the "resolution" of ever
             title: 'Drop in a field',
             body: `Append a **Field POP** \`field1\`. Set *Mode* **Sphere** and *Radius* **0.9, 0.9, 0.9**. Leave it at the origin for now.
 
-Middle-click it: there's a new \`Weight\` attribute. Right now it's binary — 1 inside the sphere, 0 outside. Set *Transition Range* to **1** and *Transition Type* to **Smooth Step** to turn the hard edge into a soft falloff. Scrub *Transition Align* between −0.5 and 0.5 to feel how it moves the fade inward or outward, then put it back to 0.`,
+Middle-click it: there's a new \`Weight\` attribute. With *Transition Range* at 0 it's binary — 1 inside the sphere, 0 outside. Set *Transition Range* to **1** and *Transition Type* to **Smooth Step** to turn the hard edge into a soft falloff. Scrub *Transition Align* between −0.5 and 0.5 to feel how it moves the fade inward or outward, then put it back to 0.`,
             nodes: ['field1'],
           },
           {
             title: 'Bend by weight',
-            body: `Append a **Transform POP** \`transform1\`. Set *Translate* to **0, 0.7, 0** — the whole grid jumps up. Now type \`Weight\` into *Weight Attribute* (or pick it from the menu): only the region around the field rises, in a smooth dome.
+            body: `Append a **Transform POP** \`transform1\`. Set *Translate* to **0, 0.7, 0**. With *Weight Attribute* empty, the whole grid jumps up. Now type \`Weight\` into *Weight Attribute* (or pick it from the menu): only the region around the field rises, in a smooth dome.
 
 Append a **Normal POP** \`normal1\` with *Normals Action* **Always Compute** so the new shape gets correct normals.`,
             nodes: ['transform1', 'normal1'],
@@ -262,7 +262,7 @@ Finish with a **Null POP** \`null1\`, render and display flags on.`,
             title: 'Material and render',
             body: `Create a **PBR MAT** \`pbr1\` (*Base Color* white, *Roughness* **0.45**, *Metallic* **0**) and assign it on \`geo1\`'s Render page. Add a **Render TOP** \`render1\` pointing at \`cam1\`, \`geo1\` and \`light1\`, with *Anti-Alias* **4x** and a near-black background, and a **Null TOP** \`out1\` after it.
 
-You should see a dark blue floor with a glowing orange bump in the middle.`,
+You should see a dark blue floor with an orange bump in the middle.`,
             nodes: ['pbr1', 'render1', 'out1'],
           },
           {
