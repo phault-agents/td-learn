@@ -69,8 +69,12 @@ npm run build      # generate data, typecheck, build static site into dist/
 ```
 
 The build is a static, relocatable site (`dist/`), hash-routed — host it anywhere (GitHub Pages,
-Netlify, a file server). `.github/workflows/deploy.yml` publishes it to GitHub Pages on pushes to
-`main` once Pages is enabled with "GitHub Actions" as the source.
+Netlify, a file server). ### GitHub Pages
+
+`.github/workflows/deploy.yml` validates and builds the site on every push, and publishes it to
+GitHub Pages on pushes to the repository's **default branch** (or when run manually from the
+Actions tab). One-time setup: **Settings → Pages → Build and deployment → Source: GitHub
+Actions**. The site is then served at `https://<owner>.github.io/<repo>/`.
 
 ## Content
 
