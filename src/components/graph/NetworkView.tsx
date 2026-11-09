@@ -224,9 +224,18 @@ export function NetworkView({ graph, lessonTitle }: Props) {
   // pointer pan + pinch
   const pointers = useRef(new Map<number, { x: number; y: number }>());
   const drag = useRef({ moved: false, sx: 0, sy: 0, vx: 0, vy: 0, dist: 0, k: 1, cx: 0, cy: 0 });
+  // Capture the pointer only once a press becomes a drag or pinch. Capturing on pointerdown
+  // would retarget the click/dblclick to the canvas, so nodes never received them.
+  const capture = (pointerId: number) => {
+    try {
+      canvasRef.current?.setPointerCapture(pointerId);
+    } catch {
+      /* pointer already released */
+    }
+  };
   const onPointerDown = (e: React.PointerEvent) => {
     if ((e.target as Element).closest('.nv-noplan')) return;
-    (e.currentTarget as Element).setPointerCapture(e.pointerId);
+    if (e.pointerType === 'mouse') pointers.current.clear(); // a mouse is only ever one pointer
     pointers.current.set(e.pointerId, { x: e.clientX, y: e.clientY });
     const v = viewRef.current;
     if (anim.current) cancelAnimationFrame(anim.current);
@@ -236,6 +245,7 @@ export function NetworkView({ graph, lessonTitle }: Props) {
       const [a, b] = [...pointers.current.values()];
       const r = canvasRef.current!.getBoundingClientRect();
       drag.current = { ...drag.current, moved: true, dist: Math.hypot(a.x - b.x, a.y - b.y), k: v.k, vx: v.x, vy: v.y, cx: (a.x + b.x) / 2 - r.left, cy: (a.y + b.y) / 2 - r.top };
+      pointers.current.forEach((_, id) => capture(id));
     }
   };
   const onPointerMove = (e: React.PointerEvent) => {
@@ -244,7 +254,10 @@ export function NetworkView({ graph, lessonTitle }: Props) {
     const d = drag.current;
     if (pointers.current.size === 1) {
       const dx = e.clientX - d.sx, dy = e.clientY - d.sy;
-      if (Math.abs(dx) + Math.abs(dy) > 4) d.moved = true;
+      if (!d.moved && Math.abs(dx) + Math.abs(dy) > 4) {
+        d.moved = true;
+        capture(e.pointerId);
+      }
       if (d.moved) {
         const next = { ...viewRef.current, x: d.vx + dx, y: d.vy + dy };
         targetRef.current = next;
@@ -483,6 +496,10 @@ export function NetworkView({ graph, lessonTitle }: Props) {
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
           onPointerCancel={onPointerUp}
+          onMouseDown={(e) => {
+            // double-clicking a node to dive in shouldn't select text elsewhere on the page
+            if (e.detail > 1) e.preventDefault();
+          }}
           onClick={(e) => {
             if (!drag.current.moved && (e.target as Element).classList.contains('nv-bg')) setSelected(null);
           }}

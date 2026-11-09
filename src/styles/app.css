@@ -1713,12 +1713,23 @@ kbd {
 .nv-full .nv-body {
   flex: 1;
   min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 .nv-full .nv-canvas {
+  flex: 1 1 auto;
   height: auto !important;
+  min-height: 0;
+}
+/* the canvas height comes from flex layout here, so pin the drawing to it explicitly */
+.nv-full .nv-svg {
+  position: absolute;
+  inset: 0;
 }
 
 .nv-toolbar {
+  user-select: none;
+  -webkit-user-select: none;
   display: flex;
   align-items: center;
   gap: 12px;
