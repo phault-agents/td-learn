@@ -5,13 +5,14 @@
  *   npx tsx scripts/opinfo.ts --search lookup     # find operators by name
  *   npx tsx scripts/opinfo.ts --family POP        # list a family
  */
-import { readFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { labelIndex, type OpDB } from '../src/lib/opdb';
+import { labelIndex } from '../src/lib/opdb';
+import { formatDefault } from '../src/lib/defaults';
+import { loadDB } from './lib/load-db';
 
-const here = dirname(fileURLToPath(import.meta.url));
-const db: OpDB = JSON.parse(readFileSync(resolve(here, '../data/opdata.json'), 'utf8'));
+const { db } = loadDB();
+process.stdout.on('error', (e: NodeJS.ErrnoException) => {
+  if (e.code === 'EPIPE') process.exit(0); // output piped into head etc.
+});
 const labels = labelIndex(db);
 const args = process.argv.slice(2);
 
@@ -31,7 +32,8 @@ if (args[0] === '--search') {
       if (pg.page === 'Common' && !args.includes('--common')) { console.log(`  [Common] (${pg.params.length} params, pass --common to show)`); continue; }
       console.log(`  [${pg.page}]`);
       for (const p of pg.params) {
-        let s = `    ${p.label}  (${p.name}, ${p.type})`;
+        const def = formatDefault(p, o.defaults);
+        let s = `    ${p.label}  (${p.name}, ${p.type})${def !== null ? `  default: ${def}` : ''}${p.fromTD ? '  [from TouchDesigner, not in docs]' : ''}`;
         if (p.menu) s += `\n        menu: ${p.menu.map((m) => `${m}`).join(' | ')}`;
         if (p.comps) s += `  comps: ${p.comps.join(',')}`;
         console.log(s);

@@ -15,7 +15,12 @@ export interface ParamInfo {
   menuNames?: string[];
   /** Component python names for multi-value params, e.g. ['tx','ty','tz'] */
   comps?: string[];
+  /** true when the parameter came from the TouchDesigner dump, not the docs */
+  fromTD?: boolean;
 }
+
+/** A parameter's default as recorded from TouchDesigner (constant, or a default expression). */
+export type DefaultValue = string | number | boolean | null | { expr: string };
 
 export interface PageInfo {
   page: string;
@@ -26,6 +31,8 @@ export interface OpInfo {
   label: string;
   family: Family;
   pages: PageInfo[];
+  /** python parameter name → default, from data/td_param_defaults.json when available */
+  defaults?: Record<string, DefaultValue>;
   removed?: boolean;
   experimental?: boolean;
 }

@@ -8,6 +8,11 @@ import { href } from '../lib/router';
 import { Markdown } from '../components/Markdown';
 import { Icon } from '../components/Icon';
 import { NotFound } from './NotFound';
+import { formatDefault } from '../lib/defaults';
+import meta from '../generated/meta.json';
+
+// shape varies with whether data/td_param_defaults.json exists, so don't let TS infer it
+const defaultsMeta = (meta as { defaults: { build: string; version: string } | null }).defaults;
 
 export function OpPage({ type }: { type: string }) {
   const db = useOps();
@@ -53,13 +58,28 @@ export function OpPage({ type }: { type: string }) {
             <p className="dim">No course notes for this operator yet — see its parameters below and the official documentation.</p>
           )}
           <h2 className="op-section">Parameters</h2>
-          <p className="dim op-params-note">Labels as they appear in the parameter dialog, with Python names. Menu options are listed under each menu.</p>
+          <p className="dim op-params-note">
+            Labels as they appear in the parameter dialog, with Python names. Menu options are listed under each menu.
+            {info.defaults && defaultsMeta
+              ? ` Defaults were recorded from TouchDesigner ${defaultsMeta.version} (build ${defaultsMeta.build}).`
+              : ''}
+          </p>
           {info.pages
             .filter((p) => showCommon || p.page !== 'Common')
             .map((pg) => (
               <section key={pg.page} className="op-page">
                 <h3>{pg.page}</h3>
                 <table className="op-params">
+                  {info.defaults && (
+                    <thead>
+                      <tr>
+                        <th>Parameter</th>
+                        <th>Python</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                      </tr>
+                    </thead>
+                  )}
                   <tbody>
                     {pg.params.map((p, i) => (
                       <tr key={p.name + i}>
@@ -69,6 +89,7 @@ export function OpPage({ type }: { type: string }) {
                         </td>
                         <td className="op-p-type">
                           {p.type}
+                          {p.fromTD && <span className="op-p-td" title="Present in TouchDesigner but not described in the official docs">not in docs</span>}
                           {p.menu && (
                             <div className="op-p-menu">
                               {p.menu.map((m, j) => (
@@ -77,6 +98,7 @@ export function OpPage({ type }: { type: string }) {
                             </div>
                           )}
                         </td>
+                        {info.defaults && <td className="op-p-default">{formatDefault(p, info.defaults) ?? ''}</td>}
                       </tr>
                     ))}
                   </tbody>

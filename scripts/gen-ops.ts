@@ -2,7 +2,8 @@
  * Generates src/generated/ops.json: the subset of data/opdata.json shipped to the browser
  * (every POP — for the Atlas — plus every operator used anywhere in the course).
  */
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { writeFileSync, mkdirSync } from 'node:fs';
+import { loadDB } from './lib/load-db';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { modules, blurbs } from '../src/content/index';
@@ -10,7 +11,7 @@ import type { GraphNode } from '../src/content/types';
 import { labelIndex, type OpDB } from '../src/lib/opdb';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const db: OpDB = JSON.parse(readFileSync(resolve(here, '../data/opdata.json'), 'utf8'));
+const { db, stats } = loadDB();
 const labels = labelIndex(db);
 const used = new Set<string>();
 const walk = (nodes: GraphNode[]) => nodes.forEach((n) => { used.add(n.type); if (n.children) walk(n.children); });
@@ -32,4 +33,8 @@ for (const [t, o] of Object.entries(db)) {
 }
 mkdirSync(resolve(here, '../src/generated'), { recursive: true });
 writeFileSync(resolve(here, '../src/generated/ops.json'), JSON.stringify(out));
-console.log(`ops.json: ${Object.keys(out).length} operators (${used.size} referenced by content)`);
+writeFileSync(
+  resolve(here, '../src/generated/meta.json'),
+  JSON.stringify({ defaults: stats ? { build: stats.build, version: stats.version } : null }),
+);
+console.log(`ops.json: ${Object.keys(out).length} operators (${used.size} referenced by content)` + (stats ? `; defaults from TouchDesigner build ${stats.build}` : '; no TouchDesigner defaults file'));

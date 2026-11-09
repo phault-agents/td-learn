@@ -6,6 +6,7 @@ import { docsUrl } from '../../lib/opsData';
 import { highlight, renderMarkdown } from '../../lib/markdown';
 import { blurbs } from '../../content';
 import { lastSeg } from '../../lib/paths';
+import { isDefaultValue } from '../../lib/defaults';
 import { href } from '../../lib/router';
 import { Icon } from '../Icon';
 import { CopyButton } from '../CopyButton';
@@ -27,6 +28,19 @@ interface Row {
   value: ParamValue;
   r: ResolvedParam | null;
   order: number;
+  /** true when the value equals TouchDesigner's default (needs the defaults file) */
+  isDefault: boolean;
+}
+
+function groupByPage(rows: Row[]) {
+  const pages: { page: string; rows: Row[] }[] = [];
+  for (const row of rows) {
+    const page = row.r?.page ?? 'Parameters';
+    const last = pages[pages.length - 1];
+    if (last && last.page === page) last.rows.push(row);
+    else pages.push({ page, rows: [row] });
+  }
+  return pages;
 }
 
 function allNodes(nodes: GraphNode[], out: GraphNode[] = []) {
@@ -58,16 +72,11 @@ export function Inspector({ entry, graph, db, built, fresh, onToggleBuilt, onSel
       const qi = info.pages[pi].params.findIndex((q) => q.name === r.param.name);
       order = pi * 1000 + (r.block ?? 0) * 100 + qi;
     }
-    return { key, value, r, order };
+    return { key, value, r, order, isDefault: isDefaultValue(info, r, value) === true };
   });
   rows.sort((a, b) => a.order - b.order);
-  const pages: { page: string; rows: Row[] }[] = [];
-  for (const row of rows) {
-    const page = row.r?.page ?? 'Parameters';
-    const last = pages[pages.length - 1];
-    if (last && last.page === page) last.rows.push(row);
-    else pages.push({ page, rows: [row] });
-  }
+  const pages = groupByPage(rows.filter((row) => !row.isDefault));
+  const defaultPages = groupByPage(rows.filter((row) => row.isDefault));
 
   const feeds = flat.filter((n) => (n.inputs || []).includes(node.id)).map((n) => n.id);
   const referencedBy = flat
@@ -114,7 +123,7 @@ export function Inspector({ entry, graph, db, built, fresh, onToggleBuilt, onSel
           </div>
         )}
 
-        {pages.length > 0 ? (
+        {pages.length > 0 && (
           <div className="insp-params">
             <div className="insp-section-title">Parameters to set</div>
             {pages.map((pg) => (
@@ -126,8 +135,26 @@ export function Inspector({ entry, graph, db, built, fresh, onToggleBuilt, onSel
               </div>
             ))}
           </div>
-        ) : (
-          <p className="insp-small">Defaults are fine for this node — just create it{node.inputs?.length ? ' and wire it up' : ''}.</p>
+        )}
+        {defaultPages.length > 0 && (
+          <div className="insp-params insp-params-default">
+            <div className="insp-section-title" title="These values match TouchDesigner's defaults. They matter for this lesson, so check them, but there is nothing to change.">
+              Already the default — just check
+            </div>
+            {defaultPages.map((pg) => (
+              <div key={pg.page} className="insp-page">
+                <div className="insp-page-name">{pg.page}</div>
+                {pg.rows.map((row) => (
+                  <ParamRow key={row.key} row={row} ids={ids} onSelect={onSelect} />
+                ))}
+              </div>
+            ))}
+          </div>
+        )}
+        {pages.length === 0 && (
+          <p className="insp-small">
+            {defaultPages.length > 0 ? 'Nothing to change on this node' : 'Defaults are fine for this node'} — just create it{node.inputs?.length ? ' and wire it up' : ''}.
+          </p>
         )}
 
         {node.note && <div className="insp-note prose prose-sm" dangerouslySetInnerHTML={{ __html: renderMarkdown(node.note) }} />}
@@ -236,10 +263,11 @@ function ParamRow({ row, ids, onSelect }: { row: Row; ids: Set<string>; onSelect
   const isMenu = !!(r?.param.menu?.length && /Menu/.test(r.param.type)) && typeof value === 'string';
   const py = r ? `par.${pyName(r)}` : null;
   return (
-    <div className={`pr ${r ? '' : 'is-unknown'}`}>
+    <div className={`pr ${r ? '' : 'is-unknown'} ${row.isDefault ? 'is-default' : ''}`}>
       <div className="pr-label" onClick={() => setShowPy(!showPy)} title={py ? `Python: ${py}` : 'Not found in the parameter database'}>
         {r?.block !== undefined && <span className="pr-block">#{r.block}</span>}
         {label}
+        {row.isDefault && <span className="pr-default">default</span>}
         {showPy && py && <code className="pr-py">{py}</code>}
       </div>
       <div className="pr-value">

@@ -10,9 +10,9 @@
  *  - steps reference real nodes; [[Op Name]] chips in markdown resolve
  *  - every operator used has a blurb
  */
-import { readFileSync, writeFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { writeFileSync } from 'node:fs';
+import { loadDB } from './lib/load-db';
+import { isDefaultValue } from '../src/lib/defaults';
 import { modules, blurbs } from '../src/content/index';
 import type { Block, Graph, GraphNode, Lesson, ParamValue } from '../src/content/types';
 import { buildNetIndex, relPath, resolvePath, lastSeg, type NetIndex } from '../src/lib/paths';
@@ -23,16 +23,16 @@ import {
   labelIndex,
   opsInExpr,
   resolveParam,
-  type OpDB,
 } from '../src/lib/opdb';
 
-const here = dirname(fileURLToPath(import.meta.url));
-const db: OpDB = JSON.parse(readFileSync(resolve(here, '../data/opdata.json'), 'utf8'));
+const { db, stats: defaultStats } = loadDB();
 const labels = labelIndex(db);
 
 const args = process.argv.slice(2);
 const onlyLesson = args.includes('--lesson') ? args[args.indexOf('--lesson') + 1] : null;
 const strict = args.includes('--strict');
+const listDefaults = args.includes('--defaults');
+const atDefault: string[] = [];
 
 let errors = 0;
 let warnings = 0;
@@ -102,6 +102,7 @@ function checkValue(where: string, node: GraphNode, key: string, v: ParamValue, 
     warn(where, `${node.id}: '${key}' exists on pages ${[r.page, ...r.alsoOn].join(', ')} — prefix the page, e.g. '${r.page}:${r.param.label}'`);
   }
   const p = r.param;
+  if (isDefaultValue(info, r, v) === true) atDefault.push(`${where}: ${node.id}.${key}`);
   if (r.samePage) warn(where, `${node.id}: label '${key}' is used by several parameters on page ${r.page} (${[p.name, ...r.samePage].join(', ')}) — use the Python name as the key`);
   if (r.block !== undefined && !/^[a-z]+?0[a-z]/i.test(p.name)) err(where, `${node.id}: '${key}' uses a [block] index but '${p.label}' is not a sequential-block parameter`);
   if (isExpr(v)) {
@@ -276,5 +277,11 @@ for (const m of modules) {
 for (const k of Object.keys(blurbs)) if (!db[k]) err('blurbs', `blurb key '${k}' is not a known operator type`);
 
 if (fixOut) writeFileSync(fixOut, JSON.stringify(fixes, null, 1));
+if (defaultStats) {
+  if (listDefaults) atDefault.forEach((s) => console.log(`  default  ${s}`));
+  console.log(`\nDefaults from TouchDesigner ${defaultStats.version ?? ''} build ${defaultStats.build}: ${atDefault.length} lesson value(s) equal the default${listDefaults ? '' : ' (list them with --defaults)'}.`);
+} else {
+  console.log('\nNo TouchDesigner defaults file (data/td_param_defaults.json) — default values not checked.');
+}
 console.log(`\n${errors} error(s), ${warnings} warning(s); ${usedOps.size} operator types used.`);
 process.exit(errors ? 1 : 0);

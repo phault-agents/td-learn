@@ -84,6 +84,22 @@ Actions**. The site is then served at `https://<owner>.github.io/<repo>/`.
 * Writing guide: [AUTHORING.md](AUTHORING.md).
 * `scripts/opinfo.ts` looks up operators and parameters: `npx tsx scripts/opinfo.ts "Noise POP"`.
 
+## Parameter defaults (from TouchDesigner)
+
+The official docs don't list default values, so they are recorded from TouchDesigner itself:
+
+1. Start a new, empty project in TouchDesigner, create a Text DAT, paste in
+   [`scripts/td/dump_td_defaults.py`](scripts/td/dump_td_defaults.py) and choose **Run Script**.
+2. It writes `td_param_defaults.json` next to the project file. Copy it to
+   `data/td_param_defaults.json`.
+
+When that file exists, the inspector moves lesson values that equal the default into an
+"Already the default — just check" group, the Atlas shows a Default column, TouchDesigner's own
+menu entries replace the docs' (they're more complete), and parameters missing from the docs are
+added. `npm run validate -- --defaults` lists every lesson value that equals its default.
+Re-run the script after a TouchDesigner update; `npm run td-script` regenerates it if the
+operator list changes.
+
 ## Operator database
 
 `data/opdata.json` holds parameter metadata (labels, Python names, types, menu entries — no

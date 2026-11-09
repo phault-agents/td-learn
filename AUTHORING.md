@@ -117,6 +117,13 @@ Every operator type used in a graph needs a blurb (validator warns otherwise). C
 noisePOP: { what: 'One or two sentences in this course\'s voice.', tip: 'Optional practical tip.' },
 ```
 
+## Values that equal the default
+
+List parameters whose value matters to the lesson even when it's the default — the inspector shows
+those under "Already the default — just check" (once `data/td_param_defaults.json` exists). Leave out
+parameters that genuinely don't matter. `npm run validate -- --defaults` lists every value that equals
+its TouchDesigner default so you can decide which to keep.
+
 ## Checks before you're done
 
 ```

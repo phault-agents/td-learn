@@ -11,7 +11,8 @@
     "gen": "tsx scripts/gen-ops.ts",
     "validate": "tsx scripts/validate-content.ts",
     "typecheck": "tsc --noEmit",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "td-script": "tsx scripts/td/make-dump-script.ts"
   },
   "dependencies": {
     "highlight.js": "^11.11.1",
