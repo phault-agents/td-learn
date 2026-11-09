@@ -272,7 +272,7 @@ If you later need just a handful of bands as separate numbers, the [[Resample CH
             y: 4.6,
             params: {
               'Draw Points': true,
-              'Point Type': 'Circle',
+              'Point Type': 'Circle (Polygon)',
               'Width Near': 2,
               'Line Color Attribute': 'Color',
               'Point Color Attribute': 'Color',
@@ -383,7 +383,7 @@ Inside \`geo1\`, append a **Lookup Texture POP** \`lookuptex1\`: *TOP* \`../ramp
           },
           {
             title: 'Render lines and dots',
-            body: `In \`/project1\` create a **Camera COMP** \`cam1\` at *Translate* **0, 0, 4**, and a **Line MAT** \`linemat1\`: on the *Point* page turn on *Draw Points* with *Point Type* **Circle**; on *Setup* set *Width Near* to **2**; on *Attributes* set *Line Color Attribute* and *Point Color Attribute* to \`Color\` and *Point Size Attribute* to \`PointScale\`.
+            body: `In \`/project1\` create a **Camera COMP** \`cam1\` at *Translate* **0, 0, 4**, and a **Line MAT** \`linemat1\`: on the *Point* page turn on *Draw Points* with *Point Type* **Circle (Polygon)**; on *Setup* set *Width Near* to **2**; on *Attributes* set *Line Color Attribute* and *Point Color Attribute* to \`Color\` and *Point Size Attribute* to \`PointScale\`.
 
 Assign \`linemat1\` as \`geo1\`'s *Material*, give \`geo1\` a *Rotate Z* expression of \`absTime.seconds * 5\`, and add a **Render TOP** \`render1\` (camera \`cam1\`, geometry \`geo1\`, *Anti-Alias* **4x**, near-black background).`,
             nodes: ['cam1', 'linemat1', 'render1'],

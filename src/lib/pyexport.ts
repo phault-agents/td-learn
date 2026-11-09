@@ -146,7 +146,7 @@ function paramLines(
   const p = r.param;
   const name = pyName(r);
   if (isExpr(val)) {
-    if (p.comps?.length) return p.comps.map((c) => `setexpr(${v}, ${py(pyName(r, c))}, ${py(val.expr)})`);
+    if (p.comps?.length && !p.sizeable) return p.comps.map((c) => `setexpr(${v}, ${py(pyName(r, c))}, ${py(val.expr)})`);
     return [`setexpr(${v}, ${py(name)}, ${py(val.expr)})`];
   }
   if (isRef(val)) {
@@ -170,7 +170,7 @@ function paramLines(
   }
   if (typeof val === 'boolean') return [`setp(${v}, ${py(name)}, ${val ? 'True' : 'False'})`];
   if (typeof val === 'number') {
-    if (p.comps?.length && !/Menu/.test(p.type)) return p.comps.map((c) => `setp(${v}, ${py(pyName(r, c))}, ${val})`);
+    if (p.comps?.length && !p.sizeable && !/Menu/.test(p.type)) return p.comps.map((c) => `setp(${v}, ${py(pyName(r, c))}, ${val})`);
     return [`setp(${v}, ${py(name)}, ${val})`];
   }
   // string: menu label → menu token

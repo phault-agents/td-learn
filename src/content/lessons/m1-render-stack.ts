@@ -204,7 +204,7 @@ A [[Camera COMP]]'s *View* page sets its *Projection*:
               'Width Far': 1.5,
               'Draw Lines': false,
               'Draw Points': true,
-              'Point Type': 'Circle',
+              'Point Type': 'Circle (Polygon)',
               'Point Near Color': [1.6, 1.1, 0.6],
               'Specify Point Far Color': true,
               'Point Far Color': [0.35, 0.25, 0.5],
@@ -244,7 +244,7 @@ A [[Camera COMP]]'s *View* page sets its *Projection*:
               'Camera(s)': { ref: 'cam1' },
               Geometry: { ref: 'geo1 geo2' },
               Lights: { ref: 'light1 envlight1' },
-              'Anti-Alias': '8x (Medium)',
+              'Anti-Alias': '8x',
               'Background Color': [0, 0, 0, 1],
               'Output Resolution': 'Custom Resolution',
               'Common:Resolution': [1920, 1080],
@@ -361,7 +361,7 @@ Append a **Noise POP** \`noise2\`: *Type* **Simplex 4D (GPU)**, *Period* **0.6**
             body: `End the halo in a **Null POP** \`null2\` with display and render on. In \`/project1\` create a **Line MAT** \`line1\` and assign it to \`geo2\`:
 
 * *Setup* page: *Depth Interpolation Model* **S Curve**, *Distance Near* **3.5**, *Distance Far* **6.5**, *Width Near* **4**, *Width Far* **1.5**.
-* *Line* page: *Draw Lines* off. *Point* page: *Draw Points* on, *Point Type* **Circle**, *Point Near Color* **1.6, 1.1, 0.6**, *Specify Point Far Color* on, *Point Far Color* **0.35, 0.25, 0.5**.
+* *Line* page: *Draw Lines* off. *Point* page: *Draw Points* on, *Point Type* **Circle (Polygon)**, *Point Near Color* **1.6, 1.1, 0.6**, *Specify Point Far Color* on, *Point Far Color* **0.35, 0.25, 0.5**.
 
 Yes, colors above 1 are allowed — they'll matter in a minute.`,
             nodes: ['null2', 'line1'],
@@ -370,7 +370,7 @@ Yes, colors above 1 are allowed — they'll matter in a minute.`,
             title: 'One camera, two objects',
             body: `Create a **Camera COMP** \`cam1\`: *Translate* **0, 0.6, 5.2**, *Look At* \`../geo1\`, and on the View page *FOV Angle* **38**.
 
-Create a **Render TOP** \`render1\`: *Camera(s)* \`cam1\`, *Geometry* \`geo1 geo2\`, *Lights* \`light1 envlight1\`, *Anti-Alias* **8x (Medium)**, black background. On its Common page set *Output Resolution* **Custom Resolution**, *Resolution* **1920 × 1080** and *Pixel Format* **16-bit float (RGBA)**.
+Create a **Render TOP** \`render1\`: *Camera(s)* \`cam1\`, *Geometry* \`geo1 geo2\`, *Lights* \`light1 envlight1\`, *Anti-Alias* **8x**, black background. On its Common page set *Output Resolution* **Custom Resolution**, *Resolution* **1920 × 1080** and *Pixel Format* **16-bit float (RGBA)**.
 
 Both objects in one image, each with its own material.`,
             nodes: ['cam1', 'render1'],

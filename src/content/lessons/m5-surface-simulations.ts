@@ -136,7 +136,7 @@ We store **B in red and A in green**. Red is the first channel, so anything down
                 { expr: '0.3 * math.cos(absTime.seconds * 0.31)' },
               ],
               'Fill Color': [1, 0, 0],
-              'Comp Over Input': true,
+              'Combine with Input': 'Composite and Set Resolution',
               Operation: 'Maximum',
               'Pixel Format': '32-bit float (RGBA)',
             },
@@ -351,7 +351,7 @@ Append a **Feedback TOP** \`feedback1\`. Leave its *Target TOP* empty for now.`,
           },
           {
             title: 'A wandering brush',
-            body: `Append a **Circle TOP** \`brush1\` to \`feedback1\`. Set *Radius* **0.025 0.025**, *Fill Color* **1 0 0**, *Center* X = \`0.35 * math.sin(absTime.seconds * 0.23)\` and Y = \`0.3 * math.cos(absTime.seconds * 0.31)\`. On its **Output** page turn on *Comp Over Input* with *Operation* **Maximum**, and on **Common** set *Pixel Format* **32-bit float (RGBA)**.
+            body: `Append a **Circle TOP** \`brush1\` to \`feedback1\`. Set *Radius* **0.025 0.025**, *Fill Color* **1 0 0**, *Center* X = \`0.35 * math.sin(absTime.seconds * 0.23)\` and Y = \`0.3 * math.cos(absTime.seconds * 0.31)\`. On its **Output** page leave *Combine with Input* on **Composite and Set Resolution** (the default) and set *Operation* **Maximum**, and on **Common** set *Pixel Format* **32-bit float (RGBA)**.
 
 You'll see a red dot drifting over green. That's where B will be injected. If the dot is huge, invisible or leaves the image, check that the *Radius Unit* and *Center Unit* menus are on **F** (fractions of the image).`,
             nodes: ['brush1'],

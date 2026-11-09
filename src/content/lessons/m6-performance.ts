@@ -94,7 +94,7 @@ TouchDesigner is a *pull* system: an operator cooks only when something downstre
             inputs: ['out1'],
             params: {
               Text: { expr: "'{:.2f} ms   {:.0f} fps'.format(op('stats')['msec'].eval(), op('stats')['fps'].eval())" },
-              'Comp Over Input': true,
+              'Combine with Input': 'Composite and Set Resolution',
               'Background Alpha': 0,
             },
             note: 'Burns frame time and fps over the image for a rehearsal monitor. `.eval()` turns channels into plain floats for `format()`.',
@@ -188,7 +188,7 @@ def onFrameEnd(frame):
             type: 'selectCHOP',
             x: 3,
             y: 3.7,
-            params: { CHOP: { ref: 'stats' }, 'Channel Names': 'msec' },
+            params: { CHOPs: { ref: 'stats' }, 'Channel Names': 'msec' },
             note: 'Just the frame time, so the trail isn\'t squashed by large values like megabytes.',
           },
           {
@@ -233,12 +233,12 @@ def onFrameEnd(frame):
           },
           {
             title: 'Watch for spikes',
-            body: `A **Select CHOP** \`frametime\` (*CHOP* \`stats\`, *Channel Names* \`msec\`) feeds a **Trail CHOP** \`trail1\` with a *Window Length* of about ten seconds. Aim for a steady line under budget; regular spikes usually mean something periodic — a timed script, a file read, a GPU download.`,
+            body: `A **Select CHOP** \`frametime\` (*CHOPs* \`stats\`, *Channel Names* \`msec\`) feeds a **Trail CHOP** \`trail1\` with a *Window Length* of about ten seconds. Aim for a steady line under budget; regular spikes usually mean something periodic — a timed script, a file read, a GPU download.`,
             nodes: ['frametime', 'trail1'],
           },
           {
             title: 'A heads-up display',
-            body: `Wire \`out1\` into a **Text TOP** \`hud\`: **Comp Over Input** on (*Output* page), **Background Alpha** 0 (*Color* page), and *Text* as the expression from the inspector. View it in a floating viewer; delete it when done, since it cooks every frame.`,
+            body: `Wire \`out1\` into a **Text TOP** \`hud\`: *Combine with Input* on **Composite and Set Resolution** (*Output* page — the default), **Background Alpha** 0 (*Color* page), and *Text* as the expression from the inspector. View it in a floating viewer; delete it when done, since it cooks every frame.`,
             nodes: ['hud'],
           },
         ],

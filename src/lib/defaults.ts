@@ -33,7 +33,11 @@ export interface MergeStats {
   defaults: number;
   menusReplaced: number;
   paramsAdded: number;
+  renamed: number;
+  missing: number;
 }
+
+const SEQ_PARAM = /^[a-z]+?0[a-z]/i;
 
 function plain(v: unknown): string | number | boolean | null {
   if (v === null || v === undefined) return null;
@@ -44,7 +48,7 @@ function plain(v: unknown): string | number | boolean | null {
 /** Merge a TouchDesigner dump into the docs-derived database (returns a new DB). */
 export function mergeDump(db: OpDB, dump: TDDump): { db: OpDB; stats: MergeStats } {
   const out: OpDB = {};
-  const stats: MergeStats = { build: dump.build, version: dump.version, ops: 0, defaults: 0, menusReplaced: 0, paramsAdded: 0 };
+  const stats: MergeStats = { build: dump.build, version: dump.version, ops: 0, defaults: 0, menusReplaced: 0, paramsAdded: 0, renamed: 0, missing: 0 };
   for (const [type, info] of Object.entries(db)) {
     const pars = dump.ops[type];
     if (!pars) {
@@ -58,12 +62,49 @@ export function mergeDump(db: OpDB, dump: TDDump): { db: OpDB; stats: MergeStats
       stats.defaults++;
     }
     const known = new Set<string>();
+    // TouchDesigner parameters the docs don't know by name, keyed by page + label: a docs
+    // parameter missing from TouchDesigner with exactly one such match was renamed.
+    const docNames = new Set<string>();
+    info.pages.forEach((pg) => pg.params.forEach((p) => (docNames.add(p.name), p.comps?.forEach((c) => docNames.add(c)))));
+    const renameCands = new Map<string, string[]>();
+    for (const [n, tp] of Object.entries(pars)) {
+      if (docNames.has(n) || (tp.tuplet && tp.tuplet !== n)) continue;
+      const k = `${tp.page}|${tp.label}`;
+      renameCands.set(k, [...(renameCands.get(k) || []), n]);
+    }
+    // TouchDesigner stores some parameters per component under a tuplet name; POP parameters
+    // with a "Parameter Size" are amp0, amp1… (only amp0 exists at the default size).
+    const tuplets = new Map<string, string[]>();
+    for (const [n, tp] of Object.entries(pars)) if (tp.tuplet && tp.tuplet !== n) tuplets.set(tp.tuplet, [...(tuplets.get(tp.tuplet) || []), n]);
     const pages = info.pages.map((pg) => ({
       page: pg.page,
-      params: pg.params.map((p) => {
+      params: pg.params.map((p0) => {
+        let p: ParamInfo = p0;
+        if (!(p.name in pars) && !(p.comps || []).some((c) => c in pars) && tuplets.has(p.name)) {
+          const members = tuplets.get(p.name)!;
+          if (members.length === 1 && members[0] === `${p.name}0`) {
+            p = { ...p, comps: [0, 1, 2, 3].map((i) => `${p.name}${i}`), sizeable: true };
+          } else if (members.length === 1) {
+            p = { ...p, name: members[0], renamedFrom: p.name };
+          } else {
+            p = { ...p, comps: members };
+          }
+          stats.renamed++;
+        }
+        const inTD = p.name in pars || (p.comps || []).some((c) => c in pars) || p.type === 'Sequence' || SEQ_PARAM.test(p.name);
+        if (!inTD) {
+          const cands = renameCands.get(`${pg.page}|${p.label}`);
+          if (cands?.length === 1 && !known.has(cands[0])) {
+            p = { ...p, name: cands[0], renamedFrom: p.name };
+            stats.renamed++;
+          } else {
+            p = { ...p, missingInTD: true };
+            stats.missing++;
+          }
+        }
         known.add(p.name);
         p.comps?.forEach((c) => known.add(c));
-        const tp = pars[p.name];
+        const tp = pars[p.sizeable ? p.comps![0] : p.name];
         // TouchDesigner's own menu entries win for fixed menus (docs are sometimes incomplete);
         // StrMenus are left alone because their entries depend on the node's inputs.
         if (tp?.menuLabels?.length && /Menu/.test(p.type) && p.type !== 'StrMenu') {
@@ -164,6 +205,11 @@ export function isDefaultValue(op: OpInfo | undefined, r: ResolvedParam | null, 
   const p = r.param;
   const comps = p.comps?.length && !/Menu/.test(p.type) ? p.comps : null;
   const lookup = (name: string) => defs[pyName(r, name)];
+  // sizeable POP parameters: a single value means column 0 (the only one at the default size)
+  if (p.sizeable && !Array.isArray(v)) {
+    if (isRef(v)) return compEq(p, lookup(p.comps![0]), v.ref);
+    return compEq(p, lookup(p.comps![0]), v as number | string | boolean | { expr: string });
+  }
   if (Array.isArray(v)) {
     if (!comps) return undefined;
     let all = true;
@@ -210,6 +256,7 @@ export function formatDefault(p: ParamInfo, defs: Record<string, DefaultValue> |
     if (d === '' || d === null) return '—';
     return String(d);
   };
+  if (p.sizeable && p.comps?.length) return one(p.comps[0]);
   if (p.comps?.length && !/Menu/.test(p.type)) {
     const parts = p.comps.map(one);
     if (parts.every((x) => x === null)) return null;

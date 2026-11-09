@@ -102,6 +102,7 @@ function checkValue(where: string, node: GraphNode, key: string, v: ParamValue, 
     warn(where, `${node.id}: '${key}' exists on pages ${[r.page, ...r.alsoOn].join(', ')} — prefix the page, e.g. '${r.page}:${r.param.label}'`);
   }
   const p = r.param;
+  if (p.missingInTD) warn(where, `${node.id}.${key}: '${p.label}' (${p.name}) is in the docs but not in TouchDesigner ${defaultStats?.build ?? ''} — check the parameter still exists`);
   if (isDefaultValue(info, r, v) === true) atDefault.push(`${where}: ${node.id}.${key}`);
   if (r.samePage) warn(where, `${node.id}: label '${key}' is used by several parameters on page ${r.page} (${[p.name, ...r.samePage].join(', ')}) — use the Python name as the key`);
   if (r.block !== undefined && !/^[a-z]+?0[a-z]/i.test(p.name)) err(where, `${node.id}: '${key}' uses a [block] index but '${p.label}' is not a sequential-block parameter`);
@@ -279,7 +280,8 @@ for (const k of Object.keys(blurbs)) if (!db[k]) err('blurbs', `blurb key '${k}'
 if (fixOut) writeFileSync(fixOut, JSON.stringify(fixes, null, 1));
 if (defaultStats) {
   if (listDefaults) atDefault.forEach((s) => console.log(`  default  ${s}`));
-  console.log(`\nDefaults from TouchDesigner ${defaultStats.version ?? ''} build ${defaultStats.build}: ${atDefault.length} lesson value(s) equal the default${listDefaults ? '' : ' (list them with --defaults)'}.`);
+  console.log(`\nTouchDesigner ${defaultStats.build}: ${defaultStats.ops} operators merged, ${defaultStats.menusReplaced} menus updated, ${defaultStats.renamed} parameters renamed, ${defaultStats.paramsAdded} added, ${defaultStats.missing} documented but missing.`);
+  console.log(`Defaults from TouchDesigner ${defaultStats.version ?? ''} build ${defaultStats.build}: ${atDefault.length} lesson value(s) equal the default${listDefaults ? '' : ' (list them with --defaults)'}.`);
 } else {
   console.log('\nNo TouchDesigner defaults file (data/td_param_defaults.json) — default values not checked.');
 }

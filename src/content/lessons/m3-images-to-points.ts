@@ -212,7 +212,7 @@ Both are GPU-to-GPU: no pixel ever visits the CPU. The main build uses the first
             y: 3.6,
             params: {
               'Draw Points': true,
-              'Point Type': 'Circle',
+              'Point Type': 'Circle (Polygon)',
               'Width Near': 1.5,
               'Point Color Attribute': 'Color',
               'Point Size Attribute': 'PointScale',
@@ -309,7 +309,7 @@ End with a **Null POP** \`null1\` (display + render).`,
           },
           {
             title: 'Render the dots',
-            body: `In \`/project1\` add a **Camera COMP** \`cam1\` at **0, 0, 2.2** and a **Line MAT** \`linemat1\`: *Draw Points* on, *Point Type* **Circle**, *Width Near* **1.5**, *Point Color Attribute* \`Color\`, *Point Size Attribute* \`PointScale\`, and additive blending on the Common page (*Blending (Transparency)* on, *Destination Color* **One**, *Write Depth Values* off).
+            body: `In \`/project1\` add a **Camera COMP** \`cam1\` at **0, 0, 2.2** and a **Line MAT** \`linemat1\`: *Draw Points* on, *Point Type* **Circle (Polygon)**, *Width Near* **1.5**, *Point Color Attribute* \`Color\`, *Point Size Attribute* \`PointScale\`, and additive blending on the Common page (*Blending (Transparency)* on, *Destination Color* **One**, *Write Depth Values* off).
 
 Assign it to \`geo1\`, give \`geo1\` a *Rotate Y* of \`math.sin(absTime.seconds * 0.4) * 25\`, and render with a **Render TOP** \`render1\`.`,
             nodes: ['cam1', 'linemat1', 'render1'],

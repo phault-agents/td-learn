@@ -258,7 +258,7 @@ Two rules keep the loop healthy. **Only the Particle POP creates and removes par
             y: 2.4,
             params: {
               'Draw Points': true,
-              'Point Type': 'Circle',
+              'Point Type': 'Circle (Polygon)',
               'Width Near': 3,
               'Point Color Attribute': 'Color',
               'Point Size Attribute': 'PointScale',
@@ -372,7 +372,7 @@ Then a **Lookup Texture POP** \`lookuptex1\`: *TOP* \`../ramp1\`, *Lookup Index 
             title: 'Additive dots',
             body: `Finish the branch with a **Null POP** \`null1\` and give it the display and render flags.
 
-In \`/project1\` add a **Camera COMP** \`cam1\` at **0, 0.4, 5** and a **Line MAT** \`linemat1\`: *Draw Points* on, *Point Type* **Circle**, *Width Near* **3**, *Point Color Attribute* \`Color\`, *Point Size Attribute* \`PointScale\`. On its **Common** page turn on *Blending (Transparency)*, set *Destination Color* to **One**, and turn off *Write Depth Values*. Assign it as \`geo1\`'s *Material*.`,
+In \`/project1\` add a **Camera COMP** \`cam1\` at **0, 0.4, 5** and a **Line MAT** \`linemat1\`: *Draw Points* on, *Point Type* **Circle (Polygon)**, *Width Near* **3**, *Point Color Attribute* \`Color\`, *Point Size Attribute* \`PointScale\`. On its **Common** page turn on *Blending (Transparency)*, set *Destination Color* to **One**, and turn off *Write Depth Values*. Assign it as \`geo1\`'s *Material*.`,
             nodes: ['null1', 'cam1', 'linemat1'],
             focus: ['geo1'],
           },

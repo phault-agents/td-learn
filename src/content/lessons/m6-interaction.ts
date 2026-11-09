@@ -78,7 +78,7 @@ Stage 5 is what makes a show maintainable: swap the mouse for a tracking camera 
             type: 'selectCHOP',
             x: 1,
             y: 0,
-            params: { CHOP: { ref: 'mouse1' }, 'Channel Names': 'tx ty' },
+            params: { CHOPs: { ref: 'mouse1' }, 'Channel Names': 'tx ty' },
             note: 'Position only — a click must not be smoothed.',
           },
           {
@@ -125,7 +125,7 @@ Stage 5 is what makes a show maintainable: swap the mouse for a tracking camera 
             type: 'selectCHOP',
             x: 1,
             y: 2,
-            params: { CHOP: { ref: 'mouse1' }, 'Channel Names': 'lselect' },
+            params: { CHOPs: { ref: 'mouse1' }, 'Channel Names': 'lselect' },
             note: 'The left button on its own: 1 while pressed, 0 otherwise.',
           },
           {
@@ -295,7 +295,7 @@ Stage 5 is what makes a show maintainable: swap the mouse for a tracking camera 
             type: 'lineMAT',
             x: 6,
             y: 2.3,
-            params: { 'Draw Points': true, 'Point Type': 'Circle', 'Point Color Attribute': 'Color' },
+            params: { 'Draw Points': true, 'Point Type': 'Circle (Polygon)', 'Point Color Attribute': 'Color' },
             note: 'Draws each point as a dot coloured by the `Color` attribute that `parting` writes. Adjust *Point Size Multiplier* (Point page) until the dots read clearly.',
           },
           {
@@ -337,14 +337,14 @@ Stage 5 is what makes a show maintainable: swap the mouse for a tracking camera 
             title: 'An orthographic view',
             body: `In \`/project1\`, create a **Camera COMP** \`cam1\`: *Translate* **0, 0, 5**, and on the *View* page *Projection* **Orthographic**, *Ortho Width* **4**.
 
-Create a **Line MAT** \`line1\` (*Draw Points* on, *Point Type* **Circle**, and *Point Color Attribute* \`Color\` on the *Attributes* page) and assign it to \`geo1\` as \`../line1\`. Add a **Render TOP** \`render1\` with *Output Resolution* **Custom Resolution** at **1920 × 1080** and *Anti-Alias* **4x**, and a **Null TOP** \`out1\`. The grid should exactly fill the frame.`,
+Create a **Line MAT** \`line1\` (*Draw Points* on, *Point Type* **Circle (Polygon)**, and *Point Color Attribute* \`Color\` on the *Attributes* page) and assign it to \`geo1\` as \`../line1\`. Add a **Render TOP** \`render1\` with *Output Resolution* **Custom Resolution** at **1920 × 1080** and *Anti-Alias* **4x**, and a **Null TOP** \`out1\`. The grid should exactly fill the frame.`,
             nodes: ['cam1', 'line1', 'render1', 'out1'],
           },
           {
             title: 'Read and smooth the mouse',
             body: `Create a **Mouse In CHOP** \`mouse1\`: *Active* **On**, *Output Coordinates* **Normalized**, and name the channels yourself — *Position X* \`tx\`, *Position Y* \`ty\`, *Left Button* \`lselect\`.
 
-Add a **Select CHOP** \`select_xy\` with *CHOP* = \`mouse1\` and *Channel Names* \`tx ty\`, then a **Filter CHOP** \`filter1\` with *Type* **One Euro**, *Cutoff Frequency (Hz)* **1** and *Speed Coefficient* **0.5**. Move the mouse and compare the two viewers.`,
+Add a **Select CHOP** \`select_xy\` with *CHOPs* = \`mouse1\` and *Channel Names* \`tx ty\`, then a **Filter CHOP** \`filter1\` with *Type* **One Euro**, *Cutoff Frequency (Hz)* **1** and *Speed Coefficient* **0.5**. Move the mouse and compare the two viewers.`,
             nodes: ['mouse1', 'select_xy', 'filter1'],
           },
           {
@@ -374,7 +374,7 @@ Points now slide out of the cursor's way and glow warm where they're displaced.`
           },
           {
             title: 'Click for a shockwave',
-            body: `Create a **Select CHOP** \`select_click\` (*CHOP* \`mouse1\`, *Channel Names* \`lselect\`) and a **Trigger CHOP** \`trigger1\` after it: *Attack Length* **0.03**, *Peak Level* **1**, *Decay Length* **0.8**, *Decay Shape* **Ease Out**, *Sustain Level* **0**.
+            body: `Create a **Select CHOP** \`select_click\` (*CHOPs* \`mouse1\`, *Channel Names* \`lselect\`) and a **Trigger CHOP** \`trigger1\` after it: *Attack Length* **0.03**, *Peak Level* **1**, *Decay Length* **0.8**, *Decay Shape* **Ease Out**, *Sustain Level* **0**.
 
 Back in \`parting\`, change the \`push\` value to the expression \`0.35 + op('/project1/trigger1')[0] * 0.6\`. Each click now throws the points outward and lets them settle.`,
             nodes: ['select_click', 'trigger1'],

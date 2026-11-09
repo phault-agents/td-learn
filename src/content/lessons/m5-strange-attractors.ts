@@ -257,7 +257,7 @@ Why not scale \`dt\` by frame time? For a design piece, determinism and stabilit
             params: {
               'Camera(s)': { ref: 'cam1' },
               Geometry: { ref: 'geo1' },
-              'Anti-Alias': '8x (Medium)',
+              'Anti-Alias': '8x',
               'Background Color': [0.01, 0.012, 0.02, 1],
             },
             note: 'No lights needed: the Line MAT is unlit. Extra anti-aliasing keeps thousands of thin lines from shimmering.',
@@ -337,7 +337,7 @@ Assign \`line1\` as \`geo1\`'s *Material*.`,
             title: 'An orbiting camera and the render',
             body: `Create a **Camera COMP** \`cam1\` with *Translate* X = \`4.2 * math.sin(absTime.seconds * 0.12)\`, Y = **1.2**, Z = \`4.2 * math.cos(absTime.seconds * 0.12)\`, and *Look At* \`../geo1\`.
 
-Add a **Render TOP** \`render1\` (*Anti-Alias* **8x (Medium)**, near-black background), a **Bloom TOP** \`bloom1\` and a **Null TOP** \`out1\`.`,
+Add a **Render TOP** \`render1\` (*Anti-Alias* **8x**, near-black background), a **Bloom TOP** \`bloom1\` and a **Null TOP** \`out1\`.`,
             nodes: ['cam1', 'render1', 'bloom1', 'out1'],
           },
           {

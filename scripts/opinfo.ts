@@ -33,7 +33,7 @@ if (args[0] === '--search') {
       console.log(`  [${pg.page}]`);
       for (const p of pg.params) {
         const def = formatDefault(p, o.defaults);
-        let s = `    ${p.label}  (${p.name}, ${p.type})${def !== null ? `  default: ${def}` : ''}${p.fromTD ? '  [from TouchDesigner, not in docs]' : ''}`;
+        let s = `    ${p.label}  (${p.name}, ${p.type})${def !== null ? `  default: ${def}` : ''}${p.fromTD ? '  [from TouchDesigner, not in docs]' : ''}${p.renamedFrom ? `  [docs call it ${p.renamedFrom}]` : ''}${p.missingInTD ? '  [NOT in TouchDesigner]' : ''}`;
         if (p.menu) s += `\n        menu: ${p.menu.map((m) => `${m}`).join(' | ')}`;
         if (p.comps) s += `  comps: ${p.comps.join(',')}`;
         console.log(s);

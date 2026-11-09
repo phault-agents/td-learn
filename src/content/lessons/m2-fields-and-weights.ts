@@ -420,7 +420,7 @@ This third approach is the most transparent, so it's what the next build uses: a
             y: 1.2,
             params: {
               'Draw Points': true,
-              'Point Type': 'Circle',
+              'Point Type': 'Circle (Polygon)',
               'Distance Near': 4,
               'Distance Far': 9,
               'Width Near': 4,
@@ -454,7 +454,7 @@ Append a **Delete POP** \`delete1\`: *Operation* **Delete Selected**, *Entity* *
           },
           {
             title: 'Dots with depth',
-            body: `In \`/project1\` create a **Line MAT** \`linemat1\` with *Draw Points* on and *Point Type* **Circle**. Set *Distance Near/Far* to **4 / 9**, *Width Near/Far* to **4 / 1.5**, a warm *Point Near Color*, and turn on *Specify Point Far Color* with a deep blue. Assign it as \`geo2\`'s *Material*, then add \`geo2\` to \`render1\`'s *Geometry*.`,
+            body: `In \`/project1\` create a **Line MAT** \`linemat1\` with *Draw Points* on and *Point Type* **Circle (Polygon)**. Set *Distance Near/Far* to **4 / 9**, *Width Near/Far* to **4 / 1.5**, a warm *Point Near Color*, and turn on *Specify Point Far Color* with a deep blue. Assign it as \`geo2\`'s *Material*, then add \`geo2\` to \`render1\`'s *Geometry*.`,
             nodes: ['linemat1'],
           },
         ],

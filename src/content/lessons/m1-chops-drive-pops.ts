@@ -146,11 +146,11 @@ Turn **Time Slice off** (Common page) on a generator like the Noise CHOP and it 
                 params: {
                   'Time Slice': false,
                   Start: 0,
-                  'Start Unit': 'Samples',
+                  'Start Unit': 'I',
                   End: 255,
-                  'End Unit': 'Samples',
+                  'End Unit': 'I',
                   Period: 40,
-                  'Period Unit': 'Samples',
+                  'Period Unit': 'I',
                   Harmonics: 2,
                   Amplitude: { expr: "op('pulse')['chan1']" },
                   Translate: [0, { expr: 'absTime.seconds * 0.4' }, 0],
@@ -182,7 +182,7 @@ Turn **Time Slice off** (Common page) on a generator like the Noise CHOP and it 
                 x: 1,
                 y: 2.5,
                 inputs: ['lfo1'],
-                params: { Lag: [0.05, 0.9], 'Lag Unit': 'Seconds' },
+                params: { Lag: [0.05, 0.9], 'Lag Unit': 'S' },
                 note: 'Rises almost instantly (0.05 s) and falls slowly (0.9 s). The hard square becomes an inhale-and-sigh envelope.',
               },
               {
@@ -267,7 +267,7 @@ Turn **Time Slice off** (Common page) on a generator like the Noise CHOP and it 
             params: {
               'Camera(s)': { ref: 'cam1' },
               Geometry: { ref: 'geo1' },
-              'Anti-Alias': '8x (Medium)',
+              'Anti-Alias': '8x',
               'Background Color': [0.02, 0.02, 0.04, 1],
             },
             note: 'Thin lines benefit from more anti-aliasing than solid shapes. No lights in this scene, and none needed.',
@@ -300,7 +300,7 @@ Middle-click the circle: one line-strip primitive, 400 points.`,
           },
           {
             title: 'Render',
-            body: `Create a **Render TOP** \`render1\` (*Camera(s)* \`cam1\`, *Geometry* \`geo1\`, *Anti-Alias* **8x (Medium)**, near-black background) and a **Null TOP** \`out1\`. A clean glowing circle — the canvas for everything that follows.`,
+            body: `Create a **Render TOP** \`render1\` (*Camera(s)* \`cam1\`, *Geometry* \`geo1\`, *Anti-Alias* **8x**, near-black background) and a **Null TOP** \`out1\`. A clean glowing circle — the canvas for everything that follows.`,
             nodes: ['render1', 'out1'],
           },
           {
@@ -308,8 +308,8 @@ Middle-click the circle: one line-strip primitive, 400 points.`,
             body: `Inside \`geo1\`, create a **Noise CHOP** \`noise1\`.
 
 * Common page: **Time Slice** off.
-* Channel page: *Start* **0**, *End* **255**, with both unit menus set to **Samples**.
-* Noise page: *Period* **40** with its unit on **Samples**, *Harmonics* **2**.
+* Channel page: *Start* **0**, *End* **255**, with both unit menus set to **I** (samples).
+* Noise page: *Period* **40** with its unit on **I** (samples), *Harmonics* **2**.
 * Constraints page: *Constraint* **Start/End Values**, *Starting Value* **0**, *Ending Value* **0**.
 * Transform page: *Translate Y* = \`absTime.seconds * 0.4\`.
 
@@ -328,7 +328,7 @@ Then insert a **Transform POP** \`transform1\`. On its **Map** page, first block
           },
           {
             title: 'A beat, smoothed',
-            body: `Below the profile chain, create an **LFO CHOP** \`lfo1\` with *Type* **Square** and *Frequency* **0.5**. Append a **Lag CHOP** \`lag1\` with *Lag* **0.05** and **0.9** (rise, fall) and its unit menu on **Seconds**.
+            body: `Below the profile chain, create an **LFO CHOP** \`lfo1\` with *Type* **Square** and *Frequency* **0.5**. Append a **Lag CHOP** \`lag1\` with *Lag* **0.05** and **0.9** (rise, fall) and its unit menu on **S** (seconds).
 
 Put the two viewers side by side: a hard on/off square becomes a quick swell and a long, soft decay.`,
             nodes: ['lfo1', 'lag1'],
@@ -446,11 +446,11 @@ The Lookup Channel POP decorates points that already exist. The [[CHOP to POP]] 
               'Channel Names': 'tx ty tz',
               'Time Slice': false,
               Start: 0,
-              'Start Unit': 'Samples',
+              'Start Unit': 'I',
               End: 499,
-              'End Unit': 'Samples',
+              'End Unit': 'I',
               Period: 120,
-              'Period Unit': 'Samples',
+              'Period Unit': 'I',
               Amplitude: 0.8,
               Translate: [0, { expr: 'absTime.seconds * 0.1' }, 0],
             },
@@ -490,7 +490,7 @@ The Lookup Channel POP decorates points that already exist. The [[CHOP to POP]] 
         steps: [
           {
             title: 'A three-channel curve',
-            body: `Create a **Geometry COMP** \`geo2\`, clear it and go inside. Add a **Noise CHOP** \`noise2\`: *Channel Names* \`tx ty tz\`, Time Slice off, *Start* **0** and *End* **499** in **Samples**, *Period* **120** samples, *Amplitude* **0.8**, *Translate Y* \`absTime.seconds * 0.1\`. End it with a **Null CHOP** \`curve\`.`,
+            body: `Create a **Geometry COMP** \`geo2\`, clear it and go inside. Add a **Noise CHOP** \`noise2\`: *Channel Names* \`tx ty tz\`, Time Slice off, *Start* **0** and *End* **499** in samples (unit menu **I**), *Period* **120** samples, *Amplitude* **0.8**, *Translate Y* \`absTime.seconds * 0.1\`. End it with a **Null CHOP** \`curve\`.`,
             nodes: ['noise2', 'curve'],
           },
           {

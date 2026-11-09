@@ -87,7 +87,7 @@ They're computed on the fly and never passed downstream, so they cost nothing to
                 type: 'patternPOP',
                 x: 0,
                 y: 0,
-                params: { 'Number of Points': 2000, Connectivity: 'Point Prims' },
+                params: { 'Number of Points': 2000, Connectivity: 'Point Primitives' },
                 note: 'Two thousand points, each with a point primitive so it can be drawn. Their initial positions don\'t matter — the Math Mix overwrites `P`.',
               },
               {
@@ -208,7 +208,7 @@ They're computed on the fly and never passed downstream, so they cost nothing to
             y: 2.3,
             params: {
               'Draw Points': true,
-              'Point Type': 'Circle',
+              'Point Type': 'Circle (Polygon)',
               'Width Near': 7,
               'Width Far': 7,
               'Point Size Attribute': 'PointScale',
@@ -241,14 +241,14 @@ They're computed on the fly and never passed downstream, so they cost nothing to
         steps: [
           {
             title: 'Two thousand points',
-            body: `Create a **Geometry COMP** \`geo1\` and empty it. Add a **Pattern POP** \`pattern1\` with *Number of Points* **2000** and *Connectivity* **Point Prims**, then a **Null POP** \`null1\` with render and display flags on. Whatever shape the pattern makes doesn't matter; you'll replace \`P\` entirely.`,
+            body: `Create a **Geometry COMP** \`geo1\` and empty it. Add a **Pattern POP** \`pattern1\` with *Number of Points* **2000** and *Connectivity* **Point Primitives**, then a **Null POP** \`null1\` with render and display flags on. Whatever shape the pattern makes doesn't matter; you'll replace \`P\` entirely.`,
             nodes: ['geo1', 'pattern1', 'null1'],
           },
           {
             title: 'A flat camera and a dot material',
             body: `In \`/project1\` create a **Camera COMP** \`cam1\`: *Translate* **0, 0, 5**, and on its **View** page *Projection* **Orthographic**, *Ortho Width* **4.8**.
 
-Create a **Line MAT** \`linemat1\`: *Draw Points* on, *Point Type* **Circle**, *Width Near* and *Width Far* **7**. On its **Attributes** page set *Point Size Attribute* \`PointScale\` and *Point Color Attribute* \`Color\`. Assign it as \`geo1\`'s *Material*.`,
+Create a **Line MAT** \`linemat1\`: *Draw Points* on, *Point Type* **Circle (Polygon)**, *Width Near* and *Width Far* **7**. On its **Attributes** page set *Point Size Attribute* \`PointScale\` and *Point Color Attribute* \`Color\`. Assign it as \`geo1\`'s *Material*.`,
             nodes: ['cam1', 'linemat1'],
           },
           {

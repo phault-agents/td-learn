@@ -210,7 +210,7 @@ The [[Normalize POP]] looks similar but works differently: it inspects the data 
             params: {
               'Always Cook': true,
               'Input Attributes': 'h Color',
-              Type: 'Gaussian',
+              'Filter Type': 'Gaussian',
               'Filter Width': 0.6,
             },
             note: 'Averages `h` and `Color` over a short time window, so a data change becomes a smooth glide. Filter the *visual* attributes, after all the mapping. Check that the unit menu beside *Filter Width* reads seconds.',
@@ -404,7 +404,7 @@ Append a **Lookup Texture POP** \`lookuptex1\`: *TOP* \`ramp1\`, *Lookup Index A
           },
           {
             title: 'Ease every change',
-            body: `Append a **Time Filter POP** \`timefilter1\`: turn on *Always Cook*, set *Input Attributes* to \`h Color\`, *Type* **Gaussian**, *Filter Width* **0.6** (seconds).
+            body: `Append a **Time Filter POP** \`timefilter1\`: turn on *Always Cook*, set *Input Attributes* to \`h Color\`, *Filter Type* **Gaussian**, *Filter Width* **0.6** (seconds).
 
 Finish with a **Null POP** \`barpts\`. Open its viewer and wait for the switch to flip: \`h\` and \`Color\` now drift to their new values instead of jumping.`,
             nodes: ['timefilter1', 'barpts'],

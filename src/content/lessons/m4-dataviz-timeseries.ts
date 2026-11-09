@@ -232,7 +232,7 @@ The payoff: adding a fourth series is just adding a fourth channel. Nothing in t
               'Width Far': 2.5,
               'Line Color Attribute': 'Color',
               'Draw Points': true,
-              'Point Type': 'Circle',
+              'Point Type': 'Circle (Polygon)',
               'Point Size Multiplier': 3,
               'Point Size Attribute': 'PointScale',
               'Point Color Attribute': 'Color',
@@ -350,7 +350,7 @@ Inside \`geo_lines\`, append a **Lookup Texture POP** \`lookuptex1\`: *TOP* \`..
             title: 'Mark "now", then style the lines',
             body: `Append a **Math Mix POP** \`mathmix1\`: block 0 *Operation* **A >= B**, *Scope A* \`t\`, *Scope B* \`0.999\`, *Result Scope* \`PointScale\`. End with a **Null POP** \`null_lines\` (render + display on).
 
-At the root, create a **Line MAT** \`linemat1\` and assign it to \`geo_lines\` (*Material* \`../linemat1\`). *Width Near/Far* **2.5**, *Line Color Attribute* \`Color\`; on the *Point* page turn on **Draw Points**, *Point Type* **Circle**, *Point Size Multiplier* **3**; on *Attributes* set *Point Size Attribute* \`PointScale\` and *Point Color Attribute* \`Color\`.`,
+At the root, create a **Line MAT** \`linemat1\` and assign it to \`geo_lines\` (*Material* \`../linemat1\`). *Width Near/Far* **2.5**, *Line Color Attribute* \`Color\`; on the *Point* page turn on **Draw Points**, *Point Type* **Circle (Polygon)**, *Point Size Multiplier* **3**; on *Attributes* set *Point Size Attribute* \`PointScale\` and *Point Color Attribute* \`Color\`.`,
             nodes: ['mathmix1', 'null_lines', 'linemat1'],
           },
           {

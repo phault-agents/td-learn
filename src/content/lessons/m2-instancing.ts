@@ -294,7 +294,7 @@ On \`geo1\`'s **Instance 2** page: *Color Mode* **Replace**, and *R / G / B* = \
 
 On a flat grid every tower points up, so rotation never mattered. Put the lots on a sphere and each tower must stand along its own surface normal. You *could* compute three Euler angles per point, but the **Instance 2** page has a far simpler tool: **Rotate to Vector**. Give it a direction per instance (\`N\`, a velocity, a tangent…) and it rotates the shape so that its *Forward Direction* axis lines up with that vector. Our box is modelled pointing up, so its forward axis is **+Y**.
 
-There's one subtlety, and it's a classic. *Rotate to Vector: Order* decides **when** that rotation happens relative to the regular translate/rotate/scale. In the **Default** order the rotate-to-vector is applied *first*, and the per-instance scale afterwards — along *world* axes. A tower on the equator, already tipped sideways, then gets stretched along world Y: it shears into a slanted slab. **Pre-Rot** puts the rotate-to-vector together with the regular rotation, *after* the scale, so each box is stretched along its own up-axis first and then stood on the surface. That's the one you want whenever you combine Rotate to Vector with non-uniform scale.
+There's one subtlety, and it's a classic. *Rotate to Vector: Order* decides **when** that rotation happens relative to the regular translate/rotate/scale. The default order, **Rotate to Vector, then Transform**, applies the rotate-to-vector *first*, and the per-instance scale afterwards — along *world* axes. A tower on the equator, already tipped sideways, then gets stretched along world Y: it shears into a slanted slab. The other two orders, **Rotate, then Rotate to Vector** and **Rotate to Vector, then Rotate**, fold the rotate-to-vector into the regular rotation, which comes *after* the scale — so each box is stretched along its own up-axis first and then stood on the surface. Use one of those whenever you combine Rotate to Vector with non-uniform scale (they only differ if you also rotate the instances).
 `,
     },
     {
@@ -320,14 +320,14 @@ There's one subtlety, and it's a classic. *Rotate to Vector: Order* decides **wh
               'Translate Y': 'P(1)',
               'Translate Z': 'P(2)',
               'Scale Y': 'height',
-              'Rotate to Vector: Order': 'Pre-Rot',
+              'Rotate to Vector: Order': 'Rotate, then Rotate to Vector',
               'Rotate to Vector: Forward Direction': '+Y',
               'Rotate to Vector X': 'N(0)',
               'Rotate to Vector Y': 'N(1)',
               'Rotate to Vector Z': 'N(2)',
               Material: { ref: '../pbr2' },
             },
-            note: 'Same idea as geo1, plus *Rotate to Vector* from `N` on the Instance 2 page, applied **Pre-Rot** so the height scale happens along each tower\'s own axis.',
+            note: 'Same idea as geo1, plus *Rotate to Vector* from `N` on the Instance 2 page, with the order set to **Rotate, then Rotate to Vector** so the height scale happens along each tower\'s own axis.',
             children: [
               {
                 id: 'sphere2',
@@ -413,7 +413,7 @@ There's one subtlety, and it's a classic. *Rotate to Vector: Order* decides **wh
 
 On \`geo2\`: *Instancing* on, *Default Instance OP* \`planet\`, *Translate X/Y/Z* \`P(0)\` \`P(1)\` \`P(2)\`, *Scale Y* \`height\`. Look: every tower sticks straight up, even on the equator.
 
-On **Instance 2**: *Rotate to Vector X/Y/Z* = \`N(0)\` \`N(1)\` \`N(2)\`, *Forward Direction* **+Y**. Now flip *Rotate to Vector: Order* between **Default** and **Pre-Rot** and watch the equator towers: sheared slabs vs. clean columns.`,
+On **Instance 2**: *Rotate to Vector X/Y/Z* = \`N(0)\` \`N(1)\` \`N(2)\`, *Forward Direction* **+Y**. Set *Rotate to Vector: Order* to **Rotate, then Rotate to Vector**, then flip it back to **Rotate to Vector, then Transform** and watch the equator towers: clean columns vs. sheared slabs.`,
             nodes: ['pbr2'],
             focus: ['geo2'],
           },
@@ -523,12 +523,12 @@ The Copy POP's setup mirrors what you just did. Its first input is the shape, it
           q: 'Towers on a sphere use Rotate to Vector from `N` and *Scale Y* from `height`. With the Default order the equator towers look sheared. What fixes it?',
           options: [
             'Set *Forward Direction* to +Z',
-            'Set *Rotate to Vector: Order* to Pre-Rot so the scale happens before the rotation',
+            'Set *Rotate to Vector: Order* to *Rotate, then Rotate to Vector* so the scale happens before the rotation',
             'Normalize `N`',
             'Turn off *Instancing*',
           ],
           answer: 1,
-          explain: 'In the Default order the rotate-to-vector is applied first and the scale afterwards along world axes. Pre-Rot scales in the box\'s own frame, then rotates.',
+          explain: 'With *Rotate to Vector, then Transform* the rotate-to-vector is applied first and the scale afterwards, along world axes. *Rotate, then Rotate to Vector* scales in the box\'s own frame, then rotates.',
         },
         {
           q: 'When is the Copy POP the better choice than instancing?',

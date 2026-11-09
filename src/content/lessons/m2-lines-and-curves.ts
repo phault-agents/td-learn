@@ -251,7 +251,7 @@ Keep the difference between *resample* (same shape, new points) and *smooth* (ne
             params: {
               'Camera(s)': { ref: 'cam1' },
               Geometry: { ref: 'geo1' },
-              'Anti-Alias': '8x (Medium)',
+              'Anti-Alias': '8x',
               'Background Color': [0.02, 0.02, 0.035, 1],
             },
             note: 'Fine lines need anti-aliasing more than anything else. Unlit — no light needed.',
@@ -291,7 +291,7 @@ A **Line MAT** \`linemat1\`: *Draw Lines* on, *Width Near/Far* **2**, *Line Join
           },
           {
             title: 'Render',
-            body: `A **Render TOP** \`render1\` (\`cam1\`, \`geo1\`, *Anti-Alias* **8x (Medium)**, near-black background) into a **Null TOP** \`out1\`. You'll see a short horizontal line.`,
+            body: `A **Render TOP** \`render1\` (\`cam1\`, \`geo1\`, *Anti-Alias* **8x**, near-black background) into a **Null TOP** \`out1\`. You'll see a short horizontal line.`,
             nodes: ['render1', 'out1'],
           },
           {

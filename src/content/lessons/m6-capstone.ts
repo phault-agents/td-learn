@@ -269,7 +269,7 @@ Each piece can be rebuilt, profiled or replaced without touching the others, as 
                 params: {
                   'Draw Lines': true,
                   'Draw Points': true,
-                  'Point Type': 'Circle',
+                  'Point Type': 'Circle (Polygon)',
                   'Point Near Color': [1, 0.72, 0.45],
                   'Line Near Color': [0.55, 0.75, 1],
                 },
@@ -307,7 +307,7 @@ Each piece can be rebuilt, profiled or replaced without touching the others, as 
             y: 1.5,
             params: {
               'Window Operator': { ref: '/project1/look/final' },
-              'Opening Size': 'Fill Location',
+              'Opening Size': 'Fill',
               Display: 1,
               Borders: false,
               'Cursor Visible': 'Never',
@@ -376,7 +376,7 @@ Then a **Force Radial POP** \`kick\`: **Enable Radial** on, *Falloff* **None**, 
           },
           {
             title: 'The look',
-            body: `Create a **Base COMP** \`look\`. Inside: **Camera COMP** \`cam1\` at *Translate* **0, 0, 6**; **Line MAT** \`linemat1\` with *Draw Lines* and *Draw Points* on, *Point Type* **Circle**, a warm *Point Near Color* and a cool *Line Near Color*; **Render TOP** \`render1\` (*Camera(s)* \`cam1\`, *Geometry* \`/project1/sim\`, *Anti-Alias* **4x**, black background, **Custom Resolution** 1920 × 1080); and a **Null TOP** \`final\`.
+            body: `Create a **Base COMP** \`look\`. Inside: **Camera COMP** \`cam1\` at *Translate* **0, 0, 6**; **Line MAT** \`linemat1\` with *Draw Lines* and *Draw Points* on, *Point Type* **Circle (Polygon)**, a warm *Point Near Color* and a cool *Line Near Color*; **Render TOP** \`render1\` (*Camera(s)* \`cam1\`, *Geometry* \`/project1/sim\`, *Anti-Alias* **4x**, black background, **Custom Resolution** 1920 × 1080); and a **Null TOP** \`final\`.
 
 Back on \`sim\`'s *Render* page, set *Material* to \`/project1/look/linemat1\`. Press play: the cloud should pulse with the kick, churn with the mids, and the ring should shiver on the hi-hats.`,
             nodes: ['look', 'cam1', 'linemat1', 'render1', 'final'],
@@ -384,7 +384,7 @@ Back on \`sim\`'s *Render* page, set *Material* to \`/project1/look/linemat1\`. 
           },
           {
             title: 'Out to the projector',
-            body: `Create a **Window COMP** \`output\`: *Window Operator* \`/project1/look/final\`, *Justify and Offset to…* **Specify Display**, *Display* = the projector's index, *Opening Size* **Fill Location**, *Borders* off, *Cursor Visible* **Never**, and on the *Open/Close* page **Prevent Display Sleep** on.
+            body: `Create a **Window COMP** \`output\`: *Window Operator* \`/project1/look/final\`, *Justify and Offset to…* **Specify Display**, *Display* = the projector's index, *Opening Size* **Fill**, *Borders* off, *Cursor Visible* **Never**, and on the *Open/Close* page **Prevent Display Sleep** on.
 
 Pulse **Set as Perform Window**, then press <kbd>F1</kbd> to enter Perform Mode. <kbd>Esc</kbd> brings you back.`,
             nodes: ['output'],

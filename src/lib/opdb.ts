@@ -17,6 +17,12 @@ export interface ParamInfo {
   comps?: string[];
   /** true when the parameter came from the TouchDesigner dump, not the docs */
   fromTD?: boolean;
+  /** the docs' (outdated) python name, when TouchDesigner uses a different one */
+  renamedFrom?: string;
+  /** documented, but not present in the recorded TouchDesigner build */
+  missingInTD?: boolean;
+  /** POP "Parameter Size" parameter stored per column (comps = name0..name3; single value → name0) */
+  sizeable?: boolean;
 }
 
 /** A parameter's default as recorded from TouchDesigner (constant, or a default expression). */
@@ -88,7 +94,7 @@ export function resolveParam(op: OpInfo, rawKey: string): ResolvedParam | null {
 
 /** Python parameter name for a (possibly sequential-block) param, e.g. comb0oper → comb2oper */
 export function pyName(r: ResolvedParam, compName?: string): string {
-  const base = compName ?? r.param.name;
+  const base = compName ?? (r.param.sizeable && r.param.comps?.length ? r.param.comps[0] : r.param.name);
   if (r.block === undefined) return base;
   return base.replace(/^([a-z]+?)0(?=[a-z])/i, `$1${r.block}`);
 }

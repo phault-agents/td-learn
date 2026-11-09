@@ -236,7 +236,7 @@ Most network confusion comes from that last line.`,
             params: {
               'Draw Lines': false,
               'Draw Points': true,
-              'Point Type': 'Circle',
+              'Point Type': 'Circle (Polygon)',
               'Point Size Multiplier': 2,
               'Point Size Attribute': 'PointScale',
               'Point Near Color': [0.95, 0.97, 1],
@@ -320,7 +320,7 @@ On \`mat_lines\` → *Attributes*, set *Line Width Attribute* to \`LineWidth\`. 
             title: 'Size by degree',
             body: `Between \`select1\` and \`null_nodes\`, insert a **Neighbor POP** \`neighbor1\` (*Max Neighbors Distance* = \`op('../geo_plexus/proximity1').par.maxdist\`, *Max Neighbors* **16**, **Num Neighbors** on) and a **ReRange POP** \`rerange2\` (\`NumNebrs\` from **0–10** to **0.5–2.5**, *Cast to* **Float**, output \`PointScale\`).
 
-Create a **Line MAT** \`mat_nodes\`: *Draw Lines* off, *Draw Points* on, *Point Type* **Circle**, *Point Size Multiplier* **2**, *Point Size Attribute* \`PointScale\`, near-white *Point Near Color*. Assign it to \`geo_nodes\`.`,
+Create a **Line MAT** \`mat_nodes\`: *Draw Lines* off, *Draw Points* on, *Point Type* **Circle (Polygon)**, *Point Size Multiplier* **2**, *Point Size Attribute* \`PointScale\`, near-white *Point Near Color*. Assign it to \`geo_nodes\`.`,
             nodes: ['neighbor1', 'rerange2', 'mat_nodes'],
           },
           {
@@ -535,7 +535,7 @@ The dataset below is **invented**: a toy dependency map of a TouchDesigner proje
               'Line Width Attribute': 'LineWidth',
               'Line Near Color': [0.6, 0.66, 0.75],
               'Draw Points': true,
-              'Point Type': 'Circle',
+              'Point Type': 'Circle (Polygon)',
               'Point Size Multiplier': 4,
               'Point Near Color': [0.98, 0.75, 0.35],
             },
@@ -603,7 +603,7 @@ Middle-click: 10 points with \`tx\`, \`ty\`; 12 line primitives with \`weight\`.
           },
           {
             title: 'Stroke it',
-            body: `Create a **Line MAT** \`mat_graph\`: *Width Near/Far* **1.5**, *Line Width Attribute* \`LineWidth\`, a grey *Line Near Color*; *Draw Points* on, *Point Type* **Circle**, *Point Size Multiplier* **4**, a warm *Point Near Color*. Assign it to \`geo_graph\` and add the COMP to a Render TOP.`,
+            body: `Create a **Line MAT** \`mat_graph\`: *Width Near/Far* **1.5**, *Line Width Attribute* \`LineWidth\`, a grey *Line Near Color*; *Draw Points* on, *Point Type* **Circle (Polygon)**, *Point Size Multiplier* **4**, a warm *Point Near Color*. Assign it to \`geo_graph\` and add the COMP to a Render TOP.`,
             nodes: ['mat_graph'],
           },
           {

@@ -545,7 +545,7 @@ def onDone(timerOp, segment, interrupt):
             x: 4,
             y: 0,
             inputs: ['merge1'],
-            params: { Insert: 'Row', At: 'Before First', Contents: 'lon lat mag' },
+            params: { Insert: 'One Row', At: 'Before First', Contents: 'lon lat mag' },
             note: 'Adds the header row. These names become the attribute names, so they must match what `mathmix1` and `rerange1` read.',
           },
           {
@@ -597,7 +597,7 @@ Each shows one column of numbers, all the same length.`,
           },
           {
             title: 'One table with a header',
-            body: `Wire the three into a **Merge DAT** \`merge1\` (in that order) with *How* **Append Columns**. Append an **Insert DAT** \`header\`: *Insert* **Row**, *At* **Before First**, *Contents* \`lon lat mag\`. End with a **Null DAT** \`quakes_live\`.`,
+            body: `Wire the three into a **Merge DAT** \`merge1\` (in that order) with *How* **Append Columns**. Append an **Insert DAT** \`header\`: *Insert* **One Row**, *At* **Before First**, *Contents* \`lon lat mag\`. End with a **Null DAT** \`quakes_live\`.`,
             nodes: ['merge1', 'header', 'quakes_live'],
           },
           {

@@ -242,7 +242,7 @@ Where does \`v\` come from? A **curl-noise field**. Instead of writing the curl 
             params: {
               'Camera(s)': { ref: 'cam1' },
               Geometry: { ref: 'geo1' },
-              'Anti-Alias': '8x (Medium)',
+              'Anti-Alias': '8x',
               'Background Color': [0, 0, 0, 1],
             },
             note: 'Thin lines alias badly, so this render uses more anti-aliasing than usual.',
@@ -322,7 +322,7 @@ In \`/project1\`: a **Camera COMP** \`cam1\` at **0, 0, 4.5**, and a **Line MAT*
           },
           {
             title: 'Render',
-            body: `Add a **Render TOP** \`render1\` (camera \`cam1\`, geometry \`geo1\`, *Anti-Alias* **8x (Medium)**, black background), a **Bloom TOP** \`bloom1\` and a **Null TOP** \`out1\`.
+            body: `Add a **Render TOP** \`render1\` (camera \`cam1\`, geometry \`geo1\`, *Anti-Alias* **8x**, black background), a **Bloom TOP** \`bloom1\` and a **Null TOP** \`out1\`.
 
 Initialize and Start. The seeds comb themselves into flowing bundles of light that slowly reorganize as the field drifts.`,
             nodes: ['render1', 'bloom1', 'out1'],
@@ -445,7 +445,7 @@ It matches points by index by default; with *Match by Attribute* and \`PartId\` 
                 x: 3,
                 y: 0,
                 inputs: ['random2'],
-                params: { 'Input Attributes': 'P', Type: 'Gaussian', 'Filter Width': 0.25 },
+                params: { 'Input Attributes': 'P', 'Filter Type': 'Gaussian', 'Filter Width': 0.25 },
                 note: 'Averages each point\'s `P` over the last quarter second (set the width unit to seconds). Wider = calmer but laggier; try **One Euro** for the adaptive version.',
               },
               {
@@ -481,7 +481,7 @@ It matches points by index by default; with *Match by Attribute* and \`PartId\` 
           },
           {
             title: 'Filter it',
-            body: `Append a **Time Filter POP** \`timefilter1\`: *Input Attributes* \`P\`, *Type* **Gaussian**, *Filter Width* **0.25** seconds. End with a **Null POP** \`null2\` carrying the flags.
+            body: `Append a **Time Filter POP** \`timefilter1\`: *Input Attributes* \`P\`, *Filter Type* **Gaussian**, *Filter Width* **0.25** seconds. End with a **Null POP** \`null2\` carrying the flags.
 
 The buzz is gone and the undulation remains, slightly delayed. Switch *Type* to **One Euro** and tune it as described above to win back the responsiveness.`,
             nodes: ['timefilter1', 'null2'],
