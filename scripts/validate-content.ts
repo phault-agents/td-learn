@@ -154,7 +154,7 @@ function checkGraph(where0: string, g: Graph) {
       err(where, `node '${id}': unknown operator type '${node.type}'`);
       continue;
     }
-    if (info.removed) err(where, `node '${id}': ${info.label} has been REMOVED from TouchDesigner`);
+    if (info.removed) err(where, `node '${id}': ${info.label} ${info.unavailable ? `can't be created in TouchDesigner ${defaultStats?.build} (${info.unavailable.slice(0, 80)})` : 'has been REMOVED from TouchDesigner'}`);
     if (info.experimental) warn(where, `node '${id}': ${info.label} is experimental`);
     if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(id)) err(where, `node id '${id}' is not a valid TD node name`);
     if (node.children && familyOf(node.type) !== 'COMP') err(where, `node '${id}' has children but is not a COMP`);

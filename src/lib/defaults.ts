@@ -52,7 +52,8 @@ export function mergeDump(db: OpDB, dump: TDDump): { db: OpDB; stats: MergeStats
   for (const [type, info] of Object.entries(db)) {
     const pars = dump.ops[type];
     if (!pars) {
-      out[type] = info;
+      // documented, but TouchDesigner couldn't create it in this build: treat it like a removed op
+      out[type] = dump.failed?.[type] ? { ...info, removed: true, unavailable: dump.failed[type] } : info;
       continue;
     }
     stats.ops++;

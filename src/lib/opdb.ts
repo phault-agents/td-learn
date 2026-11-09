@@ -41,6 +41,8 @@ export interface OpInfo {
   defaults?: Record<string, DefaultValue>;
   removed?: boolean;
   experimental?: boolean;
+  /** TouchDesigner's error when it couldn't create this type in the recorded build */
+  unavailable?: string;
 }
 
 export type OpDB = Record<string, OpInfo>;
