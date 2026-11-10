@@ -176,6 +176,7 @@ The [[Normalize POP]] looks similar but works differently: it inspects the data 
             inputs: ['rerange1'],
             params: {
               'Input Attribute Scope': 'value',
+              'Parameter Size': '1',
               'Output Attribute Scope': 'u',
             },
             note: 'A **data-driven** 0–1 version of `value`, stored as `u`, used only to pick a color. The lowest month of the current dataset lands at the start of the palette and the highest at the end.',
@@ -395,7 +396,7 @@ This is your length scale. Note the domain: 0 to 100, **not** the data's own min
           },
           {
             title: 'Color from a palette',
-            body: `Append a **Normalize POP** \`normalize1\`: *Input Attribute Scope* \`value\`, *Output Attribute Scope* \`u\`.
+            body: `Append a **Normalize POP** \`normalize1\`: *Input Attribute Scope* \`value\`, *Parameter Size* **1** (\`value\` is one number per point; the default of 3 is for X/Y/Z attributes), *Output Attribute Scope* \`u\`.
 
 Create a **Ramp TOP** \`ramp1\`, set *Type* to **Horizontal** and give it a sequential palette in the ramp editor (dark → light, or one hue getting more intense).
 

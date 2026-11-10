@@ -92,6 +92,13 @@ export function mergeDump(db: OpDB, dump: TDDump): { db: OpDB; stats: MergeStats
           }
           stats.renamed++;
         }
+        // the docs sometimes list the per-column names themselves (mode0, mode1, mode2…)
+        if (!p.sizeable && p.comps?.length && tuplets.has(p.name)) {
+          const col = new RegExp(`^${p.name}\\d$`);
+          if (p.comps.every((c) => col.test(c)) && tuplets.get(p.name)!.every((m) => col.test(m))) {
+            p = { ...p, comps: [0, 1, 2, 3].map((i) => `${p.name}${i}`), sizeable: true };
+          }
+        }
         const inTD = p.name in pars || (p.comps || []).some((c) => c in pars) || p.type === 'Sequence' || SEQ_PARAM.test(p.name);
         if (!inTD) {
           const cands = renameCands.get(`${pg.page}|${p.label}`);

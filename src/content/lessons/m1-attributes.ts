@@ -281,6 +281,7 @@ Notice that only steps 4 and 5 change the shape. Everything else is bookkeeping 
                 inputs: ['math1'],
                 params: {
                   'Input Attribute Scope': 'dist',
+                  'Parameter Size': '1',
                   Exponent: 1.5,
                   'Map to Low': 0.4,
                   'Map to High': -0.8,
@@ -339,7 +340,7 @@ Notice that only steps 4 and 5 change the shape. Everything else is bookkeeping 
                 x: 2,
                 y: 1.35,
                 inputs: ['normal1'],
-                params: { 'Input Attribute Scope': 'P.y', 'Output Attribute Scope': 'height' },
+                params: { 'Input Attribute Scope': 'P.y', 'Parameter Size': '1', 'Output Attribute Scope': 'height' },
                 note: 'Copies height into a new attribute rescaled to 0 … 1: sea is exactly 0, the highest peak is exactly 1, whatever the noise amplitude happens to be. `P` itself is not changed.',
               },
               {
@@ -472,7 +473,9 @@ Middle-click: \`dist\` is now a float on every point, 0 at the center and larges
           },
           {
             title: 'Shape the island mask',
-            body: `Append a **Normalize POP** \`normalize1\`. *Input Attribute Scope* \`dist\`, *Output Attribute Scope* \`island\`. Leave its *Mode* menus at their defaults (a plain lowest-to-highest rescale), then set *Exponent* **1.5**, *Map to Low* **0.4** and *Map to High* **−0.8**.
+            body: `Append a **Normalize POP** \`normalize1\`. *Input Attribute Scope* \`dist\`, then set *Parameter Size* to **1**, *Output Attribute Scope* \`island\`. Leave *Mode* at its default (a plain lowest-to-highest rescale), then set *Exponent* **1.5**, *Map to Low* **0.4** and *Map to High* **−0.8**.
+
+Why *Parameter Size* **1**? It sets how many columns of parameters the node has, one per component it processes. The Normalize POP defaults to **3**, one column each for X, Y and Z, which only fits a 3-component attribute like \`P\`. \`dist\` is a single number per point, so it needs a single column. With a size of 1, one set of values applies to whatever you feed it.
 
 Normalize first squeezes \`dist\` into 0–1, the exponent keeps small values small for longer (a broad middle), and the re-range flips and scales it. Yes, *Map to High* can be lower than *Map to Low*: that's how you invert a range.`,
             nodes: ['normalize1'],
@@ -499,7 +502,7 @@ Append a **Normal POP** \`normal1\` with *Normals Action* **Always Compute**. Co
           },
           {
             title: 'Height as a 0–1 attribute, and a palette',
-            body: `Append a **Normalize POP** \`normalize2\`: *Input Attribute Scope* \`P.y\`, *Output Attribute Scope* \`height\`.
+            body: `Append a **Normalize POP** \`normalize2\`: *Input Attribute Scope* \`P.y\`, *Parameter Size* **1** (again a single component), *Output Attribute Scope* \`height\`.
 
 Still inside \`geo1\`, create a **Table DAT** \`palette\`: a header row \`pos r g b a\`, then the seven color keys shown in the inspector — the same layout as the keys table a Ramp TOP keeps for its own ramp editor. Then create a **Ramp TOP** \`ramp1\`: *Type* **Horizontal**, *DAT* \`palette\`, and on its Common page *Output Resolution* **Custom Resolution**, *Resolution* **256 × 1**. You should see a thin strip running from sea blue to snow.`,
             nodes: ['normalize2', 'palette', 'ramp1'],

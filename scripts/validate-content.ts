@@ -142,6 +142,59 @@ function checkValue(where: string, node: GraphNode, key: string, v: ParamValue, 
   }
 }
 
+
+// ---- POP "Parameter Size" vs. the component count of the attribute scope ----------------
+const KNOWN_SIZES: Record<string, number> = {
+  P: 3, N: 3, Color: 4, Tex: 3, T: 4, PointScale: 1, LineWidth: 1, Weight: 1, Dist: 1, Dir: 3, Disp: 3,
+  PartVel: 3, PartForce: 3, PartMass: 1, PartAge: 1, PartLifeSpan: 1, PartDrag: 1, PartId: 1, NumNebrs: 1,
+  Age: 1, Noise: 1, NoiseGradient: 3, NoiseCurl: 3, NoiseCurl2: 2,
+};
+/** Components selected by a scope string like 'P.y', 'P(0) P(2)', 'Color.rgb', '_PointU'; null if unknown. */
+function scopeComponents(scope: string): number | null {
+  let total = 0;
+  for (const tok of scope.trim().split(/\s+/).filter(Boolean)) {
+    if (/^-?\d*\.?\d+$/.test(tok)) { total += 1; continue; }
+    const m = /^([A-Za-z_][A-Za-z0-9_]*)(?:\[\d+\])?(?:\.(i\d+|[xyzwrgba]+)|\(([\d,\s]+)\))?$/.exec(tok);
+    if (!m) return null;
+    const [, name, swz, idx] = m;
+    if (swz) total += swz.startsWith('i') ? swz.length - 1 : swz.length;
+    else if (idx) total += idx.split(',').filter((s) => s.trim()).length;
+    else if (name.startsWith('_')) total += 1;
+    else if (KNOWN_SIZES[name] !== undefined) total += KNOWN_SIZES[name];
+    else return null;
+  }
+  return total || null;
+}
+const SCOPE_PARS = ['inputattrscope', 'combineattrscope', 'phaseattrscope'];
+function checkParamSize(where: string, node: GraphNode) {
+  const info = db[node.type];
+  const defs = info?.defaults;
+  if (!info || !defs || defs.parsize === undefined) return;
+  let size = Number(defs.parsize);
+  let scope: string | null = typeof defs[SCOPE_PARS.find((s) => s in defs) ?? ''] === 'string' ? (defs[SCOPE_PARS.find((s) => s in defs)!] as string) : null;
+  let sizeSet = false;
+  for (const [k, v] of Object.entries(node.params || {})) {
+    const r = resolveParam(info, k);
+    if (!r) continue;
+    if (r.param.name === 'parsize' && typeof v === 'string') { size = Number(v); sizeSet = true; }
+    if (SCOPE_PARS.includes(r.param.name) && typeof v === 'string') scope = v;
+  }
+  if (!scope || !size) return;
+  const n = scopeComponents(scope);
+  if (n !== null && size !== 1 && size !== n) {
+    err(where, `${node.id}: Parameter Size is ${size}${sizeSet ? '' : ' (the default)'} but scope '${scope}' has ${n} component${n > 1 ? 's' : ''} — set 'Parameter Size': '${n}'${n !== 1 ? " (or '1' for one shared set of values)" : ''}`);
+  } else if (n === null && size > 1 && !sizeSet) {
+    err(where, `${node.id}: Parameter Size defaults to ${size} but scope '${scope}' is a custom attribute — set 'Parameter Size' explicitly to its component count`);
+  }
+  // per-column arrays need one column per entry
+  for (const [k, v] of Object.entries(node.params || {})) {
+    const r = resolveParam(info, k);
+    if (r?.param.sizeable && Array.isArray(v) && v.length > 1 && v.length !== size) {
+      err(where, `${node.id}.${k}: ${v.length} values but Parameter Size is ${size}`);
+    }
+  }
+}
+
 function checkGraph(where0: string, g: Graph) {
   const where = `${where0} graph '${g.id}'`;
   const all = new Map<string, { node: GraphNode; parent: string | null }>();
@@ -168,6 +221,7 @@ function checkGraph(where0: string, g: Graph) {
       const fb = familyOf(node.type);
       if (fa !== fb && fb !== 'COMP' && fa !== 'COMP') err(where, `node '${id}' (${fb}) cannot be wired from '${src}' (${fa})`);
     });
+    checkParamSize(where, node);
     checkMarkdown(`${where} node '${id}'`, node.note);
     if (node.table && familyOf(node.type) !== 'DAT') warn(where, `node '${id}' has table but is not a DAT`);
     if (!blurbs[node.type]) {
