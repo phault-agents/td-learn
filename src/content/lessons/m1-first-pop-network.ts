@@ -59,7 +59,7 @@ You'll build exactly this, once, in this lesson. After that it's muscle memory.`
             y: 0,
             params: {
               'Xform:Rotate': [0, { expr: 'absTime.seconds * 12' }, 0],
-              Material: { ref: '../pbr1' },
+              Material: { ref: 'pbr1' },
             },
             note: 'The container that makes POPs renderable. Its *Xform* page moves the whole object; its *Render* page assigns the material. The slow spin comes from an expression on **Rotate Y** — see step 7.',
             children: [
@@ -182,7 +182,7 @@ Look at the bottom-left of the Noise POP's viewer: it lists only \`P\` and \`N\`
             title: 'A material',
             body: `Create a **PBR MAT** \`pbr1\`: *Base Color* **0.95, 0.55, 0.3**, *Roughness* **0.35**, *Metallic* **0.1**.
 
-Then open \`geo1\`'s **Render** page and drag \`pbr1\` onto the *Material* field. TouchDesigner writes \`../pbr1\`: a component's OP fields are looked up from *inside* the component, so a sibling sits one level up (\`..\`). A dashed reference line appears between them.`,
+Then open \`geo1\`'s **Render** page and drag \`pbr1\` onto the *Material* field (or type \`pbr1\`). A dashed reference line appears between them.`,
             nodes: ['pbr1'],
             focus: ['geo1'],
           },
@@ -209,10 +209,10 @@ Finish with a **Null TOP** \`out1\`. Turn on its viewer — there's your blob.`,
     {
       kind: 'callout',
       tone: 'concept',
-      title: 'Why the material is written ../pbr1',
-      md: `Operator paths typed into a parameter are looked up relative to the **inside** of the operator that owns the parameter. For a TOP like \`render1\` that is simply the network it sits in, so \`cam1\` finds its sibling. For a **component** like \`geo1\`, "inside" means *inside geo1* — so a sibling MAT is one level up: \`../pbr1\`. The same goes for Python expressions on a component's parameters: \`op('../lfo1')\`, not \`op('lfo1')\`.
+      title: 'How OP fields find other operators',
+      md: `An operator name typed into a parameter (*Material*, *Camera(s)*, *Look At*…) or used in an expression like \`op('lfo1')\` is looked up in the **network the operator sits in**. \`geo1\` and \`pbr1\` both live in \`/project1\`, so \`geo1\`'s *Material* is simply \`pbr1\`.
 
-Dragging a node onto a parameter always writes the right path, which is why the steps keep telling you to drag.`,
+To reach something one level up, use \`../name\`; to reach inside a component, use \`geo1/null1\`. Dragging a node onto a parameter always writes the right path, which is why the steps keep telling you to drag.`,
     },
     {
       kind: 'md',

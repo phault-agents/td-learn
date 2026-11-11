@@ -111,7 +111,7 @@ Why not scale \`dt\` by frame time? For a design piece, determinism and stabilit
             type: 'geometryCOMP',
             x: 0,
             y: 0,
-            params: { Material: { ref: '../line1' } },
+            params: { Material: { ref: 'line1' } },
             note: 'Holds the simulation and its display chain. The Line MAT draws the trail line strips.',
             children: [
               {
@@ -245,7 +245,7 @@ Why not scale \`dt\` by frame time? For a design piece, determinism and stabilit
                 1.2,
                 { expr: '4.2 * math.cos(absTime.seconds * 0.12)' },
               ],
-              'Look At': { ref: '../geo1' },
+              'Look At': { ref: 'geo1' },
             },
             note: 'Orbits on a circle of radius 4.2 (one turn in about 52 s) while *Look At* keeps it aimed at `geo1`.',
           },
@@ -335,7 +335,7 @@ Assign \`line1\` as \`geo1\`'s *Material*.`,
           },
           {
             title: 'An orbiting camera and the render',
-            body: `Create a **Camera COMP** \`cam1\` with *Translate* X = \`4.2 * math.sin(absTime.seconds * 0.12)\`, Y = **1.2**, Z = \`4.2 * math.cos(absTime.seconds * 0.12)\`, and *Look At* \`../geo1\`.
+            body: `Create a **Camera COMP** \`cam1\` with *Translate* X = \`4.2 * math.sin(absTime.seconds * 0.12)\`, Y = **1.2**, Z = \`4.2 * math.cos(absTime.seconds * 0.12)\`, and *Look At* \`geo1\`.
 
 Add a **Render TOP** \`render1\` (*Anti-Alias* **8x**, near-black background), a **Bloom TOP** \`bloom1\` and a **Null TOP** \`out1\`.`,
             nodes: ['cam1', 'render1', 'bloom1', 'out1'],

@@ -65,7 +65,7 @@ Keep the difference between *resample* (same shape, new points) and *smooth* (ne
             type: 'geometryCOMP',
             x: 0,
             y: 0,
-            params: { Material: { ref: '../linemat1' } },
+            params: { Material: { ref: 'linemat1' } },
             note: 'One line strip, drawn by the Line MAT.',
             children: [
               {
@@ -401,7 +401,7 @@ For open curves, *Clamped* makes Cardinal and BSpline curves start and end exact
             type: 'geometryCOMP',
             x: 0,
             y: 0,
-            params: { Material: { ref: '../linemat2' } },
+            params: { Material: { ref: 'linemat2' } },
             note: 'A second drawing.',
             children: [
               {

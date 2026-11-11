@@ -83,7 +83,7 @@ function checkPath(where: string, node: GraphNode, key: string, path: string, al
   const name = lastSeg(path);
   if (all.has(name)) {
     if (fixOut) fixes.push({ where, node: node.id, key, from: path, to: relPath(node.id, name, netIdx) });
-    err(where, `${node.id}.${key}: '${path}' does not resolve from ${node.id}${familyOf(node.type) === 'COMP' ? ' (a COMP resolves paths from its inside)' : ''} — use '${relPath(node.id, name, netIdx)}'`);
+    err(where, `${node.id}.${key}: '${path}' does not resolve from ${node.id} (paths are looked up from the network ${node.id} sits in) — use '${relPath(node.id, name, netIdx)}'`);
   } else if (!path.includes('..')) {
     warn(where, `${node.id}.${key}: '${path}' is not a node in this graph`);
   }

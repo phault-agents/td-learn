@@ -181,7 +181,7 @@ Math Mix's trigonometry blocks read their angles in the units set by **Angle Uni
             y: 2.4,
             params: {
               'Xform:Rotate': [0, { expr: 'absTime.seconds * 5' }, 0],
-              Material: { ref: '../linemat1' },
+              Material: { ref: 'linemat1' },
             },
             note: 'The graticule (latitude/longitude lines), drawn by the Line MAT. Spins slowly; the other two COMPs use the identical expression.',
             children: [
@@ -210,7 +210,7 @@ Math Mix's trigonometry blocks read their angles in the units set by **Angle Uni
             y: 2.4,
             params: {
               'Xform:Rotate': [0, { expr: 'absTime.seconds * 5' }, 0],
-              Material: { ref: '../constant1' },
+              Material: { ref: 'constant1' },
             },
             note: 'A solid, dark sphere just inside the graticule. It hides the far side, so you never read a spike on the back as if it were on the front.',
             children: [
@@ -234,7 +234,7 @@ Math Mix's trigonometry blocks read their angles in the units set by **Angle Uni
               'Xform:Rotate': [0, { expr: 'absTime.seconds * 5' }, 0],
               Instancing: true,
               'Instance Count Mode': 'Instance OP(s) Length',
-              'Default Instance OP': { ref: '../quakepts' },
+              'Default Instance OP': { ref: 'quakepts' },
               'Translate X': 'P(0)',
               'Translate Y': 'P(1)',
               'Translate Z': 'P(2)',
@@ -247,7 +247,7 @@ Math Mix's trigonometry blocks read their angles in the units set by **Angle Uni
               R: 'Color(0)',
               G: 'Color(1)',
               B: 'Color(2)',
-              Material: { ref: '../constant1' },
+              Material: { ref: 'constant1' },
             },
             note: 'One thin box per event. *Instance*: position from `P`, length from `h`. *Instance 2*: **Rotate to Vector** turns each copy so its +Y axis points along `N` — straight out of the globe — and color comes from `Color`.',
             children: [
@@ -342,7 +342,7 @@ Leave *Angle Units* on **Degrees**. The points now sit on a unit sphere.`,
             title: 'A graticule',
             body: `Create a **Geometry COMP** \`geo_globe\` holding a **Sphere POP** \`sphere1\`: *Type* **Grid**, *Grid Connectivity* **Rows and Columns**, *Orientation* **Y Axis**, *Radius* **1**, *Rows* **13**, *Columns* **24**.
 
-Create a **Line MAT** \`linemat1\` (dim blue-grey, *Width Near/Far* **1.2**) and assign it to \`geo_globe\` — the *Material* field reads \`../linemat1\`, since a COMP's parameters resolve paths from inside the COMP.`,
+Create a **Line MAT** \`linemat1\` (dim blue-grey, *Width Near/Far* **1.2**) and assign it to \`geo_globe\` (*Material* \`linemat1\`).`,
             nodes: ['geo_globe', 'sphere1', 'linemat1'],
           },
           {
@@ -366,9 +366,9 @@ Create a **Ramp TOP** \`ramp1\` (*Type* **Horizontal**, a sequential light → d
           },
           {
             title: 'Spikes along the normal',
-            body: `Append a **Null POP** \`quakepts\` to the data row. Then create a Geometry COMP \`geo_spikes\` holding a **Box POP** \`box1\`: *Size* **0.015, 0.5, 0.015**, *Translate* **0, 0.25, 0**. *Material*: \`../constant1\`.
+            body: `Append a **Null POP** \`quakepts\` to the data row. Then create a Geometry COMP \`geo_spikes\` holding a **Box POP** \`box1\`: *Size* **0.015, 0.5, 0.015**, *Translate* **0, 0.25, 0**. *Material*: \`constant1\`.
 
-*Instance* page: **Instancing** on, *Instance Count Mode* **Instance OP(s) Length**, *Default Instance OP* \`../quakepts\`, *Translate X/Y/Z* \`P(0)\` \`P(1)\` \`P(2)\`, *Scale Y* \`h\`.
+*Instance* page: **Instancing** on, *Instance Count Mode* **Instance OP(s) Length**, *Default Instance OP* \`quakepts\`, *Translate X/Y/Z* \`P(0)\` \`P(1)\` \`P(2)\`, *Scale Y* \`h\`.
 
 *Instance 2* page: *Rotate to Vector: Forward Direction* **+Y**, *Rotate to Vector X/Y/Z* \`N(0)\` \`N(1)\` \`N(2)\`, *Color Mode* **Replace**, *R/G/B* \`Color(0)\` \`Color(1)\` \`Color(2)\`.`,
             nodes: ['quakepts', 'geo_spikes', 'box1'],

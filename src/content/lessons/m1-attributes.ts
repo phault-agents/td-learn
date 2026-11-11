@@ -239,7 +239,7 @@ Notice that only steps 4 and 5 change the shape. Everything else is bookkeeping 
             y: 0,
             params: {
               'Xform:Rotate': [0, { expr: 'absTime.seconds * 4' }, 0],
-              Material: { ref: '../pbr1' },
+              Material: { ref: 'pbr1' },
             },
             note: 'Holds the whole island network. A very slow turntable spin (4° per second) lets the raking light travel across the slopes.',
             children: [
@@ -413,7 +413,7 @@ Notice that only steps 4 and 5 change the shape. Everything else is bookkeeping 
             type: 'cameraCOMP',
             x: 0,
             y: 1.2,
-            params: { 'Xform:Translate': [0, 2.8, 4.4], 'Look At': { ref: '../geo1' } },
+            params: { 'Xform:Translate': [0, 2.8, 4.4], 'Look At': { ref: 'geo1' } },
             note: 'Raised and pulled back for a three-quarter aerial view. *Look At* keeps it aimed at the island\'s center however you move it.',
           },
           {
@@ -520,7 +520,12 @@ Finish with a **Null POP** \`null1\`, move the display and render flags to it, a
 
 Don't skip *Metallic*: it defaults to **1**, fully metal. Metal has no diffuse shading — it only reflects its surroundings — so with one light and no environment to reflect, the island would render almost black.
 
-Create a **Camera COMP** \`cam1\` (*Translate* **0, 2.8, 4.4**, *Look At* \`../geo1\`) and a **Light COMP** \`light1\` (*Translate* **−4, 5, 2**). Give \`geo1\` a slow spin: *Rotate Y* = \`absTime.seconds * 4\`.`,
+Then the camera and light:
+
+* **Camera COMP** \`cam1\`: *Translate* **0, 2.8, 4.4** and **Look At** \`geo1\` (drag \`geo1\` onto the field). *Look At* is what aims the camera at the island. Without it the camera stares straight ahead from up there, the island sits below the frame, and the render shows nothing but background.
+* **Light COMP** \`light1\`: *Translate* **−4, 5, 2**.
+
+Give \`geo1\` a slow spin: *Rotate Y* = \`absTime.seconds * 4\`.`,
             nodes: ['pbr1', 'cam1', 'light1'],
             focus: ['geo1'],
           },

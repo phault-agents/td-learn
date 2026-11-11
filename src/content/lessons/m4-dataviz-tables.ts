@@ -232,7 +232,7 @@ The [[Normalize POP]] looks similar but works differently: it inspects the data 
             params: {
               Instancing: true,
               'Instance Count Mode': 'Instance OP(s) Length',
-              'Default Instance OP': { ref: '../barpts' },
+              'Default Instance OP': { ref: 'barpts' },
               'Translate X': 'P(0)',
               'Translate Y': 'P(1)',
               'Translate Z': 'P(2)',
@@ -241,7 +241,7 @@ The [[Normalize POP]] looks similar but works differently: it inspects the data 
               R: 'Color(0)',
               G: 'Color(1)',
               B: 'Color(2)',
-              Material: { ref: '../constant1' },
+              Material: { ref: 'constant1' },
             },
             note: 'One box, drawn once per point of `barpts`. *Instance* page: position from `P`, height from `h` (Scale Y). *Instance 2* page: color from `Color`. Leave Scale X and Z empty so the box keeps its own width.',
             children: [
@@ -261,7 +261,7 @@ The [[Normalize POP]] looks similar but works differently: it inspects the data 
             type: 'geometryCOMP',
             x: 9,
             y: 1.6,
-            params: { Material: { ref: '../linemat1' } },
+            params: { Material: { ref: 'linemat1' } },
             note: 'The gridlines, in their own Geometry COMP so they can use the Line MAT while the bars use a Constant MAT.',
             children: [
               {
@@ -286,7 +286,7 @@ The [[Normalize POP]] looks similar but works differently: it inspects the data 
             type: 'geometryCOMP',
             x: 9,
             y: 2.7,
-            params: { 'Xform:Translate': [0, -0.35, 0], Material: { ref: '../constant1' } },
+            params: { 'Xform:Translate': [0, -0.35, 0], Material: { ref: 'constant1' } },
             note: 'Holds the category labels. Translating the whole COMP down a little parks every label just under the baseline.',
             children: [
               {
@@ -414,9 +414,9 @@ Finish with a **Null POP** \`barpts\`. Open its viewer and wait for the switch t
             title: 'Instance the bars',
             body: `Create a **Geometry COMP** \`geo_bars\`. Inside, replace the default contents with a **Box POP** \`box1\`: *Size* **0.7, 1, 0.7**, *Translate* **0, 0.5, 0**; render + display flags on.
 
-Back at the root, create a **Constant MAT** \`constant1\` (a light grey) and assign it on \`geo_bars\` → *Render* → *Material*: \`../constant1\`. A COMP's own parameters look for operators *inside* the COMP, so a sibling needs \`../\` (dragging the MAT onto the field writes this for you).
+Back at the root, create a **Constant MAT** \`constant1\` (a light grey) and assign it on \`geo_bars\` → *Render* → *Material*: \`constant1\` (or drag the MAT onto the field).
 
-On \`geo_bars\` → *Instance*: turn on **Instancing**, set *Instance Count Mode* to **Instance OP(s) Length**, and set *Default Instance OP* to \`../barpts\` (or drag the node onto it). Set *Translate X/Y/Z* to \`P(0)\`, \`P(1)\`, \`P(2)\` and *Scale Y* to \`h\` (clear Scale X and Z). On *Instance 2*, set *Color Mode* to **Replace** and *R/G/B* to \`Color(0)\`, \`Color(1)\`, \`Color(2)\`.`,
+On \`geo_bars\` → *Instance*: turn on **Instancing**, set *Instance Count Mode* to **Instance OP(s) Length**, and set *Default Instance OP* to \`barpts\` (or drag the node onto it). Set *Translate X/Y/Z* to \`P(0)\`, \`P(1)\`, \`P(2)\` and *Scale Y* to \`h\` (clear Scale X and Z). On *Instance 2*, set *Color Mode* to **Replace** and *R/G/B* to \`Color(0)\`, \`Color(1)\`, \`Color(2)\`.`,
             nodes: ['geo_bars', 'box1', 'constant1'],
           },
           {
@@ -430,12 +430,12 @@ Create a **Render TOP** \`render1\` with *Camera(s)* \`cam1\` and *Geometry* \`g
             title: 'Gridlines',
             body: `Create a Geometry COMP \`geo_grid\` holding a **Grid POP** \`grid1\`: *Connectivity* **Line Strips**, *Size* **12.4, 6**, *Columns* **2**, *Rows* **5**, *Translate* **5.5, 3, -0.2**. In the *Line X/Y/Z* toggles keep only **X** on, so you get horizontal rules only.
 
-Create a **Line MAT** \`linemat1\` with a dim *Line Near Color* and *Width Near*/*Width Far* both **1**, and assign it to \`geo_grid\` (\`../linemat1\`). Add \`geo_grid\` to the Render TOP's *Geometry* field.`,
+Create a **Line MAT** \`linemat1\` with a dim *Line Near Color* and *Width Near*/*Width Far* both **1**, and assign it to \`geo_grid\` (\`linemat1\`). Add \`geo_grid\` to the Render TOP's *Geometry* field.`,
             nodes: ['geo_grid', 'grid1', 'linemat1'],
           },
           {
             title: 'Category labels',
-            body: `Create a Geometry COMP \`geo_labels\` (*Translate* **0, -0.35, 0**, *Material* \`../constant1\`) holding a **Text POP** \`text1\`: *Mode* **Specification DAT/CHOP**, *Specification DAT* \`../switch1\`, *Font Size* **0.32**, *Horizontal Align* **Center**, *Vertical Align* **Top**.
+            body: `Create a Geometry COMP \`geo_labels\` (*Translate* **0, -0.35, 0**, *Material* \`constant1\`) holding a **Text POP** \`text1\`: *Mode* **Specification DAT/CHOP**, *Specification DAT* \`../switch1\`, *Font Size* **0.32**, *Horizontal Align* **Center**, *Vertical Align* **Top**.
 
 Add \`geo_labels\` to the Render TOP. Each month name now sits under its bar — placed by the very same \`tx\` column that placed the bar.`,
             nodes: ['geo_labels', 'text1'],

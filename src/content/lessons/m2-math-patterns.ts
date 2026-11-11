@@ -79,7 +79,7 @@ They're computed on the fly and never passed downstream, so they cost nothing to
             type: 'geometryCOMP',
             x: 0,
             y: 0,
-            params: { Material: { ref: '../linemat1' } },
+            params: { Material: { ref: 'linemat1' } },
             note: 'Holds the seed generator. The Line MAT draws its point primitives as dots.',
             children: [
               {
@@ -353,7 +353,7 @@ How many turns does the line need to close? For *k* = *n*/*d* (in lowest terms):
             type: 'geometryCOMP',
             x: 0,
             y: 0,
-            params: { Material: { ref: '../linemat2' } },
+            params: { Material: { ref: 'linemat2' } },
             note: 'A second object, drawn as a single line.',
             children: [
               {

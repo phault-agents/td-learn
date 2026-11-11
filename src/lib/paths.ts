@@ -2,10 +2,10 @@ import type { GraphNode } from '../content/types';
 import { familyOf } from './opdb';
 
 /**
- * Operator path resolution, mirroring TouchDesigner's rules for parameters:
- * relative paths are searched from the *inside* of the operator that owns the parameter.
- * For a COMP that is the COMP itself (so a sibling is '../name'); for any other operator it is
- * the network the operator lives in (so a sibling is just 'name').
+ * Operator path resolution, mirroring TouchDesigner's rules for parameters: relative paths in a
+ * parameter are looked up from the network the owning operator sits in. That holds for COMPs too
+ * (verified in TouchDesigner 2025.33230: a Camera COMP's Look At reads `geo1` for a sibling, and
+ * `../geo1` fails), so a sibling is always just 'name' and a node one level up is '../name'.
  */
 export interface NetIndex {
   parent: Map<string, string | null>;
@@ -29,9 +29,9 @@ export function buildNetIndex(nodes: GraphNode[]): NetIndex {
   return idx;
 }
 
-/** The network a node's relative parameter paths start from. */
+/** The network a node's relative parameter paths start from: the one it sits in. */
 export function baseOf(id: string, idx: NetIndex): string | null {
-  return idx.isComp.get(id) ? id : (idx.parent.get(id) ?? null);
+  return idx.parent.get(id) ?? null;
 }
 
 export type Resolved = { kind: 'node'; id: string } | { kind: 'external' } | { kind: 'pattern' } | { kind: 'missing' };
@@ -48,7 +48,9 @@ export function resolvePath(fromId: string, path: string, idx: NetIndex): Resolv
     const seg = segs[i];
     if (seg === '' || seg === '.') continue;
     if (seg === '..') {
-      if (cur === null) return { kind: 'external' }; // above the diagram's root network
+      // climbing above the diagram's root network (/project1): treat as unresolved, so a
+      // '../name' that should have been 'name' is caught instead of passing as "external"
+      if (cur === null) return { kind: 'missing' };
       cur = idx.parent.get(cur) ?? null;
       last = null;
       continue;

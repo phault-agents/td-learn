@@ -59,7 +59,7 @@ Most network confusion comes from that last line.`,
             y: 0,
             params: {
               'Xform:Rotate': [0, { expr: 'absTime.seconds * 4' }, 0],
-              Material: { ref: '../mat_lines' },
+              Material: { ref: 'mat_lines' },
             },
             note: 'Generates the cloud and the connecting lines. A slow spin shows off the depth; `geo_nodes` uses the same expression so dots and lines stay together.',
             children: [
@@ -158,7 +158,7 @@ Most network confusion comes from that last line.`,
             y: 1.3,
             params: {
               'Xform:Rotate': [0, { expr: 'absTime.seconds * 4' }, 0],
-              Material: { ref: '../mat_nodes' },
+              Material: { ref: 'mat_nodes' },
             },
             note: 'The same points drawn as dots. Separate COMP, separate material: one Line MAT draws only lines, the other only points.',
             children: [
@@ -290,7 +290,7 @@ Middle-click \`proximity1\`: line primitives, plus a \`LineLength\` primitive at
           },
           {
             title: 'A material and a camera',
-            body: `At the root, create a **Line MAT** \`mat_lines\` and assign it to \`geo_plexus\` (*Material* \`../mat_lines\` — paths on a COMP's own parameters start inside the COMP). For now set *Line Near Color* to a light blue.
+            body: `At the root, create a **Line MAT** \`mat_lines\` and assign it to \`geo_plexus\` (*Material* \`mat_lines\`). For now set *Line Near Color* to a light blue.
 
 Create a **Camera COMP** \`cam1\` at **0, 0, 5**.`,
             nodes: ['mat_lines', 'cam1'],
@@ -442,7 +442,7 @@ The dataset below is **invented**: a toy dependency map of a TouchDesigner proje
             type: 'geometryCOMP',
             x: 1,
             y: 0.6,
-            params: { Material: { ref: '../mat_graph' } },
+            params: { Material: { ref: 'mat_graph' } },
             note: 'Edges and node dots, drawn by one Line MAT.',
             children: [
               {
@@ -546,7 +546,7 @@ The dataset below is **invented**: a toy dependency map of a TouchDesigner proje
             type: 'geometryCOMP',
             x: 1,
             y: 1.8,
-            params: { 'Xform:Translate': [0, 0.1, 0], Material: { ref: '../constant1' } },
+            params: { 'Xform:Translate': [0, 0.1, 0], Material: { ref: 'constant1' } },
             note: 'Node labels, nudged up so they sit above the dots.',
             children: [
               {

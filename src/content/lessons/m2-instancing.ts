@@ -66,7 +66,7 @@ Each group also has its own OP field (*Translate OP*, *Scale OP*, *Color OP*…)
             params: {
               Instancing: true,
               'Instance Count Mode': 'Instance OP(s) Length',
-              'Default Instance OP': { ref: 'city' },
+              'Default Instance OP': { ref: 'geo1/city' },
               'Translate X': 'P(0)',
               'Translate Y': 'P(1)',
               'Translate Z': 'P(2)',
@@ -75,7 +75,7 @@ Each group also has its own OP field (*Translate OP*, *Scale OP*, *Color OP*…)
               R: 'Color(0)',
               G: 'Color(1)',
               B: 'Color(2)',
-              Material: { ref: '../pbr1' },
+              Material: { ref: 'pbr1' },
               'Xform:Rotate': [0, { expr: 'absTime.seconds * 6' }, 0],
             },
             note: 'The instancer. *Instance* page: source and per-instance translate/scale. *Instance 2* page: per-instance color. The *Xform* spin turns the whole city as one object.',
@@ -237,7 +237,7 @@ The translate lifts the box so its base sits on y = 0. Remember that — it matt
             title: 'A point list to instance onto',
             body: `Inside \`geo1\`, add a **Grid POP** \`grid1\`: *Connectivity* **None**, *Size* **8, 8**, *Columns* and *Rows* **48**, *Rotate* **-90, 0, 0**. Append a **Null POP** named \`city\` and make sure its render and display flags are **off**.
 
-Now on \`geo1\`'s **Instance** page: turn on *Instancing*, set *Instance Count Mode* to **Instance OP(s) Length**, and drag \`city\` onto *Default Instance OP* (dragging writes the correct relative path for you). Set *Translate X / Y / Z* to \`P(0)\`, \`P(1)\`, \`P(2)\` — pick them from each field's ▸ menu.
+Now on \`geo1\`'s **Instance** page: turn on *Instancing*, set *Instance Count Mode* to **Instance OP(s) Length**, and set *Default Instance OP* to \`geo1/city\` (paths in \`geo1\`'s own parameters are looked up from \`/project1\`, where \`geo1\` sits, so a node inside it is \`geo1/city\`). Set *Translate X / Y / Z* to \`P(0)\`, \`P(1)\`, \`P(2)\` — pick them from each field's ▸ menu.
 
 The render now shows 2304 identical one-unit columns in a grid.`,
             nodes: ['grid1', 'city'],
@@ -315,7 +315,7 @@ There's one subtlety, and it's a classic. *Rotate to Vector: Order* decides **wh
             params: {
               Instancing: true,
               'Instance Count Mode': 'Instance OP(s) Length',
-              'Default Instance OP': { ref: 'planet' },
+              'Default Instance OP': { ref: 'geo2/planet' },
               'Translate X': 'P(0)',
               'Translate Y': 'P(1)',
               'Translate Z': 'P(2)',
@@ -325,7 +325,7 @@ There's one subtlety, and it's a classic. *Rotate to Vector: Order* decides **wh
               'Rotate to Vector X': 'N(0)',
               'Rotate to Vector Y': 'N(1)',
               'Rotate to Vector Z': 'N(2)',
-              Material: { ref: '../pbr2' },
+              Material: { ref: 'pbr2' },
             },
             note: 'Same idea as geo1, plus *Rotate to Vector* from `N` on the Instance 2 page, with the order set to **Rotate, then Rotate to Vector** so the height scale happens along each tower\'s own axis.',
             children: [
@@ -411,7 +411,7 @@ There's one subtlety, and it's a classic. *Rotate to Vector: Order* decides **wh
             title: 'Instance and orient',
             body: `In \`/project1\` create a **PBR MAT** \`pbr2\` with a warm stone *Base Color*, *Roughness* **0.7** and *Metallic* **0**, and assign it to \`geo2\`.
 
-On \`geo2\`: *Instancing* on, *Default Instance OP* \`planet\`, *Translate X/Y/Z* \`P(0)\` \`P(1)\` \`P(2)\`, *Scale Y* \`height\`. Look: every tower sticks straight up, even on the equator.
+On \`geo2\`: *Instancing* on, *Default Instance OP* \`geo2/planet\`, *Translate X/Y/Z* \`P(0)\` \`P(1)\` \`P(2)\`, *Scale Y* \`height\`. Look: every tower sticks straight up, even on the equator.
 
 On **Instance 2**: *Rotate to Vector X/Y/Z* = \`N(0)\` \`N(1)\` \`N(2)\`, *Forward Direction* **+Y**. Set *Rotate to Vector: Order* to **Rotate, then Rotate to Vector**, then flip it back to **Rotate to Vector, then Transform** and watch the equator towers: clean columns vs. sheared slabs.`,
             nodes: ['pbr2'],

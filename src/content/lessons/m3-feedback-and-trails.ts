@@ -75,7 +75,7 @@ Where does \`v\` come from? A **curl-noise field**. Instead of writing the curl 
             y: 0,
             params: {
               'Xform:Rotate': [0, { expr: 'absTime.seconds * 4' }, 0],
-              Material: { ref: '../linemat1' },
+              Material: { ref: 'linemat1' },
             },
             note: 'A slow turntable rotation shows off that these are true 3D lines, not a screen-space effect.',
             children: [
@@ -403,7 +403,7 @@ It matches points by index by default; with *Match by Attribute* and \`PartId\` 
             type: 'geometryCOMP',
             x: 0,
             y: 0,
-            params: { Material: { ref: '../linemat2' } },
+            params: { Material: { ref: 'linemat2' } },
             note: 'A separate little test bed.',
             children: [
               {
