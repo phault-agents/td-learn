@@ -327,7 +327,7 @@ Notice what the shader *doesn't* do: it never reads the outputs. Every boid read
             type: 'pbrMAT',
             x: 6,
             y: 2.5,
-            params: { 'Base Color': [1, 1, 1], Roughness: 0.5 },
+            params: { 'Base Color': [1, 1, 1], Roughness: 0.5, Metallic: 0 },
             note: 'White base color, so the instance colors from `Color` come through unchanged.',
           },
           {
@@ -410,7 +410,7 @@ On **Instance 2**: *Rotate to Vector: Forward Direction* **+Z**, *Rotate to Vect
           },
           {
             title: 'Light and render',
-            body: `At \`/project1\` add **Camera COMP** \`cam1\` (*Translate* **0 3 9**, *Look At* \`../geo1\`), **Light COMP** \`light1\` (*Translate* **5 8 6**), **PBR MAT** \`pbr1\` (white, *Roughness* **0.5**) assigned as \`geo1\`'s material, a **Render TOP** \`render1\` and a **Null TOP** \`out1\`.`,
+            body: `At \`/project1\` add **Camera COMP** \`cam1\` (*Translate* **0 3 9**, *Look At* \`../geo1\`), **Light COMP** \`light1\` (*Translate* **5 8 6**), **PBR MAT** \`pbr1\` (white, *Roughness* **0.5**, *Metallic* **0**) assigned as \`geo1\`'s material, a **Render TOP** \`render1\` and a **Null TOP** \`out1\`.`,
             nodes: ['cam1', 'light1', 'pbr1', 'render1', 'out1'],
           },
           {

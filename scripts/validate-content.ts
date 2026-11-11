@@ -228,6 +228,18 @@ function checkGraph(where0: string, g: Graph) {
       (strict ? err : warn)(where, `no blurb for ${node.type} (add one in src/content/blurbs/*.ts)`);
     }
   }
+  // A metallic PBR surface only shows reflections: without an Environment Light COMP to reflect,
+  // it renders almost black. Metallic defaults to 1 in TouchDesigner, so it must be set explicitly.
+  const hasEnvLight = [...all.values()].some((e) => e.node.type === 'environmentlightCOMP');
+  for (const { node } of all.values()) {
+    if (node.type !== 'pbrMAT' || hasEnvLight) continue;
+    const set = node.params?.Metallic;
+    const def = db.pbrMAT?.defaults?.metallic;
+    const metallic = typeof set === 'number' ? set : typeof def === 'number' ? def : null;
+    if (metallic !== null && metallic >= 0.5) {
+      err(where, `${node.id}: PBR Metallic is ${metallic}${typeof set === 'number' ? '' : ' (the default)'} with no Environment Light COMP — it will render almost black; set Metallic (e.g. 0) or add an environment light`);
+    }
+  }
   // overlapping tiles within a network (grid units: a tile is ~0.7 columns wide, ~0.7 rows tall)
   const byNet = new Map<string | null, GraphNode[]>();
   for (const [, { node, parent }] of all) byNet.set(parent, [...(byNet.get(parent) || []), node]);

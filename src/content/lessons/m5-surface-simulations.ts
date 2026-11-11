@@ -404,7 +404,7 @@ Then a **Normal POP** \`normal1\` (*Normals Action* **Always Compute**) and a **
           },
           {
             title: 'Light and render',
-            body: `Add **Camera COMP** \`cam1\` (*Translate* **0 0.3 3.6**, *Look At* \`../geo1\`), **Light COMP** \`light1\` (*Translate* **−3 3 4**), **PBR MAT** \`pbr1\` (white, *Roughness* **0.45**, *Apply Point Color* on) assigned to \`geo1\`, a **Render TOP** \`render1\` and a **Null TOP** \`out1\`. Give \`geo1\` a slow *Rotate Y* of \`absTime.seconds * 6\`.`,
+            body: `Add **Camera COMP** \`cam1\` (*Translate* **0 0.3 3.6**, *Look At* \`../geo1\`), **Light COMP** \`light1\` (*Translate* **−3 3 4**), **PBR MAT** \`pbr1\` (white, *Roughness* **0.45**, *Metallic* **0.05**, *Apply Point Color* on) assigned to \`geo1\`, a **Render TOP** \`render1\` and a **Null TOP** \`out1\`. Give \`geo1\` a slow *Rotate Y* of \`absTime.seconds * 6\`.`,
             nodes: ['cam1', 'light1', 'pbr1', 'render1', 'out1'],
             focus: ['geo1'],
           },

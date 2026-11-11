@@ -30,6 +30,7 @@ export const blurbs: Record<string, OpBlurb> = {
   // ---- MATs ----
   pbrMAT: {
     what: 'Physically based material: base color, metallic, roughness and emission, plus texture maps. Looks best with an environment light; reads POP `Color` when *Apply Point Color* is on.',
+    tip: '*Metallic* defaults to 1 (fully metal). Metal only shows reflections, so with ordinary lights and no [[Environment Light COMP]] it renders almost black — set *Metallic* to 0 for non-metal surfaces.',
   },
   phongMAT: {
     what: 'The classic lit material: diffuse, specular and shininess with optional texture maps. Fast and predictable.',

@@ -225,7 +225,7 @@ The translate lifts the box so its base sits on y = 0. Remember that — it matt
           },
           {
             title: 'Camera, sun and material',
-            body: `In \`/project1\`: a **Camera COMP** \`cam1\` (*Translate* **0, 6.5, 9**, *Rotate* **-34, 0, 0**), a **Light COMP** \`light1\` with *Light Type* **Distant Light** and *Rotate* **-50, 35, 0**, and a **PBR MAT** \`pbr1\` with a white *Base Color* and *Roughness* **0.6**. Assign \`pbr1\` as \`geo1\`'s *Material*.`,
+            body: `In \`/project1\`: a **Camera COMP** \`cam1\` (*Translate* **0, 6.5, 9**, *Rotate* **-34, 0, 0**), a **Light COMP** \`light1\` with *Light Type* **Distant Light** and *Rotate* **-50, 35, 0**, and a **PBR MAT** \`pbr1\` with a white *Base Color*, *Roughness* **0.6** and *Metallic* **0** (it defaults to 1, fully metal, which renders nearly black without an environment to reflect). Assign \`pbr1\` as \`geo1\`'s *Material*.`,
             nodes: ['cam1', 'light1', 'pbr1'],
           },
           {
@@ -392,7 +392,7 @@ There's one subtlety, and it's a classic. *Rotate to Vector: Order* decides **wh
             type: 'pbrMAT',
             x: 0,
             y: 1.15,
-            params: { 'Base Color': [0.92, 0.86, 0.76], Roughness: 0.7 },
+            params: { 'Base Color': [0.92, 0.86, 0.76], Roughness: 0.7, Metallic: 0 },
             note: 'A warm stone color — no instance color this time, so the material alone sets the look.',
           },
         ],
@@ -409,7 +409,7 @@ There's one subtlety, and it's a classic. *Rotate to Vector: Order* decides **wh
           },
           {
             title: 'Instance and orient',
-            body: `In \`/project1\` create a **PBR MAT** \`pbr2\` with a warm stone *Base Color* and assign it to \`geo2\`.
+            body: `In \`/project1\` create a **PBR MAT** \`pbr2\` with a warm stone *Base Color*, *Roughness* **0.7** and *Metallic* **0**, and assign it to \`geo2\`.
 
 On \`geo2\`: *Instancing* on, *Default Instance OP* \`planet\`, *Translate X/Y/Z* \`P(0)\` \`P(1)\` \`P(2)\`, *Scale Y* \`height\`. Look: every tower sticks straight up, even on the equator.
 

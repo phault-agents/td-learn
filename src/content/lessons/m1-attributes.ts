@@ -405,8 +405,8 @@ Notice that only steps 4 and 5 change the shape. Everything else is bookkeeping 
             type: 'pbrMAT',
             x: 1,
             y: 1.2,
-            params: { 'Base Color': [1, 1, 1], Roughness: 0.8 },
-            note: 'A white, matte PBR material. *Apply Point Color* (Advanced page) is on by default, so each point\'s `Color` tints the surface while the lighting still shows the relief.',
+            params: { 'Base Color': [1, 1, 1], Roughness: 0.8, Metallic: 0 },
+            note: 'A white, matte, non-metallic PBR material. *Metallic* defaults to 1, and a fully metallic surface only shows reflections, so with a single light and nothing to reflect it renders almost black; 0 gives ordinary diffuse shading. *Apply Point Color* (Advanced page) is on by default, so each point\'s `Color` tints the surface while the lighting still shows the relief.',
           },
           {
             id: 'cam1',
@@ -516,7 +516,9 @@ Finish with a **Null POP** \`null1\`, move the display and render flags to it, a
           },
           {
             title: 'Material, camera, light',
-            body: `Back in \`/project1\`, create a **PBR MAT** \`pbr1\` with *Base Color* **1, 1, 1** and *Roughness* **0.8**, and assign it on \`geo1\`'s Render page. White base color means the point colors come through unchanged.
+            body: `Back in \`/project1\`, create a **PBR MAT** \`pbr1\` with *Base Color* **1, 1, 1**, *Roughness* **0.8** and *Metallic* **0**, and assign it on \`geo1\`'s Render page. White base color means the point colors come through unchanged.
+
+Don't skip *Metallic*: it defaults to **1**, fully metal. Metal has no diffuse shading — it only reflects its surroundings — so with one light and no environment to reflect, the island would render almost black.
 
 Create a **Camera COMP** \`cam1\` (*Translate* **0, 2.8, 4.4**, *Look At* \`../geo1\`) and a **Light COMP** \`light1\` (*Translate* **−4, 5, 2**). Give \`geo1\` a slow spin: *Rotate Y* = \`absTime.seconds * 4\`.`,
             nodes: ['pbr1', 'cam1', 'light1'],

@@ -266,7 +266,7 @@ Four parameters on the first page decide most of the behaviour:
             type: 'pbrMAT',
             x: 1,
             y: 2.4,
-            params: { 'Base Color': [1, 1, 1], Roughness: 0.4, 'Apply Point Color': true },
+            params: { 'Base Color': [1, 1, 1], Roughness: 0.4, Metallic: 0, 'Apply Point Color': true },
             note: '*Apply Point Color* makes the material use the `Color` attribute the shader wrote. Without it, the displacement colors never reach the screen.',
           },
           {
@@ -369,7 +369,7 @@ Back on \`glsl1\`, turn **Initialize Output Attributes** off. The shader writes 
           },
           {
             title: 'Render it',
-            body: `At \`/project1\` add **Camera COMP** \`cam1\` (*Translate* **0 0 6**), **Light COMP** \`light1\` (*Translate* **4 3 5**), **PBR MAT** \`pbr1\` with *Apply Point Color* on, a **Render TOP** \`render1\` and a **Null TOP** \`out1\`.
+            body: `At \`/project1\` add **Camera COMP** \`cam1\` (*Translate* **0 0 6**), **Light COMP** \`light1\` (*Translate* **4 3 5**), **PBR MAT** \`pbr1\` with *Roughness* **0.4**, *Metallic* **0** and *Apply Point Color* on, a **Render TOP** \`render1\` and a **Null TOP** \`out1\`.
 
 Assign \`pbr1\` on \`geo1\`'s **Render** page and give \`geo1\` a *Rotate Y* expression of \`absTime.seconds * 8\`.`,
             nodes: ['cam1', 'light1', 'pbr1', 'render1', 'out1'],
